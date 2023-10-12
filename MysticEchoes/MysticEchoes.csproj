@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MysticEchoes.Core\MysticEchoes.Core.csproj" />
+    </ItemGroup>
+
 </Project>

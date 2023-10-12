@@ -1,20 +1,20 @@
 ﻿using System.Windows;
+using MysticEchoes.Core;
 
 namespace MysticEchoes;
 
 public class App : Application
 {
-    readonly MainWindow mainWindow;
+    readonly MainWindow _mainWindow;
 
-    public App(MainWindow mainWindow)
+    public App(MainWindow mainWindow, Game game)
     {
-        this.mainWindow = mainWindow;
+        this._mainWindow = mainWindow;
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        mainWindow.Show();
+        _mainWindow.Show();
         base.OnStartup(e);
-
     }
 }
