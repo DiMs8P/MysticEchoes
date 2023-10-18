@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Text.RegularExpressions;
 using MazeGeneration.TreeModule;
 
 namespace MazeGeneration;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MysticEchoes.Core;
 
 namespace MysticEchoes;
 
@@ -15,6 +16,8 @@ public class Program
             {
                 services.AddSingleton<App>();
                 services.AddSingleton<MainWindow>();
+                services.AddGame();
+
             })
             .Build();
         // получаем сервис - объект класса App

@@ -1,17 +1,17 @@
 ﻿using MysticEchoes.Core.Base.Exceptions;
+using MysticEchoes.Core.Rendering;
 
 namespace MysticEchoes.Core.Base;
 
 public class Entity
 {
-    public int Id { get; }
-    public string? Tag { get; }
+    public int Id { get; set; }
+    public string? Tag { get; set; }
     public Dictionary<Type, IComponent> Components { get; }
+    public RenderStrategy? RenderStrategy { get; protected set; }
 
-    public Entity(int id, string? tag=null)
+    public Entity()
     {
-        Id = id;
-        Tag = tag;
         Components = new ();
     }
 
@@ -28,5 +28,15 @@ public class Entity
         }
 
         throw new ComponentNotFoundException(nameof(T));
+    }
+
+    public T? TryGetComponent<T>() where T : IComponent
+    {
+        if (Components.TryGetValue(typeof(T), out var component))
+        {
+            return (T)component;
+        }
+
+        return default;
     }
 }
