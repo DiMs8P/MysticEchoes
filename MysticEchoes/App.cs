@@ -10,7 +10,7 @@ public class App : Application
     private readonly MainWindow _mainWindow;
     private readonly Game _game;
 
-    private bool _renderScheduled = false;
+    private bool _readyToRender = false;
     private Timer _renderTimer;
 
     private object gameLock = new object();
@@ -51,18 +51,26 @@ public class App : Application
     {
         _renderTimer = new Timer(RenderTimerCallback!, null, 0, 20);
 
-        await Task.Run(() =>
-        {
-            GameLoop(cancellationToken);
-        });
+        // await Task.Run(() =>
+        // {
+        //     GameLoop(cancellationToken);
+        // });
     }
 
     private void RenderTimerCallback(object _)
     {
-        if (!_renderScheduled) return;
+        if (!_readyToRender) return;
 
-        _mainWindow.Dispatcher.Invoke(_mainWindow.GlControl.DoRender);
-        _renderScheduled = false;
+        lock (gameLock)
+        {
+            _readyToRender = false;
+
+            _game.Update();
+
+            _mainWindow.Dispatcher.Invoke(_mainWindow.GlControl.DoRender);
+        }
+
+        _readyToRender = true;
     }
 
     private void GameLoop(CancellationToken cancellationToken)
@@ -75,7 +83,7 @@ public class App : Application
                 return;
             }
             _game.Update();
-            _renderScheduled = true;
+            _readyToRender = true;
         }
     }
 }

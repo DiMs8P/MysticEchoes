@@ -14,7 +14,7 @@ public static class Extensions
         services.AddTransient<ISystem, PlayerMovementSystem>();
 
         services.AddScoped<Renderer>();
-        services.AddScoped<RenderPool>();
+        // services.AddScoped<RenderPool>();
 
         services.AddScoped<EntityFactory>();
 

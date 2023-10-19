@@ -3,13 +3,13 @@ using MysticEchoes.Core.Rendering;
 
 namespace MysticEchoes.Core.Base;
 
-public class Entity
+public sealed class Entity
 {
     public int Id { get; set; }
     public string? Tag { get; set; }
     public Dictionary<Type, IComponent> Components { get; }
-    public RenderStrategy? RenderStrategy { get; protected set; }
-
+    public RenderingType? RenderStrategy { get; set; }
+    
     public Entity()
     {
         Components = new ();

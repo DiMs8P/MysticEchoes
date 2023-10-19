@@ -1,4 +1,5 @@
-﻿using MysticEchoes.Core.Base;
+﻿using MazeGeneration;
+using MysticEchoes.Core.Base;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Rendering;
@@ -38,10 +39,6 @@ public class Game
         _dispatcher = dispatcher;
 
         CreateTiles();
-        foreach (var entity in _entities)
-        {
-            entity.RenderStrategy?.InitGl(gl); 
-        }
     }
 
     public void CreateTiles()
@@ -56,7 +53,9 @@ public class Game
         {
             for (var j = 0; j < maze.Size.Width; j++)
             {
-                var tile = _entityFactory.Create<Tile>();
+                var tile = _entityFactory.Create();
+
+                tile.RenderStrategy = RenderingType.Tile;
 
                 var tileComponent = new TileComponent(
                     maze.Cells[i, j],
@@ -71,13 +70,6 @@ public class Game
 
     public void Update()
     {
-        // foreach (var system in _systems)
-        // {
-        //     foreach (var entity in _entities)
-        //     {
-        //         system.Update(entity);
-        //     }
-        // }
     }
 
     public void Render()
@@ -86,15 +78,30 @@ public class Game
         _gl.LoadIdentity();
         _gl.Ortho(0, 2, 0, 2, -1, 1);
 
-        
-
-        y -= 0.003;
-
-        foreach (var entity in _entities.Where(entity => entity.RenderStrategy is not null))
+        foreach (var entity in _entities.Where(entity => entity.RenderStrategy is not RenderingType.None))
         {
-            _renderer.AddInPool(entity.RenderStrategy!);
+            if (entity.RenderStrategy is not RenderingType.Tile) continue;
+
+            var tile = entity.GetComponent<TileComponent>();
+            var rect = tile.Rect;
+
+            _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+
+            Span<double> color = tile.Type switch
+            {
+                CellType.Empty => stackalloc double[] { 0.5d, 0.5d, 0.5d },
+                CellType.FragmentBound => stackalloc double[] { 1d, 1d, 1d },
+                CellType.Hall => stackalloc double[] { 0.8d, 0.8d, 0.1d },
+                CellType.Wall => stackalloc double[] { 0.1d, 0.1d, 0.8d },
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            _gl.Color(color[0], color[1], color[2]);
+            _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+            _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+            _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+            _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
+            _gl.End();
         }
-        
-        _renderer.DoRender();
     }
 }

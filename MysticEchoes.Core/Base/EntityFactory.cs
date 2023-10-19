@@ -10,11 +10,10 @@ public class EntityFactory
         _entities = entities;
     }
 
-    public T Create<T>(string? tag=null)
-        where T : Entity, new()
+    public Entity Create(string? tag=null)
     {
         _lastEntityId++;
-        var entity = new T
+        var entity = new Entity
         {
             Id = _lastEntityId,
             Tag = tag
