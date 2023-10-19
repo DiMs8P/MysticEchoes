@@ -18,13 +18,13 @@ public class GenerationConfig
         new()
         {
             MinNodeSize = new (10, 10),
-            MinRoomSize = new (5, 5),
-            MinRoomPadding = new (3, 3),
-            MazeSize = new (120, 50),
-            Random = new GenerationRandom(1353452337),
-            MaxHeightToWidthProportion = 1/4d,
-            MaxWidthToHeightProportion = 5d,
-            MaxDivideShift = 0.1,
+            MinRoomSize = new (6, 6),
+            MinRoomPadding = new (1,1),
+            MazeSize = new (70, 70),
+            Random = new GenerationRandom(1234),
+            MaxHeightToWidthProportion = 1.6,
+            MaxWidthToHeightProportion = 1.6,
+            MaxDivideShift = 0.3,
             ThreeDepth = 3
         };
 }

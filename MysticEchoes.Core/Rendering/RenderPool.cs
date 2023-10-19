@@ -19,4 +19,9 @@ public class RenderPool
     {
         return _renderStrategyByLayer.SelectMany(kv => kv.Value);
     }
+
+    public void Clear()
+    {
+        _renderStrategyByLayer.Clear();
+    }
 }

@@ -2,12 +2,12 @@
 
 public class Rectangle
 {
-    private readonly Point _leftBottom;
-    private readonly Size _size;
+    public Point LeftBottom;
+    public Size Size;
 
     public Rectangle(Point leftBottom, Size size)
     {
-        _leftBottom = leftBottom;
-        _size = size;
+        LeftBottom = leftBottom;
+        Size = size;
     }
 }

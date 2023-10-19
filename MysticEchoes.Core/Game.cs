@@ -13,7 +13,10 @@ public class Game
     private readonly Renderer _renderer;
     private readonly EntityFactory _entityFactory;
     private readonly EntityPool _entities;
-    
+    private OpenGL _gl;
+    private IDispatcher _dispatcher;
+    private double y = 2d;
+
     public Game(
         IMazeGenerator mazeGenerator,
         IEnumerable<ISystem> systems,
@@ -29,8 +32,11 @@ public class Game
         _entities = entities;
     }
 
-    public void Initialize(OpenGL gl)
+    public void Initialize(OpenGL gl, IDispatcher dispatcher)
     {
+        _gl = gl;
+        _dispatcher = dispatcher;
+
         CreateTiles();
         foreach (var entity in _entities)
         {
@@ -40,11 +46,11 @@ public class Game
 
     public void CreateTiles()
     {
-        const double tileWidth = 1;
-        const double tileHeight= 1;
-
         var map = _mazeGenerator.Generate();
         var maze = map.Maze;
+
+        double tileWidth = 2d / maze.Size.Width;
+        double tileHeight = 2d / maze.Size.Width;
 
         for (var i = 0; i < maze.Size.Height; i++)
         {
@@ -63,28 +69,27 @@ public class Game
         }
     }
 
-    public void Run()
+    public void Update()
     {
-        while (true)
-        {
-            Update();
-            Render();
-        }
+        // foreach (var system in _systems)
+        // {
+        //     foreach (var entity in _entities)
+        //     {
+        //         system.Update(entity);
+        //     }
+        // }
     }
 
-    private void Update()
+    public void Render()
     {
-        foreach (var system in _systems)
-        {
-            foreach (var entity in _entities)
-            {
-                system.Update(entity);
-            }
-        }
-    }
+        _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+        _gl.LoadIdentity();
+        _gl.Ortho(0, 2, 0, 2, -1, 1);
 
-    private void Render()
-    {
+        
+
+        y -= 0.003;
+
         foreach (var entity in _entities.Where(entity => entity.RenderStrategy is not null))
         {
             _renderer.AddInPool(entity.RenderStrategy!);

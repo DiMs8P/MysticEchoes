@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SharpGL;
+using SharpGL.WPF;
 
 namespace MysticEchoes;
 
@@ -19,5 +21,21 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+    }
+
+    private void GlControl_OnOpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
+    {
+        
+    }
+
+    private void GlControl_OnResized(object sender, OpenGLRoutedEventArgs args)
+    {
+        
+    }
+
+    private void GlControl_OnOpenGLDraw(object sender, OpenGLRoutedEventArgs args)
+    {
+        
+
     }
 }

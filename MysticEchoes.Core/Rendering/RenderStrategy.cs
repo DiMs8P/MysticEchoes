@@ -7,7 +7,7 @@ public abstract class RenderStrategy
 {
     protected OpenGL GL { get; private set; } = null!;
     public virtual int Layer { get; }
-
+    
     public void InitGl(OpenGL gl)
     {
         GL = gl;

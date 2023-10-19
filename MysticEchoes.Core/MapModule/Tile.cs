@@ -6,6 +6,6 @@ public class Tile : Entity
 {
     public Tile() : base()
     {
-        RenderStrategy = new TileRenderStrategy();
+        RenderStrategy = new TileRenderStrategy(this);
     }
 }

@@ -15,6 +15,7 @@ public class Renderer
         {
             renderStrategy.DoRender();
         }
+        _pool.Clear();
     }
 
     public void AddInPool(RenderStrategy strategy)
