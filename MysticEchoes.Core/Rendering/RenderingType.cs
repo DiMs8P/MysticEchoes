@@ -3,5 +3,5 @@
 public enum RenderingType
 {
     None,
-    Tile
+    TileMap
 }
