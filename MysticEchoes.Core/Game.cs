@@ -11,32 +11,26 @@ public class Game
 {
     private readonly IMazeGenerator _mazeGenerator;
     private readonly List<ISystem> _systems;
-    private readonly Renderer _renderer;
     private readonly EntityFactory _entityFactory;
     private readonly EntityPool _entities;
     private OpenGL _gl;
-    private IDispatcher _dispatcher;
-    private double y = 2d;
 
     public Game(
         IMazeGenerator mazeGenerator,
         IEnumerable<ISystem> systems,
-        Renderer renderer,
         EntityFactory entityFactory,
         EntityPool entities
         )
     {
         _mazeGenerator = mazeGenerator;
         _systems = systems.ToList();
-        _renderer = renderer;
         _entityFactory = entityFactory;
         _entities = entities;
     }
 
-    public void Initialize(OpenGL gl, IDispatcher dispatcher)
+    public void Initialize(OpenGL gl)
     {
         _gl = gl;
-        _dispatcher = dispatcher;
 
         CreateTiles();
     }
