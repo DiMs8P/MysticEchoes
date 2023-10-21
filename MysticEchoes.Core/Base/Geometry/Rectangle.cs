@@ -1,6 +1,6 @@
 ﻿namespace MysticEchoes.Core.Base.Geometry;
 
-public class Rectangle
+public struct Rectangle
 {
     public Point LeftBottom;
     public Size Size;

@@ -2,7 +2,6 @@
 
 public class World
 {
-
     private readonly Dictionary<Type, object> _componentPools = new();
 
     private readonly Dictionary<int, Entity> _entities = new();

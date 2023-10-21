@@ -1,5 +1,6 @@
 ﻿using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.Rendering;
 using SharpGL;
 
 namespace MysticEchoes.Core;
@@ -8,6 +9,7 @@ public class Game
 {
     private readonly IMazeGenerator _mazeGenerator;
     private readonly List<ExecutableSystem> _systems;
+    private readonly RenderSystem _renderSystem;
     private readonly EntityFactory _entityFactory;
     private readonly World _world;
     private OpenGL _gl;
@@ -20,7 +22,9 @@ public class Game
         )
     {
         _mazeGenerator = mazeGenerator;
-        _systems = systems.ToList();
+        _systems = systems.Where(x => x.GetType() != typeof(RenderSystem))
+            .ToList();
+        _renderSystem = (RenderSystem)systems.First(x => x.GetType() == typeof(RenderSystem));
         _entityFactory = entityFactory;
         _world = world;
     }
@@ -29,45 +33,31 @@ public class Game
     {
         _gl = gl;
 
+        _renderSystem.InitGl(gl);
+
         CreateTiles();
     }
 
     public void CreateTiles()
     {
         var map = _mazeGenerator.Generate();
-        var maze = map.Maze;
 
-        double tileWidth = 2d / maze.Size.Width;
-        double tileHeight = 2d / maze.Size.Width;
-
-        // for (var i = 0; i < maze.Size.Height; i++)
-        // {
-        //     for (var j = 0; j < maze.Size.Width; j++)
-        //     {
-        //         var tile = _entityFactory.Create();
-        //
-        //         tile.RenderStrategy = RenderingType.Tile;
-        //
-        //         var tileComponent = new TileComponent(
-        //             maze.Cells[i, j],
-        //             new Rectangle(
-        //                 new Point(i * tileWidth, j*tileHeight),
-        //                 new Size(tileWidth, tileHeight))
-        //             );
-        //         tile.AddComponent(tileComponent);
-        //     }
-        // }
+        var mapEntity = _entityFactory.Create("map");
+        mapEntity.AddComponent(new TileMapComponent(map.Maze))
+            .AddComponent(new RenderComponent(RenderingType.TileMap));
     }
 
     public void Update()
     {
+        foreach (var system in _systems)
+        {
+            system.Execute();
+        }
     }
 
     public void Render()
     {
-        _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-        _gl.LoadIdentity();
-        _gl.Ortho(0, 2, 0, 2, -1, 1);
+        _renderSystem.Execute();
 
         // foreach (var entity in _entities.Where(entity => entity.RenderStrategy is not RenderingType.None))
         // {
