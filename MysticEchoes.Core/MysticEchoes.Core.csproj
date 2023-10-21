@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Base\Exceptions\" />
-    <Folder Include="Base\ECS\" />
-    <Folder Include="Base\Новая папка\" />
   </ItemGroup>
 
   <ItemGroup>
