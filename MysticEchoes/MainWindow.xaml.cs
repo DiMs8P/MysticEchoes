@@ -1,15 +1,5 @@
-﻿using System.Text;
+﻿using SharpGL.WPF;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using SharpGL;
-using SharpGL.WPF;
 
 namespace MysticEchoes;
 
@@ -25,17 +15,17 @@ public partial class MainWindow : Window
 
     private void GlControl_OnOpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
     {
-        
+
     }
 
     private void GlControl_OnResized(object sender, OpenGLRoutedEventArgs args)
     {
-        
+
     }
 
     private void GlControl_OnOpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
-        
+
 
     }
 }

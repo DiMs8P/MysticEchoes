@@ -1,7 +1,6 @@
-﻿using System.Threading;
-using System.Windows;
-using MysticEchoes.Core;
+﻿using MysticEchoes.Core;
 using SharpGL.WPF;
+using System.Windows;
 
 namespace MysticEchoes;
 
@@ -13,7 +12,7 @@ public class App : Application
     private bool _readyToRender = false;
     private Timer _renderTimer;
 
-    private object gameLock = new object();
+    private readonly object gameLock = new object();
 
     public App(MainWindow mainWindow, Game game)
     {
@@ -28,7 +27,7 @@ public class App : Application
 
         RunGame();
         _mainWindow.Show();
-        base.OnStartup(e);
+        // base.OnStartup(e);
     }
 
     private void BindGl(object sender, OpenGLRoutedEventArgs args)
@@ -40,7 +39,7 @@ public class App : Application
 
     public void RunGame()
     {
-        _renderTimer = new Timer(RenderTimerCallback!, null, 0, 500);
+        _renderTimer = new Timer(RenderTimerCallback!, null, 0, 20);
     }
 
     private void RenderTimerCallback(object _)
