@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Base\Exceptions\" />
+    <Folder Include="MathTools\" />
+    <Folder Include="DebugTools\" />
   </ItemGroup>
 
   <ItemGroup>

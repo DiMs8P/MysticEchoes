@@ -9,5 +9,5 @@ public abstract class ExecutableSystem
         World = world;
     }
 
-    public abstract void Execute();
+    public abstract void Execute(SystemExecutionContext context);
 }
