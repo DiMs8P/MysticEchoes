@@ -29,7 +29,7 @@ public class MazeGenerator
         MakeRooms(tree);
         MakeHalls(tree);
         NormalizeHalls(tree);
-        foreach (var node in tree.DeepCrawl().Where(x => x.Depth <= _config.ThreeDepth))
+        foreach (var node in tree.DeepCrawl())
         {
             for (var i = 0; i < node.Size.Width; i++)
             {
@@ -193,13 +193,25 @@ public class MazeGenerator
     {
         foreach (var node in tree.DeepCrawl().Where(x => x.Type is TreeNodeType.Leaf))
         {
+            if (_config.MinRoomSize.Width > node.Size.Width - 2*_config.MinRoomPadding.Width ||
+                _config.MinRoomSize.Height > node.Size.Height - 2*_config.MinRoomPadding.Height)
+            {
+                throw new Exception("Комната с учетом отступов меньше минимального размера");
+            }
+
             var roomSize = new Size(
-                _config.Random.NextBetween(_config.MinRoomSize.Width, node.Size.Width - _config.MinRoomPadding.Width),
-                _config.Random.NextBetween(_config.MinRoomSize.Height, node.Size.Height - _config.MinRoomPadding.Height)
+                _config.Random.NextBetween(_config.MinRoomSize.Width, node.Size.Width - 2*_config.MinRoomPadding.Width),
+                _config.Random.NextBetween(_config.MinRoomSize.Height, node.Size.Height - 2*_config.MinRoomPadding.Height)
             );
             var roomPositionShift = new Size(
-                _config.Random.NextBetween(1, node.Size.Width - roomSize.Width - 1),
-                _config.Random.NextBetween(1, node.Size.Height - roomSize.Height - 1)
+                _config.Random.NextBetween(
+                    _config.MinRoomPadding.Width,
+                    node.Size.Width - _config.MinRoomPadding.Width - roomSize.Width
+                ),
+                _config.Random.NextBetween(
+                    _config.MinRoomPadding.Height,
+                    node.Size.Height - _config.MinRoomPadding.Height - roomSize.Height
+                )
             );
             node.Room = new Rectangle(node.Position + roomPositionShift, roomSize);
         }
@@ -307,12 +319,17 @@ public class MazeGenerator
 
     private DivideType GetDivideType(RoomNode roomNode)
     {
-        if (roomNode.Size.Height <= _config.MinNodeSize.Height * 2
-            && roomNode.Size.Width <= _config.MinNodeSize.Width * 4
-            ||
-            roomNode.Size.Width <= _config.MinNodeSize.Width * 2
-            && roomNode.Size.Height <= _config.MinNodeSize.Height * 4
-            )
+        var canNotBeDivided = 
+            roomNode.Size.Height <= _config.MinNodeSize.Height * 2 &&
+            roomNode.Size.Width <= _config.MinNodeSize.Width * 2;
+
+            // roomNode.Size.Height <= _config.MinNodeSize.Height * 2
+            // && roomNode.Size.Width <= _config.MinNodeSize.Width * 4
+            // ||
+            // roomNode.Size.Width <= _config.MinNodeSize.Width * 2
+            // && roomNode.Size.Height <= _config.MinNodeSize.Height * 4; 
+
+        if (canNotBeDivided)
         {
             return DivideType.None;
         }
@@ -322,8 +339,8 @@ public class MazeGenerator
         {
             return DivideType.Vertical;
         }
-        else if (roomNode.Size.Height > roomNode.Size.Width
-                 && (double)roomNode.Size.Height / roomNode.Size.Width >= _config.MaxHeightToWidthProportion)
+        if (roomNode.Size.Height > roomNode.Size.Width
+            && (double)roomNode.Size.Height / roomNode.Size.Width >= _config.MaxHeightToWidthProportion)
         {
             return DivideType.Horizontal;
         }
