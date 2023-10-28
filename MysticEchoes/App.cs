@@ -25,8 +25,8 @@ public class App : Application
         _mainWindow.GlControl.OpenGLInitialized += BindGl;
         _mainWindow.GlControl.Resized += (_, _) => { };
 
-        RunGame();
         _mainWindow.Show();
+        RunGame();
         // base.OnStartup(e);
     }
 
@@ -39,6 +39,9 @@ public class App : Application
 
     public void RunGame()
     {
+        _readyToRender = true;
+        // Todo попробовать добавить в state mainWindow, game и readyToRender
+        // Возможно это уменьшит количество сборок мусора
         _renderTimer = new Timer(RenderTimerCallback!, null, 0, 20);
     }
 
@@ -46,12 +49,21 @@ public class App : Application
     {
         if (!_readyToRender) return;
 
-        _readyToRender = false;
+        lock (gameLock)
+        {
+            _readyToRender = false;
 
-        _game.Update();
+            _game.Update();
+            try
+            {
+                _mainWindow.Dispatcher.Invoke(_mainWindow.GlControl.DoRender);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
 
-        _mainWindow.Dispatcher.Invoke(_mainWindow.GlControl.DoRender);
-
-        _readyToRender = true;
+            _readyToRender = true;
+        }
     }
 }
