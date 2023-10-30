@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 
 namespace MysticEchoes.Core;
@@ -14,6 +15,7 @@ public static class Extensions
         services.AddScoped<EntityFactory>();
 
         services.AddScoped<ExecutableSystem, RenderSystem>();
+        services.AddScoped<ExecutableSystem, TransformSystem>();
 
         services.AddScoped(_ =>
         {
@@ -21,6 +23,7 @@ public static class Extensions
 
             world.RegisterComponentType<TileMapComponent>();
             world.RegisterComponentType<RenderComponent>();
+            world.RegisterComponentType<TransformComponent>();
 
             return world;
         });

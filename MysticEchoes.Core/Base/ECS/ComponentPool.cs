@@ -19,7 +19,7 @@ public class ComponentPool<T>
     {
         if (_components.ContainsKey(component.OwnerId))
         {
-            throw new Exception($"Component {nameof(T)} with id {component.OwnerId} already exist");
+            throw new Exception($"Component {typeof(T)} with id {component.OwnerId} already exist");
         }
         _components.Add(component.OwnerId, component);
     }
