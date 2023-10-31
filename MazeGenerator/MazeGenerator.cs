@@ -29,6 +29,11 @@ public class MazeGenerator
         MakeRooms(tree);
         MakeHalls(tree);
         NormalizeHalls(tree);
+
+        //TODO добавить удаление лишних точек (когда 3 на одной прямой и когда какие-то две точки совпадают)
+
+        FixHallsAndRoomsIntersection(tree);
+
         foreach (var node in tree.DeepCrawl())
         {
             for (var i = 0; i < node.Size.Width; i++)
@@ -78,7 +83,7 @@ public class MazeGenerator
                 maze.Cells[room.Y + i, room.X + room.Width - 1] = CellType.Wall;
             }
         }
-        
+
         return new MazeGenerationResult(maze, tree);
     }
 
@@ -118,14 +123,14 @@ public class MazeGenerator
 
             var newStart = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
 
-                hall.ControlPoints.RemoveRange(0, i - 1);
+            hall.ControlPoints.RemoveRange(0, i - 1);
             hall.ControlPoints[0] = newStart;
 
             i = hall.ControlPoints.Count - 1;
             do
             {
                 start = hall.ControlPoints[i - 1];
-                end = hall.ControlPoints[i]; 
+                end = hall.ControlPoints[i];
 
                 i--;
             } while (hall.EndRoom.ContainsNotStrict(start));
@@ -135,12 +140,6 @@ public class MazeGenerator
             var newEnd = GetEdgePoint(GetDirection(end, start), hall.EndRoom, end);
             hall.ControlPoints.RemoveRange(i, hall.ControlPoints.Count - i);
             hall.ControlPoints.Add(newEnd);
-
-            if (hall.StartRoom is {X: 46, Height: 12} ||
-                hall.EndRoom is {X: 46, Height: 12})
-            {
-                Console.WriteLine();
-            }
         }
     }
 
@@ -192,15 +191,15 @@ public class MazeGenerator
     {
         foreach (var node in tree.DeepCrawl().Where(x => x.Type is TreeNodeType.Leaf))
         {
-            if (_config.MinRoomSize.Width > node.Size.Width - 2*_config.MinRoomPadding.Width ||
-                _config.MinRoomSize.Height > node.Size.Height - 2*_config.MinRoomPadding.Height)
+            if (_config.MinRoomSize.Width > node.Size.Width - 2 * _config.MinRoomPadding.Width ||
+                _config.MinRoomSize.Height > node.Size.Height - 2 * _config.MinRoomPadding.Height)
             {
                 throw new Exception("Комната с учетом отступов меньше минимального размера");
             }
 
             var roomSize = new Size(
-                _config.Random.NextBetween(_config.MinRoomSize.Width, node.Size.Width - 2*_config.MinRoomPadding.Width),
-                _config.Random.NextBetween(_config.MinRoomSize.Height, node.Size.Height - 2*_config.MinRoomPadding.Height)
+                _config.Random.NextBetween(_config.MinRoomSize.Width, node.Size.Width - 2 * _config.MinRoomPadding.Width),
+                _config.Random.NextBetween(_config.MinRoomSize.Height, node.Size.Height - 2 * _config.MinRoomPadding.Height)
             );
             var roomPositionShift = new Size(
                 _config.Random.NextBetween(
@@ -318,7 +317,7 @@ public class MazeGenerator
 
     private DivideType GetDivideType(RoomNode roomNode)
     {
-        var canNotBeDivided = 
+        var canNotBeDivided =
             roomNode.Size.Height <= _config.MinNodeSize.Height * 2 &&
             roomNode.Size.Width <= _config.MinNodeSize.Width * 2;
         if (canNotBeDivided)
@@ -349,6 +348,66 @@ public class MazeGenerator
             dy
         );
     }
+
+    private void FixHallsAndRoomsIntersection(Tree<RoomNode> tree)
+    {
+        var rooms = tree.DeepCrawl()
+                    .Where(x => x.Room is not null)
+                    .Select(x => x.Room.Value)
+                    .ToArray();
+        foreach (var hall in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null)
+                     .Select(x => x.Hall))
+        {
+            var controlPoints = hall.ControlPoints;
+            for (var i = 1; i < controlPoints.Count - 1; i++)
+            {
+                var current = controlPoints[i];
+
+                Rectangle intersectedRoom;
+                try
+                {
+                    intersectedRoom = rooms.First(x => x.Contains(current));
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+
+                var previous = controlPoints[i - 1];
+                var next = controlPoints[i + 1];
+
+                var previousToCurrentDirection = GetDirection(previous, current);
+                var newPrevious = previousToCurrentDirection switch
+                {
+                    { X: 1, Y: 0 } => previous with { X = intersectedRoom.Left - 1 },
+                    { X: -1, Y: 0 } => previous with { X = intersectedRoom.Right + 1 },
+                    { X: 0, Y: 1 } => previous with { Y = intersectedRoom.Top - 1 },
+                    { X: 0, Y: -1 } => previous with { Y = intersectedRoom.Bottom + 1 },
+                    _ => throw new Exception()
+                };
+                controlPoints.Insert(i, newPrevious);
+
+                var currentToNextDirection = GetDirection(current, next);
+                var newNext = currentToNextDirection switch
+                {
+                    { X: 1, Y: 0 } => next with { X = intersectedRoom.Right + 1 },
+                    { X: -1, Y: 0 } => next with { X = intersectedRoom.Left - 1 },
+                    { X: 0, Y: 1 } => next with { Y = intersectedRoom.Bottom + 1 },
+                    { X: 0, Y: -1 } => next with { Y = intersectedRoom.Top - 1 },
+                    _ => throw new Exception()
+                };
+                controlPoints.Insert(i + 2, newNext);
+
+                var oldPointShift = (Size)((newPrevious - (Size)current) + (Size)(newNext - (Size)current));
+
+                controlPoints[i + 1] = current + oldPointShift;
+            }
+        }
+
+    }
+
+
 }
 
 internal record struct RoomWithNode(Point Point, Rectangle Room)
