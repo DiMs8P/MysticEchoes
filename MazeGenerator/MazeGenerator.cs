@@ -67,19 +67,18 @@ public class MazeGenerator
                      .Where(x => x.Room is not null))
         {
             var room = node.Room.Value;
-            for (var i = 0; i <= room.Width; i++)
+            for (var i = 0; i < room.Width; i++)
             {
                 maze.Cells[room.Y, room.X + i] = CellType.Wall;
-                maze.Cells[room.Y + room.Height, room.X + i] = CellType.Wall;
+                maze.Cells[room.Y + room.Height - 1, room.X + i] = CellType.Wall;
             }
-            for (var i = 0; i <= room.Height; i++)
+            for (var i = 0; i < room.Height; i++)
             {
                 maze.Cells[room.Y + i, room.X] = CellType.Wall;
-                maze.Cells[room.Y + i, room.X + room.Width] = CellType.Wall;
+                maze.Cells[room.Y + i, room.X + room.Width - 1] = CellType.Wall;
             }
         }
         
-
         return new MazeGenerationResult(maze, tree);
     }
 
@@ -97,7 +96,7 @@ public class MazeGenerator
             }
             var edgeY = direction.Y > 0
                 ? room.Y + room.Height
-            : room.Y;
+                : room.Y;
 
             return innerPoint with { Y = edgeY };
         }
@@ -322,13 +321,6 @@ public class MazeGenerator
         var canNotBeDivided = 
             roomNode.Size.Height <= _config.MinNodeSize.Height * 2 &&
             roomNode.Size.Width <= _config.MinNodeSize.Width * 2;
-
-            // roomNode.Size.Height <= _config.MinNodeSize.Height * 2
-            // && roomNode.Size.Width <= _config.MinNodeSize.Width * 4
-            // ||
-            // roomNode.Size.Width <= _config.MinNodeSize.Width * 2
-            // && roomNode.Size.Height <= _config.MinNodeSize.Height * 4; 
-
         if (canNotBeDivided)
         {
             return DivideType.None;
