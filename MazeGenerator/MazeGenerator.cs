@@ -33,6 +33,7 @@ public class MazeGenerator
 
         //TODO добавить удаление лишних точек (когда 3 на одной прямой и когда какие-то две точки совпадают)
         FixHallsAndRoomsIntersection(tree);
+        RemoveExtraControlPoints(tree);
 
         foreach (var node in tree.DeepCrawl())
         {
@@ -45,27 +46,6 @@ public class MazeGenerator
             {
                 maze.Cells[node.Position.Y + i, node.Position.X] = CellType.FragmentBound;
                 maze.Cells[node.Position.Y + i, node.Position.X + node.Size.Width - 1] = CellType.FragmentBound;
-            }
-        }
-        foreach (var node in tree.DeepCrawl()
-                     .Where(x => x.Hall is not null))
-        {
-            var points = node.Hall.ControlPoints;
-            var startPoint = points.First();
-            for (int i = 1; i < points.Count; i++)
-            {
-                var lastPoint = points[i];
-                Point brush = startPoint;
-
-                var direction = GetDirection(startPoint, lastPoint);
-
-                while (brush.X != lastPoint.X || brush.Y != lastPoint.Y)
-                {
-                    maze.Cells[brush.Y, brush.X] = CellType.Hall;
-                    brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
-                }
-                maze.Cells[brush.Y, brush.X] = CellType.Hall;
-                startPoint = lastPoint;
             }
         }
         foreach (var node in tree.DeepCrawl()
@@ -83,6 +63,31 @@ public class MazeGenerator
                 maze.Cells[room.Y + i, room.X + room.Width - 1] = CellType.Wall;
             }
         }
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null))
+        {
+            var points = node.Hall.ControlPoints;
+            var startPoint = points.First();
+            for (int i = 1; i < points.Count; i++)
+            {
+                var lastPoint = points[i];
+                Point brush = startPoint;
+
+                var direction = GetDirection(startPoint, lastPoint);
+
+                maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
+                brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
+
+                while (brush.X != lastPoint.X || brush.Y != lastPoint.Y)
+                {
+                    maze.Cells[brush.Y, brush.X] = CellType.Hall;
+                    brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
+                }
+                maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
+                startPoint = lastPoint;
+            }
+        }
+        
 
         return new MazeGenerationResult(maze, tree);
     }

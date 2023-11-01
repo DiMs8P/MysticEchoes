@@ -19,5 +19,6 @@ public enum CellType
     Empty,
     FragmentBound,
     Hall,
-    Wall
+    Wall,
+    ControlPoint
 }

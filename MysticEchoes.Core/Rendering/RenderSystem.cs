@@ -15,6 +15,7 @@ public class RenderSystem : ExecutableSystem
         [CellType.Empty] = new[] { 0.5d, 0.5d, 0.5d },
         [CellType.FragmentBound] = new[] { 1d, 1d, 1d },
         [CellType.Hall] = new[] { 0.8d, 0.8d, 0.1d },
+        [CellType.ControlPoint] = new[] { 0.8d, 0.1d, 0.1d },
         [CellType.Wall] = new[] { 0.1d, 0.1d, 0.8d }
     };
 
