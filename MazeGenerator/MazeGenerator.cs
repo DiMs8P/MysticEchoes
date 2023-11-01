@@ -29,9 +29,9 @@ public class MazeGenerator
         MakeRooms(tree);
         MakeHalls(tree);
         NormalizeHalls(tree);
+        RemoveExtraControlPoints(tree);
 
         //TODO добавить удаление лишних точек (когда 3 на одной прямой и когда какие-то две точки совпадают)
-
         FixHallsAndRoomsIntersection(tree);
 
         foreach (var node in tree.DeepCrawl())
@@ -64,7 +64,7 @@ public class MazeGenerator
                     maze.Cells[brush.Y, brush.X] = CellType.Hall;
                     brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
                 }
-
+                maze.Cells[brush.Y, brush.X] = CellType.Hall;
                 startPoint = lastPoint;
             }
         }
@@ -87,61 +87,6 @@ public class MazeGenerator
         return new MazeGenerationResult(maze, tree);
     }
 
-    private void NormalizeHalls(Tree<RoomNode> tree)
-    {
-        Point GetEdgePoint(Point direction, Rectangle room, Point innerPoint)
-        {
-            if (direction.Y == 0)
-            {
-                var edgeX = direction.X > 0
-                    ? room.Right
-                    : room.Left;
-
-                return innerPoint with { X = edgeX };
-            }
-            var edgeY = direction.Y > 0
-                ? room.Y + room.Height
-                : room.Y;
-
-            return innerPoint with { Y = edgeY };
-        }
-
-        foreach (var node in tree.DeepCrawl()
-                     .Where(x => x.Hall is not null)
-                )
-        {
-            var hall = node.Hall!;
-            var i = 0;
-            Point start;
-            Point end;
-            do
-            {
-                start = hall.ControlPoints[i];
-                end = hall.ControlPoints[i + 1];
-                i++;
-            } while (hall.StartRoom.ContainsNotStrict(end));
-
-            var newStart = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
-
-            hall.ControlPoints.RemoveRange(0, i - 1);
-            hall.ControlPoints[0] = newStart;
-
-            i = hall.ControlPoints.Count - 1;
-            do
-            {
-                start = hall.ControlPoints[i - 1];
-                end = hall.ControlPoints[i];
-
-                i--;
-            } while (hall.EndRoom.ContainsNotStrict(start));
-
-            i++;
-            // end и start поменяны местами т.к. end это точка, содержащаяся в EndRoom
-            var newEnd = GetEdgePoint(GetDirection(end, start), hall.EndRoom, end);
-            hall.ControlPoints.RemoveRange(i, hall.ControlPoints.Count - i);
-            hall.ControlPoints.Add(newEnd);
-        }
-    }
 
     private void MakeLeafs(Tree<RoomNode> tree)
     {
@@ -349,6 +294,104 @@ public class MazeGenerator
         );
     }
 
+    private void NormalizeHalls(Tree<RoomNode> tree)
+    {
+        Point GetEdgePoint(Point direction, Rectangle room, Point innerPoint)
+        {
+            if (direction.Y == 0)
+            {
+                var edgeX = direction.X > 0
+                    ? room.Right
+                    : room.Left;
+
+                return innerPoint with { X = edgeX };
+            }
+            var edgeY = direction.Y > 0
+                ? room.Y + room.Height
+                : room.Y;
+
+            return innerPoint with { Y = edgeY };
+        }
+
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null)
+                )
+        {
+            var hall = node.Hall!;
+            var i = 0;
+            Point start;
+            Point end;
+            do
+            {
+                start = hall.ControlPoints[i];
+                end = hall.ControlPoints[i + 1];
+                i++;
+            } while (hall.StartRoom.ContainsNotStrict(end));
+
+            var newStart = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
+
+            hall.ControlPoints.RemoveRange(0, i - 1);
+            hall.ControlPoints[0] = newStart;
+
+            i = hall.ControlPoints.Count - 1;
+            do
+            {
+                start = hall.ControlPoints[i - 1];
+                end = hall.ControlPoints[i];
+
+                i--;
+            } while (hall.EndRoom.ContainsNotStrict(start));
+
+            i++;
+            // end и start поменяны местами т.к. end это точка, содержащаяся в EndRoom
+            var newEnd = GetEdgePoint(GetDirection(end, start), hall.EndRoom, end);
+            hall.ControlPoints.RemoveRange(i, hall.ControlPoints.Count - i);
+            hall.ControlPoints.Add(newEnd);
+        }
+    }
+
+    private void RemoveExtraControlPoints(Tree<RoomNode> tree)
+    {
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null)
+                )
+        {
+            var hall = node.Hall!;
+
+            var i = 0;
+
+            while (i < hall.ControlPoints.Count - 1)
+            {
+                var current = hall.ControlPoints[i];
+                var next = hall.ControlPoints[i + 1];
+                if (current != next)
+                {
+                    i++;
+                    continue;
+                }
+
+                hall.ControlPoints.RemoveAt(i + 1);
+            }
+
+            var j = 1;
+            while (j < hall.ControlPoints.Count - 1)
+            {
+                var previous = hall.ControlPoints[j - 1];
+                var current = hall.ControlPoints[j];
+                var next = hall.ControlPoints[j + 1];
+
+                if (!((previous.X == current.X && current.X == next.X) ||
+                    (previous.Y == current.Y && current.Y == next.Y)))
+                {
+                    j++;
+                    continue;
+                }
+
+                hall.ControlPoints.RemoveAt(j);
+            }
+        }
+    }
+
     private void FixHallsAndRoomsIntersection(Tree<RoomNode> tree)
     {
         var rooms = tree.DeepCrawl()
@@ -406,8 +449,6 @@ public class MazeGenerator
         }
 
     }
-
-
 }
 
 internal record struct RoomWithNode(Point Point, Rectangle Room)

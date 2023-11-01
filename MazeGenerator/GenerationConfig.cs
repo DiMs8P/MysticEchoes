@@ -17,10 +17,10 @@ public class GenerationConfig
     public static GenerationConfig Default =>
         new()
         {
-            MinNodeSize = new (10, 10),
-            MinRoomSize = new (4, 4),
-            MinRoomPadding = new (1,1),
-            MazeSize = new (50, 50),
+            MinNodeSize = new(10, 10),
+            MinRoomSize = new(4, 4),
+            MinRoomPadding = new(1, 1),
+            MazeSize = new(50, 50),
             Random = new GenerationRandom(7354543),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 2.1,
