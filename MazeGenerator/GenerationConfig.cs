@@ -17,15 +17,15 @@ public class GenerationConfig
     public static GenerationConfig Default =>
         new()
         {
-            MinNodeSize = new(15, 15),
-            MinRoomSize = new(10, 10),
-            MinRoomPadding = new(3, 3),
-            MazeSize = new(70, 70),
-            Random = new GenerationRandom(56452),
+            MinNodeSize = new (10, 10),
+            MinRoomSize = new (4, 4),
+            MinRoomPadding = new (4, 4),
+            MazeSize = new (50, 50),
+            Random = new GenerationRandom(7354543),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 2.1,
             MaxDivideShift = 0,
-            ThreeDepth = 3
+            ThreeDepth = 2
         };
     // Пересекающиеся дороги
     //MinNodeSize = new (20, 20),

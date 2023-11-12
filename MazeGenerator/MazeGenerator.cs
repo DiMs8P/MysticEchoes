@@ -7,8 +7,7 @@ namespace MazeGeneration;
 public class MazeGenerator
 {
     private readonly GenerationConfig _config;
-    private HashSet<Point> halls;
-
+    
     public MazeGenerator(GenerationConfig config)
     {
         _config = config;
@@ -29,14 +28,13 @@ public class MazeGenerator
         tree.Root.Depth = 1;
         MakeLeafs(tree);
         MakeRooms(tree);
-        // MakeHalls(tree);
-        MakeHalls_ClosestConnectingVersion(tree);
+        MakeHalls(tree);
+        //MakeHalls_ClosestConnectingVersion(tree);
         NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
 
-        //TODO добавить удаление лишних точек (когда 3 на одной прямой и когда какие-то две точки совпадают)
-        FixHallsAndRoomsIntersection(tree);
-        RemoveExtraControlPoints(tree);
+        // FixHallsAndRoomsIntersection(tree);
+        // RemoveExtraControlPoints(tree);
 
         foreach (var node in tree.DeepCrawl())
         {
@@ -55,45 +53,61 @@ public class MazeGenerator
                      .Where(x => x.Room is not null))
         {
             var room = node.Room.Value;
-            for (var i = 0; i < room.Width; i++)
+            for (var i = room.Left; i <= room.Right; i++)
             {
-                maze.Cells[room.Y, room.X + i] = CellType.Wall;
-                maze.Cells[room.Y + room.Height - 1, room.X + i] = CellType.Wall;
+                maze.Floor.Add(new Point(i, room.Top));
+                maze.Floor.Add(new Point(i, room.Bottom));
+
+                maze.Cells[room.Top, i] = CellType.Wall;
+                maze.Cells[room.Bottom, i] = CellType.Wall;
             }
-            for (var i = 0; i < room.Height; i++)
+            for (var i = room.Top; i <= room.Bottom; i++)
             {
-                maze.Cells[room.Y + i, room.X] = CellType.Wall;
-                maze.Cells[room.Y + i, room.X + room.Width - 1] = CellType.Wall;
+                maze.Floor.Add(new Point(room.Left, i));
+                maze.Floor.Add(new Point(room.Right, i));
+
+                maze.Cells[i, room.Left] = CellType.Wall;
+                maze.Cells[i, room.Right] = CellType.Wall;
             }
         }
-        // foreach (var node in tree.DeepCrawl()
-        //              .Where(x => x.Hall is not null))
-        // {
-        //     var points = node.Hall.ControlPoints;
-        //     var startPoint = points.First();
-        //     for (int i = 1; i < points.Count; i++)
-        //     {
-        //         var lastPoint = points[i];
-        //         Point brush = startPoint;
-        //
-        //         var direction = GetDirection(startPoint, lastPoint);
-        //
-        //         maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
-        //         brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
-        //
-        //         while (brush.X != lastPoint.X || brush.Y != lastPoint.Y)
-        //         {
-        //             maze.Cells[brush.Y, brush.X] = CellType.Hall;
-        //             brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
-        //         }
-        //         maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
-        //         startPoint = lastPoint;
-        //     }
-        // }
-        foreach (var point in halls)
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null))
         {
-            maze.Cells[point.Y, point.X] = CellType.Hall;
+            var points = node.Hall.ControlPoints;
+            var startPoint = points.First();
+            for (int i = 1; i < points.Count; i++)
+            {
+                var lastPoint = points[i];
+                Point brush = startPoint;
+        
+                var direction = GetDirection(startPoint, lastPoint);
+        
+                maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
+                maze.Floor.Add(new Point(brush.X, brush.Y));
+                brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
+
+
+                while (brush.X != lastPoint.X || brush.Y != lastPoint.Y)
+                {
+                    maze.Cells[brush.Y, brush.X] = CellType.Hall;
+                    maze.Floor.Add(new Point(brush.X, brush.Y));
+                    brush = new Point(brush.X + direction.X, brush.Y + direction.Y);
+                }
+                maze.Cells[brush.Y, brush.X] = CellType.ControlPoint;
+                maze.Floor.Add(new Point(brush.X, brush.Y));
+
+
+                startPoint = lastPoint;
+            }
         }
+        //try
+        //{
+        //    foreach (var point in hallsTiles)
+        //    {
+        //        maze.Cells[point.Y, point.X] = CellType.Hall;
+        //    }
+        //}
+        //catch (NullReferenceException) { }
 
         return new MazeGenerationResult(maze, tree);
     }
@@ -195,7 +209,7 @@ public class MazeGenerator
                 {
                     var currentDistance = Math.Sqrt(Math.Pow(target.X - point.X, 2) + Math.Pow(target.Y - point.Y, 2));
                     if (!(currentDistance < minDistance)) continue;
-                    
+
                     closest = point;
                     minDistance = currentDistance;
                 }
@@ -233,10 +247,10 @@ public class MazeGenerator
                 var closest = FindClosest(currentCenter, roomCenters);
 
                 roomCenters.Remove(closest);
-                
+
                 var newHall = CreateHall(currentCenter, closest);
 
-                
+
 
                 currentCenter = closest;
                 halls.UnionWith(newHall);
@@ -246,9 +260,7 @@ public class MazeGenerator
         }
 
 
-        halls = ConnectRooms(roomCenters);
-
-        
+        // hallsTiles = ConnectRooms(roomCenters);
     }
 
     private void MakeHalls(Tree<RoomNode> tree)
@@ -295,6 +307,32 @@ public class MazeGenerator
             return (closestFromLeft, closestFromRight);
         }
 
+        (RoomWithNode left, RoomWithNode right) FindClosestCenters(IEnumerable<Rectangle> left, IEnumerable<Rectangle> right)
+        {
+            var leftPoints = left.Select(room => new RoomWithNode(room.GetCenter(), room))
+                .ToArray();
+            var rightPoints = right.Select(room => new RoomWithNode(room.GetCenter(), room))
+                .ToArray();
+
+            var minDistance = GetDistance(leftPoints.First().Point, rightPoints.First().Point);
+            var closestFromLeft = leftPoints.First();
+            var closestFromRight = rightPoints.First();
+
+            foreach (var leftPoint in leftPoints)
+            {
+                foreach (var rightPoint in rightPoints)
+                {
+                    if (GetDistance(leftPoint.Point, rightPoint.Point) >= minDistance) continue;
+
+                    closestFromLeft = leftPoint;
+                    closestFromRight = rightPoint;
+                    minDistance = GetDistance(leftPoint.Point, rightPoint.Point);
+                }
+            }
+
+            return (closestFromLeft, closestFromRight);
+        }
+
         List<Point> CreatePath(Point a, Point b)
         {
             var c1 = new Point(a.X, b.Y);
@@ -320,16 +358,16 @@ public class MazeGenerator
             }
             strategies[0].Add(c1);
             strategies[1].Add(c2);
-            strategies[2].AddRange(new[] { q, p });
-            strategies[3].AddRange(new[] { m, n });
-            strategies[4].AddRange(new[] { q, r, n });
-            strategies[5].AddRange(new[] { m, r, p });
+            //strategies[2].AddRange(new[] { q, p });
+            //strategies[3].AddRange(new[] { m, n });
+            //strategies[4].AddRange(new[] { q, r, n });
+            //strategies[5].AddRange(new[] { m, r, p });
             foreach (var strategy in strategies)
             {
                 strategy.Add(b);
             }
 
-            var strategyNumber = _config.Random.NextBetween(0, strategies.Count);
+            var strategyNumber = _config.Random.NextBetween(0, strategies.Count-4);
             return strategies[strategyNumber];
         }
 
@@ -342,7 +380,7 @@ public class MazeGenerator
             .Select(x => x.Room!.Value)
             .ToArray();
 
-        var (leftResult, rightResult) = FindClosestRoomWithPoints(leftRooms, rightRooms);
+        var (leftResult, rightResult) = FindClosestCenters(leftRooms, rightRooms);
 
         node.Hall = new Hall(
             CreatePath(leftResult.Point, rightResult.Point),

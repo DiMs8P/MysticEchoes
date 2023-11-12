@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 namespace MazeGeneration;
 
@@ -6,6 +7,8 @@ public class Maze
 {
     public CellType[,] Cells { get; }
     public Size Size { get; }
+    public HashSet<Point> Floor { get; } = new();
+    public HashSet<Point> Walls { get; } = new();
 
     public Maze(Size size)
     {
@@ -20,5 +23,6 @@ public enum CellType
     FragmentBound,
     Hall,
     Wall,
-    ControlPoint
+    ControlPoint,
+    Floor
 }

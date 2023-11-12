@@ -3,6 +3,11 @@ using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.MapModule;
 using SharpGL;
+using System.Drawing;
+using Point = MysticEchoes.Core.Base.Geometry.Point;
+using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
+using Size = MysticEchoes.Core.Base.Geometry.Size;
+
 
 namespace MysticEchoes.Core.Rendering;
 
@@ -12,11 +17,12 @@ public class RenderSystem : ExecutableSystem
 
     private static readonly Dictionary<CellType, double[]> TileColors = new Dictionary<CellType, double[]>
     {
-        [CellType.Empty] = new[] { 0.5d, 0.5d, 0.5d },
+        [CellType.Empty] = new[] { 64d/255, 64d/255, 64d/255 },
         [CellType.FragmentBound] = new[] { 0d,0d,0d },
         [CellType.Hall] = new[] { 0.8d, 0.8d, 0.1d },
         [CellType.ControlPoint] = new[] { 0.8d, 0.1d, 0.1d },
-        [CellType.Wall] = new[] { 0.1d, 0.1d, 0.8d }
+        [CellType.Wall] = new[] { 0.1d, 0.1d, 0.8d },
+        [CellType.Floor] = new[] {53d/255,25d/255,48d/255}
     };
 
     public RenderSystem(World world)
@@ -45,30 +51,35 @@ public class RenderSystem : ExecutableSystem
             if (rendering.Type is RenderingType.TileMap)
             {
                 var map = entity.GetComponent<TileMapComponent>();
-
-                for (var i = 0; i < map.Tiles.Size.Height; i++)
                 {
-                    for (var j = 0; j < map.Tiles.Size.Width; j++)
-                    {
-                        var tileType = map.Tiles.Cells[i, j];
-                        _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-
-                        var color = TileColors[tileType];
-
-                        var rect = new Rectangle(
-                            new Point(j * map.TileSize.Width, i * map.TileSize.Height),
-                            new Size(map.TileSize.Width, map.TileSize.Height)
-                        );
-
-                        _gl.Color(color[0], color[1], color[2]);
-                        _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
-                        _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
-                        _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
-                        _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
-                        _gl.End();
-                    }
+                    var color = TileColors[CellType.Empty];
+                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.Vertex(0d, 0d);
+                    _gl.Vertex(2d, 0d);
+                    _gl.Vertex(2d, 2d);
+                    _gl.Vertex(0d, 2d);
+                    _gl.End();
                 }
-
+                
+                foreach (var floor in map.Tiles.Floor)
+                {
+                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+                
+                    var color = TileColors[CellType.Floor];
+                
+                    var rect = new Rectangle(
+                        new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
+                        new Size(map.TileSize.Width, map.TileSize.Height)
+                    );
+                
+                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
+                    _gl.End();
+                }
             }
             else if (rendering.Type is not RenderingType.None)
             {
