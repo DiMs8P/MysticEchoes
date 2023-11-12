@@ -4,15 +4,15 @@ namespace MysticEchoes.Core.MapModule;
 
 public class MazeGeneratorAdapter : IMazeGenerator
 {
-    private readonly MazeGenerator _mazeGenerator;
+    private readonly MapGenerator _mapGenerator;
 
     public MazeGeneratorAdapter()
     {
-        _mazeGenerator = new MazeGenerator(GenerationConfig.Default);
+        _mapGenerator = new MapGenerator(GenerationConfig.Default);
     }
 
-    public MazeGenerationResult Generate()
+    public Map Generate()
     {
-        return _mazeGenerator.Generate();
+        return _mapGenerator.Generate();
     }
 }

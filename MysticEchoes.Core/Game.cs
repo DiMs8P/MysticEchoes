@@ -43,7 +43,7 @@ public class Game
         var map = _mazeGenerator.Generate();
 
         var mapEntity = _entityFactory.Create("map");
-        mapEntity.AddComponent(new TileMapComponent(map.Maze))
+        mapEntity.AddComponent(new TileMapComponent(map))
             .AddComponent(new RenderComponent(RenderingType.TileMap));
     }
 

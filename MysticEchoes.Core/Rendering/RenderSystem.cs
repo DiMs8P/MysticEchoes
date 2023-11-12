@@ -21,7 +21,7 @@ public class RenderSystem : ExecutableSystem
         [CellType.FragmentBound] = new[] { 0d,0d,0d },
         [CellType.Hall] = new[] { 0.8d, 0.8d, 0.1d },
         [CellType.ControlPoint] = new[] { 0.8d, 0.1d, 0.1d },
-        [CellType.Wall] = new[] { 0.1d, 0.1d, 0.8d },
+        [CellType.Wall] = new[] { 103d/255, 65d/255, 72d/255 },
         [CellType.Floor] = new[] {53d/255,25d/255,48d/255}
     };
 
@@ -62,7 +62,7 @@ public class RenderSystem : ExecutableSystem
                     _gl.End();
                 }
                 
-                foreach (var floor in map.Tiles.Floor)
+                foreach (var floor in map.Tiles.FloorTiles)
                 {
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
                 
@@ -73,6 +73,24 @@ public class RenderSystem : ExecutableSystem
                         new Size(map.TileSize.Width, map.TileSize.Height)
                     );
                 
+                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
+                    _gl.End();
+                }
+                foreach (var floor in map.Tiles.WallTiles)
+                {
+                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+
+                    var color = TileColors[CellType.Wall];
+
+                    var rect = new Rectangle(
+                        new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
+                        new Size(map.TileSize.Width, map.TileSize.Height)
+                    );
+
                     _gl.Color(color[0], color[1], color[2]);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);

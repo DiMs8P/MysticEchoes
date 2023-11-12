@@ -4,5 +4,5 @@ namespace MysticEchoes.Core.MapModule;
 
 public interface IMazeGenerator
 {
-    public MazeGenerationResult Generate();
+    public Map Generate();
 }
