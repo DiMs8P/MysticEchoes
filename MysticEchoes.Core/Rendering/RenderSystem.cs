@@ -2,6 +2,7 @@
 using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.Movement;
 using SharpGL;
 using System.Drawing;
 using Point = MysticEchoes.Core.Base.Geometry.Point;
@@ -15,7 +16,7 @@ public class RenderSystem : ExecutableSystem
 {
     private OpenGL? _gl;
 
-    private static readonly Dictionary<CellType, double[]> TileColors = new Dictionary<CellType, double[]>
+    private static readonly Dictionary<CellType, double[]> TileColors = new()
     {
         [CellType.Empty] = new[] { 64d/255, 64d/255, 64d/255 },
         [CellType.FragmentBound] = new[] { 0d,0d,0d },
@@ -35,7 +36,7 @@ public class RenderSystem : ExecutableSystem
         _gl = gl;
     }
 
-    public override void Execute()
+    public override void Execute(SystemExecutionContext _)
     {
         if (_gl is null)
             throw new InvalidOperationException("Open Gl wasn't initialized");
@@ -98,6 +99,21 @@ public class RenderSystem : ExecutableSystem
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
                     _gl.End();
                 }
+            }
+            else if (rendering.Type is RenderingType.DebugUnitView)
+            {
+                var transform = entity.GetComponent<TransformComponent>();
+
+                _gl.Begin(OpenGL.GL_QUADS);
+                _gl.Color(1f, 0f, 0f);
+
+                const float halfSize = 0.05f;
+
+                _gl.Vertex(transform.Position.X - halfSize, transform.Position.Y + halfSize);
+                _gl.Vertex(transform.Position.X - halfSize, transform.Position.Y - halfSize);
+                _gl.Vertex(transform.Position.X + halfSize, transform.Position.Y - halfSize);
+                _gl.Vertex(transform.Position.X + halfSize, transform.Position.Y + halfSize);
+                _gl.End();
             }
             else if (rendering.Type is not RenderingType.None)
             {

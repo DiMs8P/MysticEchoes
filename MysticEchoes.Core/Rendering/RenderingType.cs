@@ -3,5 +3,6 @@
 public enum RenderingType
 {
     None,
-    TileMap
+    TileMap,
+    DebugUnitView
 }

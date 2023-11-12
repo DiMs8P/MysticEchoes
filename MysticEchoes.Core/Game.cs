@@ -1,5 +1,8 @@
-﻿using MysticEchoes.Core.Base.ECS;
+﻿using System.Diagnostics;
+using System.Numerics;
+using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using SharpGL;
 
@@ -13,8 +16,10 @@ public class Game
     private readonly EntityFactory _entityFactory;
     private readonly World _world;
     private OpenGL _gl;
+    private readonly SystemExecutionContext _systemExecutionContext;
+    private readonly Stopwatch _updateTimer;
 
-    public Game(
+        public Game(
         IMazeGenerator mazeGenerator,
         IEnumerable<ExecutableSystem> systems,
         EntityFactory entityFactory,
@@ -27,6 +32,9 @@ public class Game
         _renderSystem = (RenderSystem)systems.First(x => x.GetType() == typeof(RenderSystem));
         _entityFactory = entityFactory;
         _world = world;
+
+        _systemExecutionContext = new SystemExecutionContext();
+        _updateTimer = new Stopwatch();
     }
 
     public void Initialize(OpenGL gl)
@@ -36,6 +44,14 @@ public class Game
         _renderSystem.InitGl(gl);
 
         CreateTiles();
+
+        _entityFactory.Create("square")
+            .AddComponent(new TransformComponent()
+            {
+                Position = new Vector2(0, 0.3f),
+                Velocity = new Vector2(0.04f, 0.02f)
+            })
+            .AddComponent(new RenderComponent(RenderingType.DebugUnitView));
     }
 
     public void CreateTiles()
@@ -49,14 +65,20 @@ public class Game
 
     public void Update()
     {
+        // _updateTimer.Stop();
+        _systemExecutionContext.DeltaTime = _updateTimer.ElapsedMilliseconds / 1e3f;
+        _updateTimer.Restart();
         foreach (var system in _systems)
         {
-            system.Execute();
+            system.Execute(_systemExecutionContext);
         }
+
+
+        // _updateTimer.Start();
     }
 
     public void Render()
     {
-        _renderSystem.Execute();
+        _renderSystem.Execute(_systemExecutionContext);
     }
 }
