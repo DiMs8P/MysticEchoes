@@ -7,7 +7,7 @@ public class RoomNode : ITreeNode<RoomNode>
     public Point Position { get; set; }
     public Size Size { get; set; }
     public RoomNode? LeftChild { get; set; }
-    public RoomNode? RightChild { get; set;}
+    public RoomNode? RightChild { get; set; }
     public TreeNodeType Type => LeftChild is null && RightChild is null
         ? TreeNodeType.Leaf
         : TreeNodeType.Node;

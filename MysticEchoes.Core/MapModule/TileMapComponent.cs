@@ -6,10 +6,10 @@ namespace MysticEchoes.Core.MapModule;
 
 public class TileMapComponent : Component
 {
-    public Maze Tiles { get; }
+    public Map Tiles { get; }
     public Size TileSize { get; }
 
-    public TileMapComponent(Maze tiles)
+    public TileMapComponent(Map tiles)
     {
         Tiles = tiles;
         TileSize = new Size(
