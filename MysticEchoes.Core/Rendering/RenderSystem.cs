@@ -1,10 +1,8 @@
 ﻿using MazeGeneration;
 using MysticEchoes.Core.Base.ECS;
-using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using SharpGL;
-using System.Drawing;
 using Point = MysticEchoes.Core.Base.Geometry.Point;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 using Size = MysticEchoes.Core.Base.Geometry.Size;
