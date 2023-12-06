@@ -1,10 +1,9 @@
 ﻿using MazeGeneration;
-using MysticEchoes.Core.Base.ECS;
 using MysticEchoes.Core.Base.Geometry;
 
 namespace MysticEchoes.Core.MapModule;
 
-public class TileMapComponent : Component
+public struct TileMapComponent
 {
     public Map Tiles { get; }
     public Size TileSize { get; }

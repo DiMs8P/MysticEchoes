@@ -1,22 +1,30 @@
-﻿using MysticEchoes.Core.Base.ECS;
+﻿using Leopotam.EcsLite;
+using MysticEchoes.Core.Environment;
+using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Movement;
 
-public class TransformSystem : ExecutableSystem
+public class TransformSystem : IEcsInitSystem, IEcsRunSystem
 {
-    private readonly ComponentPool<TransformComponent> _transforms;
+    [EcsInject] private SystemExecutionContext _context;
     
-    public TransformSystem(World world) 
-        : base(world)
+    private EcsPool<TransformComponent> _transforms;
+    private EcsFilter _transformsFilter;
+
+    public void Init(IEcsSystems systems)
     {
-        _transforms = World.GetAllComponents<TransformComponent>();
+        EcsWorld world = systems.GetWorld();
+        
+        _transforms = world.GetPool<TransformComponent>();
+        _transformsFilter = world.Filter<TransformComponent>().End();
     }
 
-    public override void Execute(SystemExecutionContext context)
+    public void Run(IEcsSystems systems)
     {
-        foreach (var transform in _transforms.Enumerate())
+        foreach (var entityId in _transformsFilter)
         {
-            transform.Position += transform.Velocity * context.DeltaTime;
+            ref TransformComponent transform = ref _transforms.Get(entityId);
+            transform.Position += transform.Velocity * _context.DeltaTime;
         }
     }
 }

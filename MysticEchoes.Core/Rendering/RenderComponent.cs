@@ -1,8 +1,6 @@
-﻿using MysticEchoes.Core.Base.ECS;
+﻿namespace MysticEchoes.Core.Rendering;
 
-namespace MysticEchoes.Core.Rendering;
-
-public class RenderComponent : Component
+public struct RenderComponent
 {
     public RenderingType Type { get; }
 

@@ -1,7 +1,8 @@
-﻿using MazeGeneration;
-using MysticEchoes.Core.Base.ECS;
+﻿using Leopotam.EcsLite;
+using MazeGeneration;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
+using SevenBoldPencil.EasyDi;
 using SharpGL;
 using Point = MysticEchoes.Core.Base.Geometry.Point;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
@@ -10,9 +11,15 @@ using Size = MysticEchoes.Core.Base.Geometry.Size;
 
 namespace MysticEchoes.Core.Rendering;
 
-public class RenderSystem : ExecutableSystem
+public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 {
-    private OpenGL? _gl;
+    [EcsInject] private OpenGL _gl;
+
+    private EcsFilter _rendersFilter;
+    private EcsPool<RenderComponent> _renders;
+    
+    private EcsPool<TransformComponent> _transforms;
+    private EcsPool<TileMapComponent> _tileMaps;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
     {
@@ -24,17 +31,18 @@ public class RenderSystem : ExecutableSystem
         [CellType.Floor] = new[] {53d/255,25d/255,48d/255}
     };
 
-    public RenderSystem(World world)
-        : base(world)
+    public void Init(IEcsSystems systems)
     {
+        EcsWorld world = systems.GetWorld();
+        
+        _renders = world.GetPool<RenderComponent>();
+        _rendersFilter = world.Filter<RenderComponent>().End();
+
+        _transforms = world.GetPool<TransformComponent>();
+        _tileMaps = world.GetPool<TileMapComponent>();
     }
 
-    public void InitGl(OpenGL gl)
-    {
-        _gl = gl;
-    }
-
-    public override void Execute(SystemExecutionContext _)
+    public void Run(IEcsSystems systems)
     {
         if (_gl is null)
             throw new InvalidOperationException("Open Gl wasn't initialized");
@@ -43,13 +51,13 @@ public class RenderSystem : ExecutableSystem
         _gl.LoadIdentity();
         _gl.Ortho(0, 2, 0, 2, -1, 1);
 
-        foreach (var rendering in World.GetAllComponents<RenderComponent>().Enumerate())
+        foreach (var entityId in _rendersFilter)
         {
-            var entity = World.GetEntity(rendering.OwnerId);
+            ref RenderComponent render = ref _renders.Get(entityId);
 
-            if (rendering.Type is RenderingType.TileMap)
+            if (render.Type is RenderingType.TileMap)
             {
-                var map = entity.GetComponent<TileMapComponent>();
+                ref TileMapComponent map = ref _tileMaps.Get(entityId);
                 {
                     var color = TileColors[CellType.Empty];
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
@@ -98,9 +106,9 @@ public class RenderSystem : ExecutableSystem
                     _gl.End();
                 }
             }
-            else if (rendering.Type is RenderingType.DebugUnitView)
+            else if (render.Type is RenderingType.DebugUnitView)
             {
-                var transform = entity.GetComponent<TransformComponent>();
+                ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Begin(OpenGL.GL_QUADS);
                 _gl.Color(1f, 0f, 0f);
@@ -113,7 +121,7 @@ public class RenderSystem : ExecutableSystem
                 _gl.Vertex(transform.Position.X + halfSize, transform.Position.Y + halfSize);
                 _gl.End();
             }
-            else if (rendering.Type is not RenderingType.None)
+            else if (render.Type is not RenderingType.None)
             {
                 throw new NotImplementedException();
             }
