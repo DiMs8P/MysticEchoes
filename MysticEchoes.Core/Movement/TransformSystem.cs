@@ -9,6 +9,7 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private SystemExecutionContext _context;
     
     private EcsPool<TransformComponent> _transforms;
+    private EcsPool<MovementComponent> _movements;
     private EcsFilter _transformsFilter;
 
     public void Init(IEcsSystems systems)
@@ -16,6 +17,7 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
         EcsWorld world = systems.GetWorld();
         
         _transforms = world.GetPool<TransformComponent>();
+        _movements = world.GetPool<MovementComponent>();
         _transformsFilter = world.Filter<TransformComponent>().End();
     }
 
@@ -24,7 +26,9 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var entityId in _transformsFilter)
         {
             ref TransformComponent transform = ref _transforms.Get(entityId);
-            transform.Position += transform.Velocity * _context.DeltaTime;
+            ref MovementComponent movement = ref _movements.Get(entityId);
+            
+            transform.Location += movement.Speed * transform.Rotation * _context.DeltaTime;
         }
     }
 }

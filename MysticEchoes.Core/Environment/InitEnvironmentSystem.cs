@@ -31,8 +31,12 @@ public class InitEnvironmentSystem : IEcsInitSystem
     {
         _factory.Create()
             .Add(new TransformComponent{
-                Position = new Vector2(0, 0.3f),
-                Velocity = new Vector2(0.04f, 0.02f)
+                Location = new Vector2(0, 0.3f),
+                Rotation = new Vector2(1.0f, 0.0f)
+            })
+            .Add(new MovementComponent()
+            {
+                Speed = 1.0f,
             })
             .Add(new RenderComponent(RenderingType.DebugUnitView))
             .End();

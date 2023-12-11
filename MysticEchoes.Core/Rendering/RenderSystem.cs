@@ -115,10 +115,25 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 const float halfSize = 0.05f;
 
-                _gl.Vertex(transform.Position.X - halfSize, transform.Position.Y + halfSize);
-                _gl.Vertex(transform.Position.X - halfSize, transform.Position.Y - halfSize);
-                _gl.Vertex(transform.Position.X + halfSize, transform.Position.Y - halfSize);
-                _gl.Vertex(transform.Position.X + halfSize, transform.Position.Y + halfSize);
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
+                _gl.End();
+            }
+            else if (render.Type is RenderingType.Character)
+            {
+                ref TransformComponent transform = ref _transforms.Get(entityId);
+
+                _gl.Begin(OpenGL.GL_QUADS);
+                _gl.Color(1f, 0f, 0f);
+
+                const float halfSize = 0.05f;
+
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
                 _gl.End();
             }
             else if (render.Type is not RenderingType.None)

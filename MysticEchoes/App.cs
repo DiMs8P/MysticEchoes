@@ -1,6 +1,8 @@
 ﻿using MysticEchoes.Core;
 using SharpGL.WPF;
 using System.Windows;
+using System.Windows.Input;
+using Task = MysticEchoes.Core.Input.Task;
 
 namespace MysticEchoes;
 
@@ -25,9 +27,15 @@ public class App : Application
         _mainWindow.GlControl.OpenGLInitialized += BindGl;
         _mainWindow.GlControl.Resized += (_, _) => { };
 
+        LoadGameSettings();
+
         _mainWindow.Show();
         RunGame();
         // base.OnStartup(e);
+    }
+
+    private void LoadGameSettings()
+    {
     }
 
     private void BindGl(object sender, OpenGLRoutedEventArgs args)
@@ -53,6 +61,8 @@ public class App : Application
         {
             _readyToRender = false;
 
+            // TODO think about it
+            _mainWindow.Dispatcher.Invoke(ProcessPlayerInput);
             _game.Update();
             try
             {
@@ -64,6 +74,32 @@ public class App : Application
             }
 
             _readyToRender = true;
+        }
+    }
+
+    private void ProcessPlayerInput()
+    {
+        _game.InputManager.Horizontal = 0;
+        _game.InputManager.Vertical = 0;
+        
+        if (Keyboard.IsKeyDown(Key.W))
+        {
+            _game.InputManager.Vertical += 1;
+        }
+        
+        if (Keyboard.IsKeyDown(Key.S))
+        {
+            _game.InputManager.Vertical -= 1;
+        }
+        
+        if (Keyboard.IsKeyDown(Key.A))
+        {
+            _game.InputManager.Horizontal -= 1;
+        }
+        
+        if (Keyboard.IsKeyDown(Key.D))
+        {
+            _game.InputManager.Horizontal += 1;
         }
     }
 }
