@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Characters.Shooting;
 using MysticEchoes.Core.Environment;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Input.Player;
@@ -29,6 +30,7 @@ public class Game
     // TODO think about it
     public InputManager InputManager { get; }
 
+    // TODO get all const values from config files
     public Game(IMazeGenerator mazeGenerator)
     {
         _mazeGenerator = mazeGenerator;
@@ -51,6 +53,7 @@ public class Game
         
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems
+            .Add(new WeaponShootingSystem())
             .Add(new TransformSystem());
 
         _renderSystems = new EcsSystems(_world);
@@ -59,7 +62,7 @@ public class Game
 
         InputManager = new InputManager();
     }
-
+    
     public void Initialize(OpenGL gl)
     {
         _setupSystems
@@ -71,7 +74,7 @@ public class Game
             .Init();
         
         _gameplaySystems            
-            .Inject(_systemExecutionContext)
+            .Inject(_systemExecutionContext, _entityFactory)
             .Init();
         
         _renderSystems

@@ -4,5 +4,5 @@ public class InputManager
 {
     public float Horizontal = 0.0f;
     public float Vertical = 0.0f;
-    public bool WantsShoot = false;
+    public bool Shooting = false;
 }

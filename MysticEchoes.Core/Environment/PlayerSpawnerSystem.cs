@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Character.Player;
+using MysticEchoes.Core.Characters.Player;
+using MysticEchoes.Core.Characters.Shooting;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
@@ -25,11 +26,17 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             .Add(new TransformComponent()
             {
                 // TODO spawn player at random room
-                Location = new Vector2(0.5f, 0.5f)
+                Location = new Vector2(0.5f, 0.5f),
+                Rotation = Vector2.UnitY
             })
             .Add(new MovementComponent()
             {
                 Speed = 1.0f,
+            })
+            .Add(new WeaponComponent()
+            {
+                Type = WeaponType.OneShoot,
+                TimeBetweenShoots = 0.1f,
             })
             .Add(new RenderComponent(RenderingType.Character))
             .End();

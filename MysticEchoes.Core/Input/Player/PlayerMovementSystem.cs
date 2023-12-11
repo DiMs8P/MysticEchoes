@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Character.Player;
+using MysticEchoes.Core.Characters.Player;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;
 
@@ -39,10 +39,8 @@ public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
                 return;
             }
             
-            movementComponent.Velocity = Vector2.Zero;
             movementComponent.Velocity += _inputManager.Vertical * Vector2.UnitY;
             movementComponent.Velocity += _inputManager.Horizontal * Vector2.UnitX;
-
         }
     }
 }

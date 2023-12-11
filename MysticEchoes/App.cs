@@ -2,7 +2,6 @@
 using SharpGL.WPF;
 using System.Windows;
 using System.Windows.Input;
-using Task = MysticEchoes.Core.Input.Task;
 
 namespace MysticEchoes;
 
@@ -81,7 +80,7 @@ public class App : Application
     {
         _game.InputManager.Horizontal = 0;
         _game.InputManager.Vertical = 0;
-        _game.InputManager.WantsShoot = Mouse.LeftButton == MouseButtonState.Pressed;
+        _game.InputManager.Shooting = Mouse.LeftButton == MouseButtonState.Pressed;
         
         if (Keyboard.IsKeyDown(Key.W))
         {
