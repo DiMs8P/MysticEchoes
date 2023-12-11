@@ -2,7 +2,7 @@
 
 namespace MysticEchoes.Core.Input.Player;
 
-public class PlayerInputShootingSystem : IEcsInitSystem, IEcsRunSystem
+public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     public void Init(IEcsSystems systems)
     {

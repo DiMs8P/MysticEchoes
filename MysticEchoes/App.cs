@@ -81,6 +81,7 @@ public class App : Application
     {
         _game.InputManager.Horizontal = 0;
         _game.InputManager.Vertical = 0;
+        _game.InputManager.WantsShoot = Mouse.LeftButton == MouseButtonState.Pressed;
         
         if (Keyboard.IsKeyDown(Key.W))
         {

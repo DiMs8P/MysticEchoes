@@ -46,8 +46,8 @@ public class Game
 
         _inputSystems = new EcsSystems(_world);
         _inputSystems
-            .Add(new PlayerInputMovementSystem())
-            .Add(new PlayerInputShootingSystem());
+            .Add(new PlayerMovementSystem())
+            .Add(new PlayerShootingSystem());
         
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems

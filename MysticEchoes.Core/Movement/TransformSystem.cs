@@ -1,4 +1,5 @@
-﻿using Leopotam.EcsLite;
+﻿using System.Numerics;
+using Leopotam.EcsLite;
 using MysticEchoes.Core.Environment;
 using SevenBoldPencil.EasyDi;
 
@@ -27,8 +28,16 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref TransformComponent transform = ref _transforms.Get(entityId);
             ref MovementComponent movement = ref _movements.Get(entityId);
-            
-            transform.Location += movement.Speed * transform.Rotation * _context.DeltaTime;
+
+            if (movement.Velocity.IsNearlyZero())
+            {
+                return;
+            }
+
+            movement.Velocity = Vector2.Normalize(movement.Velocity);
+
+            transform.Location += movement.Speed * movement.Velocity * _context.DeltaTime;
+            transform.Rotation = movement.Velocity;
         }
     }
 }

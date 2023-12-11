@@ -37,6 +37,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
             .Add(new MovementComponent()
             {
                 Speed = 1.0f,
+                Velocity = new Vector2(0.5f, 0.5f)
             })
             .Add(new RenderComponent(RenderingType.DebugUnitView))
             .End();

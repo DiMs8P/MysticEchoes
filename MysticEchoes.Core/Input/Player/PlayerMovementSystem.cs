@@ -6,7 +6,7 @@ using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Input.Player;
 
-public class PlayerInputMovementSystem : IEcsInitSystem, IEcsRunSystem
+public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private InputManager _inputManager;
     
@@ -32,25 +32,17 @@ public class PlayerInputMovementSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var playerId in _playerFilter)
         {
             ref MovementComponent movementComponent = ref _movements.Get(playerId);
+            movementComponent.Velocity = Vector2.Zero;
             
             if (Math.Abs( _inputManager.Vertical) < 0.001 && Math.Abs( _inputManager.Horizontal) < 0.001)
             {
-                movementComponent.Speed = 0.0f;
                 return;
             }
-            else
-            {
-                movementComponent.Speed = 1.0f;
-            }
             
-            ref TransformComponent transformComponent = ref _transforms.Get(playerId);
+            movementComponent.Velocity = Vector2.Zero;
+            movementComponent.Velocity += _inputManager.Vertical * Vector2.UnitY;
+            movementComponent.Velocity += _inputManager.Horizontal * Vector2.UnitX;
 
-            transformComponent.Rotation = Vector2.Zero;
-
-            transformComponent.Rotation += _inputManager.Vertical * Vector2.UnitY;
-            transformComponent.Rotation += _inputManager.Horizontal * Vector2.UnitX;
-            
-            Vector2.Normalize(transformComponent.Rotation);
         }
     }
 }
