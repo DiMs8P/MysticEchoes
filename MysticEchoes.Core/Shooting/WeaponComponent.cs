@@ -1,4 +1,4 @@
-﻿namespace MysticEchoes.Core.Characters.Shooting;
+﻿namespace MysticEchoes.Core.Shooting;
 
 public struct WeaponComponent
 {

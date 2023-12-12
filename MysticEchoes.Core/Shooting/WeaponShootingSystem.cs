@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Environment;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
+using MysticEchoes.Core.Scene;
 using SevenBoldPencil.EasyDi;
 
-namespace MysticEchoes.Core.Characters.Shooting;
+namespace MysticEchoes.Core.Shooting;
 
 public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
@@ -41,7 +41,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 {
                     MakeShot(entityId);
                     weaponComponent.ElapsedTimeFromLastShoot = 0;
-                    return;
+                    continue;
                 }
             }
 

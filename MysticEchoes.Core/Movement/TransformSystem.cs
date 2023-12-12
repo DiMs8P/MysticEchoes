@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Environment;
 using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Movement;

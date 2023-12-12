@@ -1,6 +1,6 @@
 ﻿using Leopotam.EcsLite;
 
-namespace MysticEchoes.Core.Environment;
+namespace MysticEchoes.Core.Scene;
 
 public class EntityFactory
 {

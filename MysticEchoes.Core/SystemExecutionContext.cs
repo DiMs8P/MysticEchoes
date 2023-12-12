@@ -1,4 +1,4 @@
-﻿namespace MysticEchoes.Core.Environment;
+﻿namespace MysticEchoes.Core;
 
 public class SystemExecutionContext
 {

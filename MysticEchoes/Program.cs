@@ -16,7 +16,6 @@ public class Program
             {
                 services.AddSingleton<App>();
                 services.AddSingleton<MainWindow>();
-                services.AddGame();
 
             })
             .Build();

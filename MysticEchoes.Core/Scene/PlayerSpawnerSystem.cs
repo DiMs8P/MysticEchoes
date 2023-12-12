@@ -1,12 +1,12 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Characters.Player;
-using MysticEchoes.Core.Characters.Shooting;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Rendering;
+using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
-namespace MysticEchoes.Core.Environment;
+namespace MysticEchoes.Core.Scene;
 
 public class PlayerSpawnerSystem : IEcsInitSystem
 {

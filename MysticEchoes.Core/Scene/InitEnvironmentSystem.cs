@@ -5,7 +5,7 @@ using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
 
-namespace MysticEchoes.Core.Environment;
+namespace MysticEchoes.Core.Scene;
 
 public class InitEnvironmentSystem : IEcsInitSystem
 {

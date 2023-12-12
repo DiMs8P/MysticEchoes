@@ -2,46 +2,50 @@
 using SharpGL.WPF;
 using System.Windows;
 using System.Windows.Input;
+using MysticEchoes.Configuration;
+using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Input;
+using MysticEchoes.Core.MapModule;
+using Environment = MysticEchoes.Core.Configuration.Environment;
 
 namespace MysticEchoes;
 
 public class App : Application
 {
     private readonly MainWindow _mainWindow;
-    private readonly Game _game;
+    private Game _game;
+    
+    private BaseInputManager _inputManager;
 
     private bool _readyToRender = false;
     private Timer _renderTimer;
 
     private readonly object gameLock = new object();
-
-    public App(MainWindow mainWindow, Game game)
+    public App(MainWindow mainWindow)
     {
         _mainWindow = mainWindow;
-        _game = game;
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        _mainWindow.GlControl.OpenGLInitialized += BindGl;
+        _mainWindow.GlControl.OpenGLInitialized += InitializeGame;
         _mainWindow.GlControl.Resized += (_, _) => { };
-
-        LoadGameSettings();
-
+        
         _mainWindow.Show();
         RunGame();
         // base.OnStartup(e);
     }
 
-    private void LoadGameSettings()
+    private void InitializeGame(object sender, OpenGLRoutedEventArgs args)
     {
-    }
+        _inputManager = new BaseInputManager();
 
-    private void BindGl(object sender, OpenGLRoutedEventArgs args)
-    {
+        Environment environment = new Environment(args.OpenGL, _inputManager, new MazeGeneratorAdapter());
+        Settings settings = new Settings();
+        
+        _game = new Game(environment, settings);
+        
         _mainWindow.GlControl.OpenGLDraw += (_, _) => _game.Render();
-
-        _game.Initialize(args.OpenGL);
     }
 
     public void RunGame()
@@ -61,7 +65,7 @@ public class App : Application
             _readyToRender = false;
 
             // TODO think about it
-            _mainWindow.Dispatcher.Invoke(ProcessPlayerInput);
+            _mainWindow.Dispatcher.Invoke(_inputManager.Update);
             _game.Update();
             try
             {
@@ -76,30 +80,4 @@ public class App : Application
         }
     }
 
-    private void ProcessPlayerInput()
-    {
-        _game.InputManager.Horizontal = 0;
-        _game.InputManager.Vertical = 0;
-        _game.InputManager.Shooting = Mouse.LeftButton == MouseButtonState.Pressed;
-        
-        if (Keyboard.IsKeyDown(Key.W))
-        {
-            _game.InputManager.Vertical += 1;
-        }
-        
-        if (Keyboard.IsKeyDown(Key.S))
-        {
-            _game.InputManager.Vertical -= 1;
-        }
-        
-        if (Keyboard.IsKeyDown(Key.A))
-        {
-            _game.InputManager.Horizontal -= 1;
-        }
-        
-        if (Keyboard.IsKeyDown(Key.D))
-        {
-            _game.InputManager.Horizontal += 1;
-        }
-    }
 }

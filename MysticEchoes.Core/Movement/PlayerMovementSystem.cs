@@ -1,17 +1,16 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Characters.Player;
-using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
 
-namespace MysticEchoes.Core.Input.Player;
+namespace MysticEchoes.Core.Movement;
 
 public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
 {
-    [EcsInject] private InputManager _inputManager;
+    [EcsInject] private IInputManager _inputManager;
     
     private EcsFilter _playerFilter;
-    private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
     public void Init(IEcsSystems systems)
     {
@@ -23,7 +22,6 @@ public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
             throw new Exception("Must be 1 player");
         }
         
-        _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
     }
 
@@ -34,13 +32,13 @@ public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
             ref MovementComponent movementComponent = ref _movements.Get(playerId);
             movementComponent.Velocity = Vector2.Zero;
             
-            if (Math.Abs( _inputManager.Vertical) < 0.001 && Math.Abs( _inputManager.Horizontal) < 0.001)
+            if (Math.Abs(_inputManager.GetVertical()) < 0.001 && Math.Abs( _inputManager.GetHorizontal()) < 0.001)
             {
                 return;
             }
             
-            movementComponent.Velocity += _inputManager.Vertical * Vector2.UnitY;
-            movementComponent.Velocity += _inputManager.Horizontal * Vector2.UnitX;
+            movementComponent.Velocity += _inputManager.GetVertical() * Vector2.UnitY;
+            movementComponent.Velocity += _inputManager.GetHorizontal() * Vector2.UnitX;
         }
     }
 }
