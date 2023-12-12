@@ -32,7 +32,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var entityId in _weaponsFilter)
         {
             ref WeaponComponent weaponComponent = ref _weapons.Get(entityId);
-            Console.WriteLine(_shootRequests.Has(entityId));
+            
             if (_shootRequests.Has(entityId))
             {
                 _shootRequests.Del(entityId);
