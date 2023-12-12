@@ -1,11 +1,8 @@
-﻿namespace MysticEchoes.Core.Configuration;
+﻿using MysticEchoes.Core.Loaders;
+
+namespace MysticEchoes.Core.Configuration;
 
 public class Settings
 {
-    public Settings()
-    {
-        Player = new PlayerSettings();
-    }
-    
-    public PlayerSettings Player;
+    public readonly PlayerSettings Player;
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MysticEchoes.Core;
 using MysticEchoes.Core.Assets;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Implementation;
@@ -17,6 +18,7 @@ public static class Extensions
         services.AddTransient<IInputManager, BaseInputManager>();
         services.AddTransient<ILoader, JsonLoader>();
 
+        services.AddScoped<SystemExecutionContext>();
         services.AddScoped<AssetManager>();
         services.AddScoped<Game>();
     }
