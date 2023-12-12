@@ -4,5 +4,5 @@ namespace MysticEchoes.Core.Configuration;
 
 public class PlayerSettings
 {
-    public float Speed;
+    public float Speed { get; set; }
 }

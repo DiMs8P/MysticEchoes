@@ -10,5 +10,5 @@ public class SystemExecutionContext
         Settings = dataLoader.LoadSettings();
     }
     public float DeltaTime { get; set; }
-    public Settings Settings { get;}
+    public Settings Settings { get; set; }
 }

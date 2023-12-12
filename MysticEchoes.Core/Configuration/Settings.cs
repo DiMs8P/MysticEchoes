@@ -4,5 +4,5 @@ namespace MysticEchoes.Core.Configuration;
 
 public class Settings
 {
-    public readonly PlayerSettings Player;
+    public PlayerSettings PlayerSettings { get; set; }
 }
