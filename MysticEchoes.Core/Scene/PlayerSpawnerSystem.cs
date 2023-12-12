@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Rendering;
@@ -11,7 +12,8 @@ namespace MysticEchoes.Core.Scene;
 public class PlayerSpawnerSystem : IEcsInitSystem
 {
     [EcsInject] private EntityFactory _factory;
-    
+    [EcsInject] private PlayerSettings _playerSettings;
+
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
@@ -31,7 +33,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             })
             .Add(new MovementComponent()
             {
-                Speed = 1.0f,
+                Speed = _playerSettings.Speed,
             })
             .Add(new WeaponComponent()
             {

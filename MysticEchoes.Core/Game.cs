@@ -48,14 +48,14 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _mazeGenerator)
+            .Inject(_entityFactory, _mazeGenerator, _systemExecutionContext.Settings.PlayerSettings)
             .Init();
 
         _inputSystems = new EcsSystems(_world);
         _inputSystems
             .Add(new PlayerMovementSystem())
             .Add(new PlayerShootingSystem())
-            .Inject(inputManager)
+            .Inject(inputManager, _systemExecutionContext)
             .Init();
         
         _gameplaySystems = new EcsSystems(_world);
@@ -74,7 +74,7 @@ public class Game
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())            
-            .Inject(gl)
+            .Inject(gl, _systemExecutionContext)
             .Init();
     }
     
