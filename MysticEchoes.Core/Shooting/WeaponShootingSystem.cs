@@ -63,8 +63,8 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
-            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * 0.04f, transformComponent.Rotation, 10.0f, 1.0f);
-            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * -0.04f, transformComponent.Rotation, 10.0f, 1.0f);
+            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * 0.04f, transformComponent.Rotation, 10.0f, 0.2f);
+            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * -0.04f, transformComponent.Rotation, 10.0f, 0.2f);
         }
         else if (weapon.Type is not WeaponType.None)
         {
