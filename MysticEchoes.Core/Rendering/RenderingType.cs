@@ -5,5 +5,6 @@ public enum RenderingType
     None,
     TileMap,
     DebugUnitView,
-    Character
+    Character,
+    Bullet
 }

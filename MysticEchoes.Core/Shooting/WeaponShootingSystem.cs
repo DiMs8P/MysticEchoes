@@ -11,7 +11,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private EntityFactory _factory;
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
-    
+
     private EcsFilter _weaponsFilter;
     private EcsPool<WeaponComponent> _weapons;
     private EcsPool<TransformComponent> _transforms;
@@ -32,7 +32,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var entityId in _weaponsFilter)
         {
             ref WeaponComponent weaponComponent = ref _weapons.Get(entityId);
-            
+
             if (_shootRequests.Has(entityId))
             {
                 _shootRequests.Del(entityId);
@@ -56,8 +56,15 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         if (weapon.Type is WeaponType.OneShoot)
         {
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
-                
+
             SpawnProjectile(_factory, transformComponent.Location, transformComponent.Rotation, 10.0f, 1.0f);
+        }
+        else if (weapon.Type is WeaponType.TwoShoot)
+        {
+            ref TransformComponent transformComponent = ref _transforms.Get(entityId);
+
+            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * 0.04f, transformComponent.Rotation, 10.0f, 1.0f);
+            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().Lover() * -0.04f, transformComponent.Rotation, 10.0f, 1.0f);
         }
         else if (weapon.Type is not WeaponType.None)
         {
@@ -82,7 +89,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             {
                 Damage = damage
             })
-            .Add(new RenderComponent(RenderingType.DebugUnitView))
+            .Add(new RenderComponent(RenderingType.Bullet))
             .End();
 
         return projectile;

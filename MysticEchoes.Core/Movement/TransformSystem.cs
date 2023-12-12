@@ -30,7 +30,7 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
 
             if (movement.Velocity.IsNearlyZero())
             {
-                return;
+                continue;
             }
 
             movement.Velocity = Vector2.Normalize(movement.Velocity);

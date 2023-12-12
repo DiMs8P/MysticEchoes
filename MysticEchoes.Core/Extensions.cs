@@ -9,4 +9,12 @@ public static class Vector2Extensions
     {
         return vector.LengthSquared() <= Epsilon * Epsilon;
     }
+    public static Vector2 Lover(this Vector2 vector)
+    {
+        return new Vector2(vector.X, -vector.Y);
+    }
+    public static Vector2 Inverse(this Vector2 vector)
+    { 
+        return new Vector2(vector.Y, vector.X);
+    }
 }

@@ -136,6 +136,21 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
                 _gl.End();
             }
+            else if (render.Type is RenderingType.Bullet)
+            {
+                ref TransformComponent transform = ref _transforms.Get(entityId);
+
+                _gl.Begin(OpenGL.GL_QUADS);
+                _gl.Color(0f, 0.5f, 1f);
+
+                const float halfSize = 0.025f;
+
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
+                _gl.End();
+            }
             else if (render.Type is not RenderingType.None)
             {
                 throw new NotImplementedException();

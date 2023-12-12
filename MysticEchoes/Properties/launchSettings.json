@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MysticEchoes": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\dimap\\source\\repos\\MysticEchoes\\MysticEchoes.Core"
+    }
+  }
+}
