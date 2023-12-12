@@ -1,4 +1,4 @@
 {
-  "PlayerId": "base",
-  "BulletId": "base1"
+  "PlayerId": "Assets\\player.png",
+  "BulletId": "Assets\\bullet.png"
 }
