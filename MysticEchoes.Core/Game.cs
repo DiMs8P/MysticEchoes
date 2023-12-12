@@ -1,15 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
-using MysticEchoes.Core.Input;
-using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
-using SharpGL;
 using Environment = MysticEchoes.Core.Configuration.Environment;
 
 namespace MysticEchoes.Core;
@@ -30,6 +26,7 @@ public class Game
     public readonly Environment Environment;
     public readonly Settings GameSettings;
     
+    //TODO inject settings in systems
     public Game(Environment gameEnvironment, Settings gameSettings)
     {
         Environment = gameEnvironment;
@@ -59,6 +56,7 @@ public class Game
         _gameplaySystems
             .Add(new WeaponShootingSystem())
             .Add(new TransformSystem())
+            .Add(new ProjectileCleanupSystem())
             .Inject(_systemExecutionContext, _entityFactory)
             .Init();
 

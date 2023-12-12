@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using MysticEchoes.Core.Input;
 
-namespace MysticEchoes.Configuration;
+namespace MysticEchoes.Input;
 
 public class BaseInputManager : IInputManager
 {

@@ -1,6 +1,17 @@
-﻿namespace MysticEchoes.Core.Shooting;
+﻿using Leopotam.EcsLite;
 
-public class ProjectileCleanupSystem
+namespace MysticEchoes.Core.Shooting;
+
+public class ProjectileCleanupSystem : IEcsInitSystem, IEcsRunSystem
 {
-    
+    //TODO implement
+    public void Init(IEcsSystems systems)
+    {
+        
+    }
+
+    public void Run(IEcsSystems systems)
+    {
+        
+    }
 }

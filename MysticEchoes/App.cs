@@ -2,10 +2,10 @@
 using SharpGL.WPF;
 using System.Windows;
 using System.Windows.Input;
-using MysticEchoes.Configuration;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Input;
 using Environment = MysticEchoes.Core.Configuration.Environment;
 
 namespace MysticEchoes;

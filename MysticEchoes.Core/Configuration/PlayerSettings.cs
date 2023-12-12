@@ -1,4 +1,6 @@
-﻿namespace MysticEchoes.Core.Configuration;
+﻿using MysticEchoes.Core.Shooting;
+
+namespace MysticEchoes.Core.Configuration;
 
 public class PlayerSettings
 {
