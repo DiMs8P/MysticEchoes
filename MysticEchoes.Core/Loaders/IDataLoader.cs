@@ -2,7 +2,7 @@
 
 namespace MysticEchoes.Core.Loaders;
 
-public interface ILoader
+public interface IDataLoader
 {
     Dictionary<string, string> LoadTexturePaths();
     Settings LoadSettings();

@@ -9,7 +9,7 @@ public class AssetManager
     private OpenGL _gl;
     private Dictionary<string, string> _data;
     
-    public AssetManager(ILoader dataLoader)
+    public AssetManager(IDataLoader dataLoader)
     {
         _data = dataLoader.LoadTexturePaths();
     }

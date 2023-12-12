@@ -16,7 +16,7 @@ public static class Extensions
     {
         services.AddTransient<IMazeGenerator, MazeGeneratorAdapter>();
         services.AddTransient<IInputManager, BaseInputManager>();
-        services.AddTransient<ILoader, JsonLoader>();
+        services.AddTransient<IDataLoader, JsonLoader>();
 
         services.AddScoped<SystemExecutionContext>();
         services.AddScoped<AssetManager>();

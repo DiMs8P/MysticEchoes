@@ -5,15 +5,15 @@ namespace MysticEchoes.Implementations;
 
 public class BaseInputManager : IInputManager
 {
-    private float _horizontal;
-    private float _vertical;
+    private int _horizontal;
+    private int _vertical;
     private bool _shooting;
-    public float GetHorizontal()
+    public int GetHorizontal()
     {
         return _horizontal;
     }
 
-    public float GetVertical()
+    public int GetVertical()
     {
         return _vertical;
     }

@@ -2,7 +2,7 @@
 
 public interface IInputManager
 {
-    float GetHorizontal();
-    float GetVertical();
+    int GetHorizontal();
+    int GetVertical();
     bool IsShooting();
 }

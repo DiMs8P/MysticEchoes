@@ -5,7 +5,7 @@ namespace MysticEchoes.Core;
 
 public class SystemExecutionContext
 {
-    public SystemExecutionContext(ILoader dataLoader)
+    public SystemExecutionContext(IDataLoader dataLoader)
     {
         Settings = dataLoader.LoadSettings();
     }

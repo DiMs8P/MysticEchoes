@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace MysticEchoes.Core.Loaders.Implementation;
 
-public class JsonLoader : ILoader
+public class JsonLoader : IDataLoader
 {
     public Dictionary<string, string> LoadTexturePaths()
     {

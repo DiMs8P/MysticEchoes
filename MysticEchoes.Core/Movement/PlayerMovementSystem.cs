@@ -32,7 +32,7 @@ public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
             ref MovementComponent movementComponent = ref _movements.Get(playerId);
             movementComponent.Velocity = Vector2.Zero;
             
-            if (Math.Abs(_inputManager.GetVertical()) < 0.001 && Math.Abs( _inputManager.GetHorizontal()) < 0.001)
+            if (_inputManager.GetVertical() == 0 && _inputManager.GetHorizontal() == 0)
             {
                 return;
             }
