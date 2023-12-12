@@ -14,7 +14,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
     public void Init(IEcsSystems systems)
     {
         CreateTiles();
-        CreateSquare();
+        //CreateSquare();
     }
 
     private void CreateTiles()

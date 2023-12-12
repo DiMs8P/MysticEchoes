@@ -35,7 +35,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             })
             .Add(new WeaponComponent()
             {
-                Type = WeaponType.OneShoot,
+                Type = WeaponType.TwoShoot,
                 TimeBetweenShoots = 0.1f,
             })
             .Add(new RenderComponent(RenderingType.Character))

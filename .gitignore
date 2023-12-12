@@ -567,3 +567,5 @@ FodyWeavers.xsd
 
 .vs
 .vs/
+
+/MysticEchoes/Properties/launchSettings.json
