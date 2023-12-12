@@ -34,7 +34,7 @@ public class PlayerMovementSystem : IEcsInitSystem, IEcsRunSystem
             
             if (_inputManager.GetVertical() == 0 && _inputManager.GetHorizontal() == 0)
             {
-                return;
+                continue;
             }
             
             movementComponent.Velocity += _inputManager.GetVertical() * Vector2.UnitY;

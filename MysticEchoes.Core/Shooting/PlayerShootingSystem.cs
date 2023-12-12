@@ -31,7 +31,7 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
         {
             if (!_inputManager.IsShooting() || _shootRequests.Has(playerId))
             {
-                return;
+                continue;
             }
             
             _shootRequests.Add(playerId);

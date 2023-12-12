@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Assets;
-using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
@@ -29,7 +28,6 @@ public class Game
 
     private readonly EntityFactory _entityFactory;
     private readonly Stopwatch _updateTimer;
-
 
     //TODO inject settings in systems
     public Game(AssetManager assetManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
