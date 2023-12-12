@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Assets;
+using MysticEchoes.Core.Input;
+using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
-using Environment = MysticEchoes.Core.Configuration.Environment;
+using SharpGL;
 
 namespace MysticEchoes.Core;
 
@@ -17,21 +19,23 @@ public class Game
     private readonly EcsSystems _setupSystems;
     private readonly EcsSystems _inputSystems;
     private readonly EcsSystems _gameplaySystems;
-    private readonly EcsSystems _renderSystems;
+    private EcsSystems _renderSystems;
     
     private readonly EntityFactory _entityFactory;
     private readonly SystemExecutionContext _systemExecutionContext;
     private readonly Stopwatch _updateTimer;
 
-    public readonly Environment Environment;
-    public readonly Settings GameSettings;
-    
-    //TODO inject settings in systems
-    public Game(Environment gameEnvironment, Settings gameSettings)
-    {
-        Environment = gameEnvironment;
-        GameSettings = gameSettings;
+    private readonly IMazeGenerator _mazeGenerator;
+    public readonly IInputManager _inputManager;
+    private readonly AssetManager _assetManager;
 
+    //TODO inject settings in systems
+    public Game(IMazeGenerator mazeGenerator, IInputManager inputManager, AssetManager assetManager)
+    {
+        _mazeGenerator = mazeGenerator;
+        _inputManager = inputManager;
+        _assetManager = assetManager;
+            
         _world = new EcsWorld();
         _entityFactory = new EntityFactory(_world);
         
@@ -42,14 +46,14 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, gameEnvironment.MazeGenerator)
+            .Inject(_entityFactory, _mazeGenerator)
             .Init();
 
         _inputSystems = new EcsSystems(_world);
         _inputSystems
             .Add(new PlayerMovementSystem())
             .Add(new PlayerShootingSystem())
-            .Inject(gameEnvironment.InputManager)
+            .Inject(inputManager)
             .Init();
         
         _gameplaySystems = new EcsSystems(_world);
@@ -59,14 +63,19 @@ public class Game
             .Add(new ProjectileCleanupSystem())
             .Inject(_systemExecutionContext, _entityFactory)
             .Init();
+    }
 
+    public void InitializeRender(OpenGL gl)
+    {
+        _assetManager.InitializeGl(gl);
+        
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())            
-            .Inject(gameEnvironment.OpenGl)
+            .Inject(gl)
             .Init();
     }
-
+    
     public void Update()
     {
         // _updateTimer.Stop();

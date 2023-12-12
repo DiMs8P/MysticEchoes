@@ -1,19 +1,14 @@
 ﻿using MysticEchoes.Core;
 using SharpGL.WPF;
 using System.Windows;
-using System.Windows.Input;
-using MysticEchoes.Core.Configuration;
-using MysticEchoes.Core.Input;
-using MysticEchoes.Core.MapModule;
-using MysticEchoes.Input;
-using Environment = MysticEchoes.Core.Configuration.Environment;
+using MysticEchoes.Implementations;
 
 namespace MysticEchoes;
 
 public class App : Application
 {
     private readonly MainWindow _mainWindow;
-    private Game _game;
+    private readonly Game _game;
     
     private BaseInputManager _inputManager;
 
@@ -21,9 +16,12 @@ public class App : Application
     private Timer _renderTimer;
 
     private readonly object gameLock = new object();
-    public App(MainWindow mainWindow)
+    public App(MainWindow mainWindow, Game game)
     {
         _mainWindow = mainWindow;
+        _game = game;
+
+        _inputManager = (BaseInputManager?)_game._inputManager;
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -38,13 +36,13 @@ public class App : Application
 
     private void InitializeGame(object sender, OpenGLRoutedEventArgs args)
     {
-        _inputManager = new BaseInputManager();
+        /*_inputManager = new BaseInputManager();
 
         Environment environment = new Environment(args.OpenGL, _inputManager, new MazeGeneratorAdapter());
         Settings settings = new Settings();
         
-        _game = new Game(environment, settings);
-        
+        _game = new Game(environment, settings);*/
+        _game.InitializeRender(args.OpenGL);
         _mainWindow.GlControl.OpenGLDraw += (_, _) => _game.Render();
     }
 
