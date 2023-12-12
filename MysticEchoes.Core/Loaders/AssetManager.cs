@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Loaders;
 using SharpGL;
 
@@ -23,7 +22,7 @@ public class AssetManager
         _gl = gl;
     }
 
-    public uint GetTexture(string id)
+    public uint LoadTexture(string id)
     {
         if (_loadedTextures.TryGetValue(id, out uint texture))
         {
@@ -35,13 +34,18 @@ public class AssetManager
             throw new ArgumentException($"Texture with '{id}' is not found.");
         }
 
-        texture = LoadTexture(texturePath);
+        texture = LoadTexture_Internal(texturePath);
         
         _loadedTextures.Add(id, texture);
         return texture;
     }
+
+    public void BindTexture(string id)
+    {
+        
+    }
     
-    private uint LoadTexture(string path)
+    private uint LoadTexture_Internal(string path)
     {
         uint[] textureID = new uint[1];
         _gl.GenTextures(1, textureID);
@@ -65,7 +69,7 @@ public class AssetManager
         }
         else
         {
-            throw new System.Exception("");
+            throw new ArgumentException("Can't load texture from given path");
         }
         
         return textureID[0];

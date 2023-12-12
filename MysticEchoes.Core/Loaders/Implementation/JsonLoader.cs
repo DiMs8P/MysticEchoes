@@ -7,12 +7,12 @@ public class JsonLoader : IDataLoader
 {
     public Dictionary<string, string> LoadTexturePaths()
     {
-        return Load<Dictionary<string, string>>(Environment.CurrentDirectory + "\\Loaders\\Implementation\\Json\\texture-paths.json");
+        return Load<Dictionary<string, string>>(Environment.CurrentDirectory + "\\Config\\Json\\texture-paths.json");
     }
 
     public Settings LoadSettings()
     {
-        return Load<Settings>(Environment.CurrentDirectory + "\\Loaders\\Implementation\\Json\\game-settings.json");
+        return Load<Settings>(Environment.CurrentDirectory + "\\Config\\Json\\game-settings.json");
     }
 
     private T Load<T>(string jsonPath)

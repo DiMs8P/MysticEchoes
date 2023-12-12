@@ -22,17 +22,17 @@ public class Game
     private readonly EcsSystems _gameplaySystems;
     private EcsSystems _renderSystems;
     
-    private readonly EntityFactory _entityFactory;
+    private readonly AssetManager _assetManager;
+    public  readonly IInputManager _inputManager;
+    private readonly IMazeGenerator _mazeGenerator;
     private readonly SystemExecutionContext _systemExecutionContext;
+
+    private readonly EntityFactory _entityFactory;
     private readonly Stopwatch _updateTimer;
 
-    private readonly IMazeGenerator _mazeGenerator;
-    public readonly IInputManager _inputManager;
-    private readonly AssetManager _assetManager;
-    private readonly Settings _settings;
 
     //TODO inject settings in systems
-    public Game(IMazeGenerator mazeGenerator, IInputManager inputManager, AssetManager assetManager, SystemExecutionContext systemExecutionContext)
+    public Game(AssetManager assetManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
     {
         _mazeGenerator = mazeGenerator;
         _inputManager = inputManager;

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Base\Exceptions\" />
+    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,5 +21,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Ecs\Ecs.csproj" />
     <ProjectReference Include="..\MazeGenerator\MazeGeneration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Config\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
