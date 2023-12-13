@@ -71,12 +71,12 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
             SpawnProjectile(_factory,
-                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectionY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2,
+                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2,
                 transformComponent.Rotation,
                 _weaponsSettings.Twoshot.Damage,
                 _weaponsSettings.Twoshot.BulletSpeed);
             SpawnProjectile(_factory,
-                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectionY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2 * (-1),
+                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2 * (-1),
                 transformComponent.Rotation,
                 _weaponsSettings.Twoshot.Damage,
                 _weaponsSettings.Twoshot.BulletSpeed);
