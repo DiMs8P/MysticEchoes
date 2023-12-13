@@ -10,8 +10,8 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private IInputManager _inputManager;
     
     private EcsFilter _playerFilter;
-    private EcsPool<ShootRequest> _shootRequests;
-    
+    private EcsPool<WeaponComponent> _weapons;
+
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
@@ -22,19 +22,15 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
             throw new Exception("Must be 1 player");
         }
 
-        _shootRequests = world.GetPool<ShootRequest>();
+        _weapons = world.GetPool<WeaponComponent>();
     }
 
     public void Run(IEcsSystems systems)
     {
         foreach (var playerId in _playerFilter)
         {
-            if (!_inputManager.IsShooting() || _shootRequests.Has(playerId))
-            {
-                continue;
-            }
-            
-            _shootRequests.Add(playerId);
+            ref WeaponComponent playerWeapon = ref _weapons.Get(playerId);
+            playerWeapon.State = _inputManager.IsShooting() ? WeaponState.WantsToFire : WeaponState.ReadyToFire;
         }
     }
 }

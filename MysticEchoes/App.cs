@@ -21,7 +21,7 @@ public class App : Application
         _mainWindow = mainWindow;
         _game = game;
 
-        _inputManager = (BaseInputManager?)_game._inputManager;
+        _inputManager = (BaseInputManager?)_game.InputManager;
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -78,4 +78,9 @@ public class App : Application
         }
     }
 
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _game.Destroy();
+        base.OnExit(e);
+    }
 }

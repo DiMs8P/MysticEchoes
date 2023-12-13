@@ -17,15 +17,20 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private PlayerSettings _playersettings;
     public void Init(IEcsSystems systems)
     {
-        EcsWorld world = systems.GetWorld();
-
         _playersettings = _systemExecutionContext.Settings.PlayerSettings;
-        int player = CreatePlayer(world, _factory);
-
+        
+        CreatePlayer(_factory);
     }
 
-    private int CreatePlayer(EcsWorld world, EntityFactory factory)
+    private int CreatePlayer(EntityFactory factory)
     {
+        BurstFireComponent burstFireComponent = new BurstFireComponent()
+        {
+            MaxShotsInBurst = 10,
+            TimeBetweenBursts = 1.0f,
+            TimeBetweenBurstShots = 0.2f
+        };
+        
         int player = factory.Create()
             .Add(new PlayerMarker())
             .Add(new TransformComponent()
@@ -41,8 +46,9 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             .Add(new WeaponComponent()
             {
                 Type = WeaponType.TwoShoot,
-                TimeBetweenShoots = 0.1f,
+                TimeBetweenShots = burstFireComponent.TimeBetweenBurstShots,
             })
+            .Add(burstFireComponent)
             .Add(new RenderComponent(RenderingType.Character))
             .End();
 

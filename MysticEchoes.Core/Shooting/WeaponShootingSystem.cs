@@ -16,7 +16,6 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _weaponsFilter;
     private EcsPool<WeaponComponent> _weapons;
     private EcsPool<TransformComponent> _transforms;
-    private EcsPool<ShootRequest> _shootRequests;
     private WeaponsSettings _weaponsSettings;
     public void Init(IEcsSystems systems)
     {
@@ -26,7 +25,6 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 
         _weapons = world.GetPool<WeaponComponent>();
         _transforms = world.GetPool<TransformComponent>();
-        _shootRequests = world.GetPool<ShootRequest>();
         _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
     }
 
@@ -36,16 +34,11 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref WeaponComponent weaponComponent = ref _weapons.Get(entityId);
 
-            if (_shootRequests.Has(entityId))
+            if (weaponComponent.State == WeaponState.Shooting)
             {
-                _shootRequests.Del(entityId);
-
-                if (weaponComponent.ElapsedTimeFromLastShoot >= weaponComponent.TimeBetweenShoots) // нужно что-то придумать с временем между выстрелами, оно у каждого оружия разное и размер пули
-                {
-                    MakeShot(entityId);
-                    weaponComponent.ElapsedTimeFromLastShoot = 0;
-                    continue;
-                }
+                MakeShot(entityId);
+                weaponComponent.ElapsedTimeFromLastShoot = 0;
+                continue;
             }
 
             weaponComponent.ElapsedTimeFromLastShoot += _systemExecutionContext.DeltaTime;

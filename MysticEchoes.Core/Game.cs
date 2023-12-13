@@ -13,15 +13,18 @@ namespace MysticEchoes.Core;
 
 public class Game
 {
+    public  readonly IInputManager InputManager;
+
     private readonly EcsWorld _world;
 
     private readonly EcsSystems _setupSystems;
     private readonly EcsSystems _inputSystems;
+    private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
+    private readonly EcsSystems _cleanupSystems;
     private EcsSystems _renderSystems;
     
     private readonly AssetManager _assetManager;
-    public  readonly IInputManager _inputManager;
     private readonly IMazeGenerator _mazeGenerator;
     private readonly SystemExecutionContext _systemExecutionContext;
 
@@ -32,7 +35,7 @@ public class Game
     public Game(AssetManager assetManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
     {
         _mazeGenerator = mazeGenerator;
-        _inputManager = inputManager;
+        InputManager = inputManager;
         _assetManager = assetManager;
         _systemExecutionContext = systemExecutionContext;
             
@@ -54,13 +57,24 @@ public class Game
             .Add(new PlayerShootingSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
+
+        _shootingSystems = new EcsSystems(_world);
+        _shootingSystems
+            .Add(new WeaponsStateSystem())
+            .Add(new BurstFireSystem())
+            .Add(new WeaponShootingSystem())
+            .Inject(_systemExecutionContext, _entityFactory)
+            .Init();
         
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems
-            .Add(new WeaponShootingSystem())
             .Add(new TransformSystem())
+            .Inject(_systemExecutionContext)
+            .Init();
+
+        _cleanupSystems = new EcsSystems(_world);
+        _cleanupSystems
             .Add(new ProjectileCleanupSystem())
-            .Inject(_systemExecutionContext, _entityFactory)
             .Init();
     }
 
@@ -82,8 +96,9 @@ public class Game
         _updateTimer.Restart();
         
         _inputSystems.Run();
+        _shootingSystems.Run();
         _gameplaySystems.Run();
-
+        _cleanupSystems.Run();
 
         // _updateTimer.Start();
     }
@@ -91,5 +106,17 @@ public class Game
     public void Render()
     {
         _renderSystems.Run();
+    }
+
+    public void Destroy()
+    {
+        _world.Destroy();
+        
+        _setupSystems.Destroy();
+        _inputSystems.Destroy();
+        _shootingSystems.Destroy();
+        _gameplaySystems.Destroy();
+        _cleanupSystems.Destroy();
+        _renderSystems.Destroy();
     }
 }
