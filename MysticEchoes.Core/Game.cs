@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Assets;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
@@ -72,7 +71,7 @@ public class Game
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())            
-            .Inject(gl)
+            .Inject(gl, _assetManager)
             .Init();
     }
     

@@ -14,6 +14,7 @@ namespace MysticEchoes.Core.Rendering;
 public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private OpenGL _gl;
+    [EcsInject] private AssetManager _assetManager;
 
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
@@ -40,6 +41,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _transforms = world.GetPool<TransformComponent>();
         _tileMaps = world.GetPool<TileMapComponent>();
+        
+        _gl.Enable(OpenGL.GL_TEXTURE_2D);
+                
+        _gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+        _gl.Enable( OpenGL.GL_BLEND );
     }
 
     public void Run(IEcsSystems systems)
@@ -123,33 +129,53 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.Character)
             {
+                _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.LoadTexture("PlayerId"));
+                
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Begin(OpenGL.GL_QUADS);
-                _gl.Color(1f, 0f, 0f);
+                
+                _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                const float halfSize = 0.05f;
-
+                const float halfSize = 0.2f;
+                _gl.TexCoord(0.0, 0.0f);
                 _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.TexCoord(0.0, 1.0f);
                 _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.TexCoord(1.0, 1.0f);
                 _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.TexCoord(1.0, 0.0f);
                 _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
                 _gl.End();
+                
+                _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
             }
             else if (render.Type is RenderingType.Bullet)
             {
+                _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.LoadTexture("BulletId"));
+                
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Begin(OpenGL.GL_QUADS);
-                _gl.Color(0f, 0.5f, 1f);
+                
+                _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                const float halfSize = 0.025f;
-
+                const float halfSize = 0.2f;
+                _gl.TexCoord(0.0, 0.0f);
                 _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.TexCoord(0.0, 1.0f);
                 _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.TexCoord(1.0, 1.0f);
                 _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.TexCoord(1.0, 0.0f);
                 _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
                 _gl.End();
+                
+                _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
             }
             else if (render.Type is not RenderingType.None)
             {
