@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
@@ -16,6 +17,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<WeaponComponent> _weapons;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<ShootRequest> _shootRequests;
+    private WeaponsSettings _weaponsSettings;
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
@@ -25,6 +27,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _weapons = world.GetPool<WeaponComponent>();
         _transforms = world.GetPool<TransformComponent>();
         _shootRequests = world.GetPool<ShootRequest>();
+        _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
     }
 
     public void Run(IEcsSystems systems)
@@ -37,7 +40,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             {
                 _shootRequests.Del(entityId);
 
-                if (weaponComponent.ElapsedTimeFromLastShoot >= weaponComponent.TimeBetweenShoots)
+                if (weaponComponent.ElapsedTimeFromLastShoot >= weaponComponent.TimeBetweenShoots) // нужно что-то придумать с временем между выстрелами, оно у каждого оружия разное и размер пули
                 {
                     MakeShot(entityId);
                     weaponComponent.ElapsedTimeFromLastShoot = 0;
@@ -57,14 +60,26 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
-            SpawnProjectile(_factory, transformComponent.Location, transformComponent.Rotation, 10.0f, 1.0f);
+            SpawnProjectile(_factory,
+                transformComponent.Location,
+                transformComponent.Rotation,
+                _weaponsSettings.OneShot.Damage,
+                _weaponsSettings.OneShot.BulletSpeed);
         }
         else if (weapon.Type is WeaponType.TwoShoot)
         {
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
-            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().ReflectionY() * 0.04f, transformComponent.Rotation, 10.0f, 0.2f);
-            SpawnProjectile(_factory, transformComponent.Location + transformComponent.Rotation.Inverse().ReflectionY() * -0.04f, transformComponent.Rotation, 10.0f, 0.2f);
+            SpawnProjectile(_factory,
+                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2,
+                transformComponent.Rotation,
+                _weaponsSettings.Twoshot.Damage,
+                _weaponsSettings.Twoshot.BulletSpeed);
+            SpawnProjectile(_factory,
+                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2 * (-1),
+                transformComponent.Rotation,
+                _weaponsSettings.Twoshot.Damage,
+                _weaponsSettings.Twoshot.BulletSpeed);
         }
         else if (weapon.Type is not WeaponType.None)
         {
