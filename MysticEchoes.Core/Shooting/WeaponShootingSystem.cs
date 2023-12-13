@@ -11,8 +11,7 @@ namespace MysticEchoes.Core.Shooting;
 public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private EntityFactory _factory;
-    [EcsInject] private SystemExecutionContext _systemExecutionContext;//
- //это входит в _systemExecutionContext но это уменьшает кол-во кода, так можно?
+    [EcsInject] private SystemExecutionContext _systemExecutionContext;
 
     private EcsFilter _weaponsFilter;
     private EcsPool<WeaponComponent> _weapons;
