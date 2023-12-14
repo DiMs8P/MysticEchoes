@@ -164,7 +164,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 ref TransformComponent transform = ref _transforms.Get(entityId);
                 
                 _gl.Translate(transform.Location.X, transform.Location.Y, 0);
-                _gl.Rotate(transform.Rotation.GetAngle(Vector2.UnitX), 0, 0, 1);
+                _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX(), 0, 0, 1);
                 
                 _gl.Begin(OpenGL.GL_QUADS);
                 

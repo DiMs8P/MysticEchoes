@@ -18,8 +18,14 @@ public static class Vector2Extensions
         return new Vector2(vector.Y, vector.X);
     }
     
-    public static float GetAngle(this Vector2 vector, Vector2 other)
+    public static float GetAngleBetweenGlobalX(this Vector2 vector)
     {
-        return (float)(Math.Atan2(vector.Y - other.Y, vector.X - other.X) * (180 / Math.PI));
+        double dotProduct = vector.X;
+        double normA = Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+
+        double cos = dotProduct / normA;
+        int sign = vector.Y < 0 ? -1 : 1;
+        double angle = (float)Math.Acos(cos) * sign;
+        return (float)(angle * (180f / Math.PI));
     }
 }
