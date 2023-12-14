@@ -131,7 +131,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Character)
             {
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.LoadTexture("PlayerId"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("PlayerId"));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
@@ -156,7 +156,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Bullet)
             {
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.LoadTexture("BulletId"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("BulletId"));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 

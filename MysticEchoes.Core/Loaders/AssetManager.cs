@@ -23,7 +23,7 @@ public class AssetManager
         _gl = gl;
     }
 
-    public uint LoadTexture(string id)
+    public uint GetTexture(string id)
     {
         if (_loadedTextures.TryGetValue(id, out uint texture))
         {
@@ -35,13 +35,13 @@ public class AssetManager
             throw new ArgumentException($"Texture with '{id}' is not found.");
         }
 
-        texture = LoadTexture_Internal(Path.Combine(CoreAssetsFolder, texturePath));
+        texture = LoadTexture(Path.Combine(CoreAssetsFolder, texturePath));
         
         _loadedTextures.Add(id, texture);
         return texture;
     }
     
-    private uint LoadTexture_Internal(string path)
+    private uint LoadTexture(string path)
     {
         if (_gl is null)
         {
@@ -55,57 +55,35 @@ public class AssetManager
                       pixelFormat == PixelFormat.Format64bppArgb ||
                       pixelFormat == PixelFormat.Format64bppPArgb;
 
-        return isRgba ? LoadRgbaTexture(bitmap, pixelFormat) : LoadRgbTexture(bitmap, pixelFormat);
-    }
-
-    private uint LoadRgbTexture(Bitmap bitmap, PixelFormat pixelFormat)
-    {
-        uint[] textureId = new uint[1];
-        _gl.GenTextures(1, textureId);
-        
-        IntPtr pixels = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-            ImageLockMode.ReadOnly, pixelFormat).Scan0;
-        
-        if (pixels != IntPtr.Zero)
-        {
-            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, textureId[0]);
-            _gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, 3, bitmap.Width, bitmap.Height, 0, OpenGL.GL_BGR,
-                OpenGL.GL_UNSIGNED_BYTE, pixels);
-            SetTextureParameters();
-        }
-        else
-        {
-            throw new ArgumentException("Can't load texture from given path");
-        }
-        
-        bitmap.UnlockBits(new BitmapData());
-        return textureId[0];
-    }
-
-    private uint LoadRgbaTexture(Bitmap bitmap, PixelFormat pixelFormat)
-    {
-        uint[] textureId = new uint[1];
-        _gl.GenTextures(1, textureId);
-        
-        IntPtr pixels = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-            ImageLockMode.ReadOnly, pixelFormat).Scan0;
-        
-        if (pixels != IntPtr.Zero)
-        {
-            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, textureId[0]);
-            _gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, 4, bitmap.Width, bitmap.Height, 0, OpenGL.GL_BGRA,
-                OpenGL.GL_UNSIGNED_BYTE, pixels);
-            SetTextureParameters();
-        }
-        else
-        {
-            throw new ArgumentException("Can't load texture from given path");
-        }
-        
-        bitmap.UnlockBits(new BitmapData());
-        return textureId[0];
+        return isRgba ? 
+            LoadTexture_Internal(bitmap, pixelFormat, 4, OpenGL.GL_BGRA) : 
+            LoadTexture_Internal(bitmap, pixelFormat, 3, OpenGL.GL_BGR);
     }
     
+    private uint LoadTexture_Internal(Bitmap bitmap, PixelFormat pixelFormat, uint internalFormat, uint format)
+    {
+        uint[] textureId = new uint[1];
+        _gl.GenTextures(1, textureId);
+        
+        IntPtr pixels = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+            ImageLockMode.ReadOnly, pixelFormat).Scan0;
+        
+        if (pixels != IntPtr.Zero)
+        {
+            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, textureId[0]);
+            _gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, internalFormat, bitmap.Width, bitmap.Height, 0, format,
+                OpenGL.GL_UNSIGNED_BYTE, pixels);
+            SetTextureParameters();
+        }
+        else
+        {
+            throw new ArgumentException("Can't load texture from given path");
+        }
+        
+        bitmap.UnlockBits(new BitmapData());
+        return textureId[0];
+    }
+
     private void SetTextureParameters()
     {
         _gl.GenerateMipmapEXT(OpenGL.GL_TEXTURE_2D);
