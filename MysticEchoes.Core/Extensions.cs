@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using SharpGL;
+
 namespace MysticEchoes.Core;
 
 public static class Vector2Extensions
@@ -27,5 +29,23 @@ public static class Vector2Extensions
         int sign = vector.Y < 0 ? -1 : 1;
         double angle = (float)Math.Acos(cos) * sign;
         return (float)(angle * (180f / Math.PI));
+    }
+}
+
+public static class OpenGlExtensions
+{
+    public static void Scale(this OpenGL gl, Vector2 scale)
+    {
+        gl.Scale(scale.X, scale.Y, 1);
+    }
+    
+    public static void Translate(this OpenGL gl, Vector2 translation)
+    {
+        gl.Translate(translation.X, translation.Y, 0);
+    }
+    
+    public static void Rotate(this OpenGL gl, float angle)
+    {
+        gl.Rotate(angle, 0, 0, 1);
     }
 }

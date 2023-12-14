@@ -6,6 +6,7 @@ using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
+using SharpGL.SceneGraph;
 using Point = MysticEchoes.Core.Base.Geometry.Point;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 using Size = MysticEchoes.Core.Base.Geometry.Size;
@@ -163,8 +164,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
                 
-                _gl.Translate(transform.Location.X, transform.Location.Y, 0);
-                _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX(), 0, 0, 1);
+                _gl.Translate(transform.Location);
+                _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX());
+                _gl.Scale(transform.Scale);
                 
                 _gl.Begin(OpenGL.GL_QUADS);
                 
@@ -185,6 +187,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 
                 _gl.PopMatrix();
+                _gl.GetModelViewMatrix();
             }
             else if (render.Type is not RenderingType.None)
             {
