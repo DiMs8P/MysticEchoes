@@ -22,7 +22,8 @@
         "TypeName": "MysticEchoes.Core.Shooting.WeaponComponent",
         "Parameters": {
           "Type": "TwoShoot",
-          "TimeBetweenShots": 0.2
+          "TimeBetweenShots": 0.2,
+          "ProjectilePrefabId" : "Bullet"
         }
       },
       {
