@@ -1,5 +1,6 @@
 ﻿using Leopotam.EcsLite;
 using MazeGeneration;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;

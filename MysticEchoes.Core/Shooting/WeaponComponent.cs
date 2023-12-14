@@ -2,11 +2,11 @@
 
 public struct WeaponComponent
 {
-    public WeaponType Type;
-    public WeaponState State;
-    public float TimeBetweenShots;
-    public float ElapsedTimeFromLastShoot;
-
+    public WeaponType Type { get; set; }
+    public WeaponState State { get; set; }
+    public float TimeBetweenShots { get; set; }
+    public float ElapsedTimeFromLastShoot { get; set; }
+    
     public WeaponComponent()
     {
         State = WeaponState.None;

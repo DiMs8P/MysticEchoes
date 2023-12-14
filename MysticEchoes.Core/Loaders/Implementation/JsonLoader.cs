@@ -1,4 +1,5 @@
 ﻿using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Loaders.Prefabs;
 using Newtonsoft.Json;
 
 namespace MysticEchoes.Core.Loaders.Implementation;
@@ -8,6 +9,11 @@ public class JsonLoader : IDataLoader
     public Dictionary<string, string> LoadTexturePaths()
     {
         return Load<Dictionary<string, string>>(Environment.CurrentDirectory + "\\Config\\Json\\texture-paths.json");
+    }
+
+    public Dictionary<string, Prefab> LoadPrefabs()
+    {
+        return Load<Dictionary<string, Prefab>>(Environment.CurrentDirectory + "\\Config\\Json\\prefabs.json");
     }
 
     public Settings LoadSettings()

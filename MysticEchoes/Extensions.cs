@@ -19,6 +19,7 @@ public static class Extensions
         services.AddTransient<IDataLoader, JsonLoader>();
 
         services.AddScoped<SystemExecutionContext>();
+        services.AddScoped<PrefabManager>();
         services.AddScoped<AssetManager>();
         services.AddScoped<Game>();
     }

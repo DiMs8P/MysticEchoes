@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -25,6 +26,7 @@ public class Game
     private EcsSystems _renderSystems;
     
     private readonly AssetManager _assetManager;
+    private readonly PrefabManager _prefabManager;
     private readonly IMazeGenerator _mazeGenerator;
     private readonly SystemExecutionContext _systemExecutionContext;
 
@@ -32,11 +34,12 @@ public class Game
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
-    public Game(AssetManager assetManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
+    public Game(AssetManager assetManager, PrefabManager prefabManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
     {
         _mazeGenerator = mazeGenerator;
         InputManager = inputManager;
         _assetManager = assetManager;
+        _prefabManager = prefabManager;
         _systemExecutionContext = systemExecutionContext;
             
         _world = new EcsWorld();
@@ -48,7 +51,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _mazeGenerator, _systemExecutionContext)
+            .Inject(_entityFactory, _prefabManager, _mazeGenerator, _systemExecutionContext)
             .Init();
 
         _inputSystems = new EcsSystems(_world);

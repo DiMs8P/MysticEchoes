@@ -79,7 +79,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             throw new NotImplementedException();
         }
     }
-
+    
     private int SpawnProjectile(EntityFactory factory, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
     {
         int projectile = factory.Create()

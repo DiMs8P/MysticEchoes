@@ -2,10 +2,10 @@
 
 public struct BurstFireComponent
 {
-    public int MaxShotsInBurst;
-    public int FiredShots;
-    public float TimeBetweenBursts;
-    public float TimeBetweenBurstShots;
+    public int MaxShotsInBurst { get; set; }
+    public int FiredShots { get; set; }
+    public float TimeBetweenBursts { get; set; }
+    public float TimeBetweenBurstShots { get; set; }
 
     public BurstFireComponent()
     {

@@ -1,0 +1,44 @@
+{
+  "Player": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Player.PlayerMarker",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {
+          "Speed": 1.0
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Location": "0.5 0.5",
+          "Rotation": "0 1"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.WeaponComponent",
+        "Parameters": {
+          "Type": "TwoShoot",
+          "TimeBetweenShots": 0.2
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.BurstFireComponent",
+        "Parameters": {
+          "MaxShotsInBurst": 10,
+          "TimeBetweenBursts": 1.0,
+          "TimeBetweenBurstShots": 0.2
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Character"
+        }
+      }
+    ]
+  }
+}

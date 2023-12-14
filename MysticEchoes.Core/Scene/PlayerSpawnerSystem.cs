@@ -1,9 +1,6 @@
-﻿using System.Numerics;
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
-using MysticEchoes.Core.Movement;
-using MysticEchoes.Core.Player;
-using MysticEchoes.Core.Rendering;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
@@ -13,6 +10,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 {
     [EcsInject] private EntityFactory _factory;
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
+    [EcsInject] private PrefabManager _prefabManager;
 
     private PlayerSettings _playersettings;
     public void Init(IEcsSystems systems)
@@ -26,31 +24,12 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     {
         BurstFireComponent burstFireComponent = new BurstFireComponent()
         {
-            MaxShotsInBurst = 10,
-            TimeBetweenBursts = 1.0f,
-            TimeBetweenBurstShots = 0.2f
+            MaxShotsInBurst = 3,
+            TimeBetweenBursts = 2.0f,
+            TimeBetweenBurstShots = 0.1f
         };
-        
-        int player = factory.Create()
-            .Add(new PlayerMarker())
-            .Add(new TransformComponent()
-            {
-                // TODO spawn player at random room
-                Location = new Vector2(0.5f, 0.5f),
-                Rotation = Vector2.UnitY
-            })
-            .Add(new MovementComponent()
-            {
-                Speed = _playersettings.Speed,
-            })
-            .Add(new WeaponComponent()
-            {
-                Type = WeaponType.TwoShoot,
-                TimeBetweenShots = burstFireComponent.TimeBetweenBurstShots,
-            })
-            .Add(burstFireComponent)
-            .Add(new RenderComponent(RenderingType.Character))
-            .End();
+
+        int player = _prefabManager.CreateEntityFromPrefab(_factory, "Player");
 
         return player;
     }

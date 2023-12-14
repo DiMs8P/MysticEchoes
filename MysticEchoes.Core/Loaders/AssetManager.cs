@@ -1,15 +1,14 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using MysticEchoes.Core.Loaders;
 using SharpGL;
 
-namespace MysticEchoes.Core.Rendering;
+namespace MysticEchoes.Core.Loaders;
 
 public class AssetManager
 {
     private const string CoreAssetsFolder = "Assets\\";
     
-    private OpenGL _gl;
+    private OpenGL? _gl;
     private Dictionary<string, string> _texturePaths;
     private Dictionary<string, uint> _loadedTextures;
     
@@ -44,45 +43,35 @@ public class AssetManager
     
     private uint LoadTexture_Internal(string path)
     {
-        uint loadedTexture = 0;
-        Bitmap bitmap = new Bitmap(path);
-
-        switch (bitmap.PixelFormat)
+        if (_gl is null)
         {
-            case PixelFormat.Format32bppArgb:
-            case PixelFormat.Format32bppPArgb:
-            case PixelFormat.Format64bppArgb:
-            case PixelFormat.Format64bppPArgb:
-                loadedTexture = LoadRgbaTexture(bitmap);
-                break;
-            
-            default:
-                loadedTexture = LoadRgbTexture(bitmap);
-                break;
+            throw new ApplicationException("OpenGl is null");
         }
+        
+        Bitmap bitmap = new Bitmap(path);
+        PixelFormat pixelFormat = bitmap.PixelFormat;
+        bool isRgba = pixelFormat == PixelFormat.Format32bppArgb ||
+                      pixelFormat == PixelFormat.Format32bppPArgb ||
+                      pixelFormat == PixelFormat.Format64bppArgb ||
+                      pixelFormat == PixelFormat.Format64bppPArgb;
 
-        return loadedTexture;
+        return isRgba ? LoadRgbaTexture(bitmap, pixelFormat) : LoadRgbTexture(bitmap, pixelFormat);
     }
 
-    private uint LoadRgbTexture(Bitmap bitmap)
+    private uint LoadRgbTexture(Bitmap bitmap, PixelFormat pixelFormat)
     {
         uint[] textureId = new uint[1];
         _gl.GenTextures(1, textureId);
         
         IntPtr pixels = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-            ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb).Scan0;
+            ImageLockMode.ReadOnly, pixelFormat).Scan0;
         
         if (pixels != IntPtr.Zero)
         {
             _gl.BindTexture(OpenGL.GL_TEXTURE_2D, textureId[0]);
             _gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, 3, bitmap.Width, bitmap.Height, 0, OpenGL.GL_BGR,
                 OpenGL.GL_UNSIGNED_BYTE, pixels);
-            _gl.GenerateMipmapEXT(OpenGL.GL_TEXTURE_2D);
-
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_LINEAR_MIPMAP_LINEAR);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_LINEAR);
+            SetTextureParameters();
         }
         else
         {
@@ -93,25 +82,20 @@ public class AssetManager
         return textureId[0];
     }
 
-    private uint LoadRgbaTexture(Bitmap bitmap)
+    private uint LoadRgbaTexture(Bitmap bitmap, PixelFormat pixelFormat)
     {
         uint[] textureId = new uint[1];
         _gl.GenTextures(1, textureId);
         
         IntPtr pixels = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-            ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb).Scan0;
+            ImageLockMode.ReadOnly, pixelFormat).Scan0;
         
         if (pixels != IntPtr.Zero)
         {
             _gl.BindTexture(OpenGL.GL_TEXTURE_2D, textureId[0]);
             _gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, 4, bitmap.Width, bitmap.Height, 0, OpenGL.GL_BGRA,
                 OpenGL.GL_UNSIGNED_BYTE, pixels);
-            _gl.GenerateMipmapEXT(OpenGL.GL_TEXTURE_2D);
-
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_LINEAR_MIPMAP_LINEAR);
-            _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_LINEAR);
+            SetTextureParameters();
         }
         else
         {
@@ -120,5 +104,15 @@ public class AssetManager
         
         bitmap.UnlockBits(new BitmapData());
         return textureId[0];
+    }
+    
+    private void SetTextureParameters()
+    {
+        _gl.GenerateMipmapEXT(OpenGL.GL_TEXTURE_2D);
+
+        _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
+        _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
+        _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_LINEAR_MIPMAP_LINEAR);
+        _gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_LINEAR);
     }
 }

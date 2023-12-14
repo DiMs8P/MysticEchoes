@@ -2,7 +2,7 @@
 
 public struct RenderComponent
 {
-    public RenderingType Type { get; }
+    public RenderingType Type { get; set; }
 
     public RenderComponent(RenderingType renderingType)
     {
