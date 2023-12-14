@@ -17,5 +17,9 @@
       "DistanceBetweenBullets": 0.08
 
     }
+  },
+  "SceneSettings": {
+    "FloorTexture": "StoneFloor",
+    "WallTexture": "StoneWall"
   }
 }

@@ -1,4 +1,6 @@
 {
-  "PlayerId": "player.png",
-  "BulletId": "bullet.png"
+  "Player": "player.png",
+  "Bullet": "bullet.png",
+  "StoneFloor": "stoneFloor.jpg",
+  "StoneWall": "stoneWall.jpg"
 }

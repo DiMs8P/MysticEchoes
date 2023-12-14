@@ -80,39 +80,57 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 
                 foreach (var floor in map.Tiles.FloorTiles)
                 {
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("StoneFloor"));
+                    
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-                
-                    var color = TileColors[CellType.Floor];
                 
                     var rect = new Rectangle(
                         new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
                         new Size(map.TileSize.Width, map.TileSize.Height)
                     );
+                    
+                    _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
                 
-                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.TexCoord(0.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.TexCoord(0.0, 1.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.TexCoord(1.0, 1.0f);
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.TexCoord(1.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
                     _gl.End();
+                    
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
                 foreach (var floor in map.Tiles.WallTiles)
                 {
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("StoneWall"));
+                    
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-
-                    var color = TileColors[CellType.Wall];
 
                     var rect = new Rectangle(
                         new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
                         new Size(map.TileSize.Width, map.TileSize.Height)
                     );
 
-                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    
+                    _gl.TexCoord(0.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.TexCoord(0.0, 1.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.TexCoord(1.0, 1.0f);
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.TexCoord(1.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
                     _gl.End();
+                    
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
             }
             else if (render.Type is RenderingType.DebugUnitView)
@@ -133,7 +151,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Character)
             {
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("PlayerId"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Player"));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
@@ -160,7 +178,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.PushMatrix();
                 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("BulletId"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Bullet"));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
                 

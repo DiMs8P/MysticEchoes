@@ -87,7 +87,7 @@ public class Game
         
         _renderSystems = new EcsSystems(_world);
         _renderSystems
-            .Add(new RenderSystem())            
+            .Add(new RenderSystem())
             .Inject(gl, _assetManager)
             .Init();
     }
