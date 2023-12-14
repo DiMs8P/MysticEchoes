@@ -1,6 +1,6 @@
 {
   "Player": "player.png",
   "Bullet": "bullet.png",
-  "StoneFloor": "stoneFloor.jpg",
-  "StoneWall": "stoneWall.jpg"
+  "Wall": "stoneFloor.jpg",
+  "Floor": "stoneWall.jpg"
 }

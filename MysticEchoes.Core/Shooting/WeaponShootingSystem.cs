@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Scene;
 using SevenBoldPencil.EasyDi;
@@ -62,7 +63,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
             SpawnProjectile(_factory,
-                weapon.ProjectilePrefabId,
+                weapon.ProjectilePrefab,
                 transformComponent.Location,
                 transformComponent.Rotation,
                 _weaponsSettings.OneShot.Damage,
@@ -73,13 +74,13 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             ref TransformComponent transformComponent = ref _transforms.Get(entityId);
 
             SpawnProjectile(_factory,
-                weapon.ProjectilePrefabId,
+                weapon.ProjectilePrefab,
                 transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2,
                 transformComponent.Rotation,
                 _weaponsSettings.Twoshot.Damage,
                 _weaponsSettings.Twoshot.BulletSpeed);
             SpawnProjectile(_factory,
-                weapon.ProjectilePrefabId,
+                weapon.ProjectilePrefab,
                 transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2 * (-1),
                 transformComponent.Rotation,
                 _weaponsSettings.Twoshot.Damage,
@@ -91,7 +92,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         }
     }
     
-    private int SpawnProjectile(EntityFactory factory, string projectileId, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
+    private int SpawnProjectile(EntityFactory factory, PrefabType projectileId, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
     {
         int projectile = _prefabManager.CreateEntityFromPrefab(factory, projectileId);
 

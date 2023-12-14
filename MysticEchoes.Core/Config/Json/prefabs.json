@@ -23,7 +23,7 @@
         "Parameters": {
           "Type": "TwoShoot",
           "TimeBetweenShots": 0.2,
-          "ProjectilePrefabId" : "Bullet"
+          "ProjectilePrefab" : "Bullet"
         }
       },
       {

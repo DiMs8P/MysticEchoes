@@ -1,6 +1,7 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
@@ -29,7 +30,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             TimeBetweenBurstShots = 0.1f
         };
 
-        int player = _prefabManager.CreateEntityFromPrefab(_factory, "Player");
+        int player = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Player);
 
         return player;
     }

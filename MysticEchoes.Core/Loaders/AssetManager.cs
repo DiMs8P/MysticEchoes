@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+using MysticEchoes.Core.Loaders.Assets;
 using SharpGL;
 
 namespace MysticEchoes.Core.Loaders;
@@ -9,13 +10,13 @@ public class AssetManager
     private const string CoreAssetsFolder = "Assets\\";
     
     private OpenGL? _gl;
-    private Dictionary<string, string> _texturePaths;
-    private Dictionary<string, uint> _loadedTextures;
+    private Dictionary<AssetType, string> _texturePaths;
+    private Dictionary<AssetType, uint> _loadedTextures;
     
     public AssetManager(IDataLoader dataLoader)
     {
         _texturePaths = dataLoader.LoadTexturePaths();
-        _loadedTextures = new Dictionary<string, uint>();
+        _loadedTextures = new Dictionary<AssetType, uint>();
     }
     
     public void InitializeGl(OpenGL gl)
@@ -23,7 +24,7 @@ public class AssetManager
         _gl = gl;
     }
 
-    public uint GetTexture(string id)
+    public uint GetTexture(AssetType id)
     {
         if (_loadedTextures.TryGetValue(id, out uint texture))
         {

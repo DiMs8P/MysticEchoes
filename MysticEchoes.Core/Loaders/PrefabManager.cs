@@ -8,14 +8,14 @@ namespace MysticEchoes.Core.Loaders;
 
 public class PrefabManager
 {
-    private Dictionary<string, Prefab> _prefabs;
+    private Dictionary<PrefabType, Prefab> _prefabs;
     
     public PrefabManager(IDataLoader dataLoader)
     {
         _prefabs = dataLoader.LoadPrefabs();
     }
 
-    public int CreateEntityFromPrefab(EntityFactory factory, string prefabId)
+    public int CreateEntityFromPrefab(EntityFactory factory, PrefabType prefabId)
     {
         Prefab prefab = GetPrefab(prefabId);
 
@@ -32,7 +32,7 @@ public class PrefabManager
         return factory.End();
     }
     
-    private Prefab GetPrefab(string prefabId)
+    private Prefab GetPrefab(PrefabType prefabId)
     {
         if (!_prefabs.TryGetValue(prefabId, out Prefab prefab))
         {

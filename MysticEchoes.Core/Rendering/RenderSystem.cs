@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MazeGeneration;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;
@@ -81,7 +82,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 foreach (var floor in map.Tiles.FloorTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("StoneFloor"));
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Floor));
                     
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
                 
@@ -108,7 +109,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 foreach (var floor in map.Tiles.WallTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("StoneWall"));
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Wall));
                     
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
@@ -151,7 +152,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Character)
             {
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Player"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Player));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
@@ -178,7 +179,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.PushMatrix();
                 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Bullet"));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Bullet));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
                 
