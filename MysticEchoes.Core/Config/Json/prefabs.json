@@ -40,5 +40,27 @@
         }
       }
     ]
+  },
+  "Bullet": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Bullet"
+        }
+      }
+    ]
   }
 }

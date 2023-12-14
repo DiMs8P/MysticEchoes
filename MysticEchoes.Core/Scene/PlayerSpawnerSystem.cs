@@ -8,9 +8,9 @@ namespace MysticEchoes.Core.Scene;
 
 public class PlayerSpawnerSystem : IEcsInitSystem
 {
-    [EcsInject] private EntityFactory _factory;
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
     [EcsInject] private PrefabManager _prefabManager;
+    [EcsInject] private EntityFactory _factory;
 
     private PlayerSettings _playersettings;
     public void Init(IEcsSystems systems)

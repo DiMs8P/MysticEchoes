@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Movement;
-using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
 using SevenBoldPencil.EasyDi;
 
@@ -10,21 +10,28 @@ namespace MysticEchoes.Core.Shooting;
 
 public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
-    [EcsInject] private EntityFactory _factory;
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
+    [EcsInject] private PrefabManager _prefabManager;
+    [EcsInject] private EntityFactory _factory;
 
     private EcsFilter _weaponsFilter;
-    private EcsPool<WeaponComponent> _weapons;
     private EcsPool<TransformComponent> _transforms;
+    private EcsPool<MovementComponent> _movements;
+    private EcsPool<WeaponComponent> _weapons;
+    private EcsPool<DamageComponent> _damages;
+
     private WeaponsSettings _weaponsSettings;
+
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
 
         _weaponsFilter = world.Filter<WeaponComponent>().Inc<TransformComponent>().End();
 
-        _weapons = world.GetPool<WeaponComponent>();
         _transforms = world.GetPool<TransformComponent>();
+        _movements = world.GetPool<MovementComponent>();
+        _weapons = world.GetPool<WeaponComponent>();
+        _damages = world.GetPool<DamageComponent>();
         _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
     }
 
@@ -38,6 +45,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             {
                 MakeShot(entityId);
                 weaponComponent.ElapsedTimeFromLastShoot = 0;
+                weaponComponent.State = WeaponState.ReadyToFire;
                 continue;
             }
 
@@ -82,24 +90,19 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     
     private int SpawnProjectile(EntityFactory factory, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
     {
-        int projectile = factory.Create()
-            .Add(new TransformComponent()
-            {
-                Location = projectileLocation,
-                Rotation = projectileRotation
-            })
-            .Add(new MovementComponent()
-            {
-                Velocity = projectileRotation,
-                Speed = speed
-            })
-            .Add(new DamageComponent()
-            {
-                Damage = damage
-            })
-            .Add(new RenderComponent(RenderingType.Bullet))
-            .End();
+        int projectile = _prefabManager.CreateEntityFromPrefab(factory, "Bullet");
 
+        ref TransformComponent projectileTransformComponent = ref _transforms.Get(projectile);
+        projectileTransformComponent.Location = projectileLocation;
+        projectileTransformComponent.Rotation = projectileRotation;
+        
+        ref MovementComponent projectileMovementComponent = ref _movements.Get(projectile);
+        projectileMovementComponent.Velocity = projectileRotation;
+        projectileMovementComponent.Speed = speed;
+        
+        ref DamageComponent projectileDamageComponent = ref _damages.Get(projectile);
+        projectileDamageComponent.Damage = damage;
+        
         return projectile;
     }
 }

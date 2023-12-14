@@ -9,8 +9,8 @@ namespace MysticEchoes.Core.Scene;
 
 public class InitEnvironmentSystem : IEcsInitSystem
 {
-    [EcsInject] private EntityFactory _factory;
     [EcsInject] private IMazeGenerator _mazeGenerator;
+    [EcsInject] private EntityFactory _factory;
     public void Init(IEcsSystems systems)
     {
         CreateTiles();

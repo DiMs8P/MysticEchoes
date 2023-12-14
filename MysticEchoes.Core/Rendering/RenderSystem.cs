@@ -14,8 +14,8 @@ namespace MysticEchoes.Core.Rendering;
 
 public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 {
-    [EcsInject] private OpenGL _gl;
     [EcsInject] private AssetManager _assetManager;
+    [EcsInject] private OpenGL _gl;
 
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
