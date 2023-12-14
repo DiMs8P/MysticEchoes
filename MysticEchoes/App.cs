@@ -80,6 +80,8 @@ public class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _renderTimer.Dispose();
+        
         _game.Destroy();
         base.OnExit(e);
     }

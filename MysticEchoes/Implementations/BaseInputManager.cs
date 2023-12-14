@@ -5,9 +5,9 @@ namespace MysticEchoes.Implementations;
 
 public class BaseInputManager : IInputManager
 {
-    private int _horizontal;
-    private int _vertical;
-    private bool _shooting;
+    private int _horizontal = 0;
+    private int _vertical = 0;
+    private bool _shooting = false;
     public int GetHorizontal()
     {
         return _horizontal;
