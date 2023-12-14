@@ -15,11 +15,6 @@
       "BulletSize": 0.5,
       "TimeBetweenShoots": 0.1,
       "DistanceBetweenBullets": 0.08
-
     }
-  },
-  "SceneSettings": {
-    "FloorTexture": "StoneFloor",
-    "WallTexture": "StoneWall"
   }
 }
