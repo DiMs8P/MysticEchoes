@@ -17,4 +17,9 @@ public static class Vector2Extensions
     { 
         return new Vector2(vector.Y, vector.X);
     }
+    
+    public static float GetAngle(this Vector2 vector, Vector2 other)
+    {
+        return (float)(Math.Atan2(vector.Y - other.Y, vector.X - other.X) * (180 / Math.PI));
+    }
 }

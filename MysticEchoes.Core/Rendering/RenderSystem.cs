@@ -1,4 +1,5 @@
-﻿using Leopotam.EcsLite;
+﻿using System.Numerics;
+using Leopotam.EcsLite;
 using MazeGeneration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -155,28 +156,35 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.Bullet)
             {
+                _gl.PushMatrix();
+                
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("BulletId"));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
-
+                
+                _gl.Translate(transform.Location.X, transform.Location.Y, 0);
+                _gl.Rotate(transform.Rotation.GetAngle(Vector2.UnitX), 0, 0, 1);
+                
                 _gl.Begin(OpenGL.GL_QUADS);
                 
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 const float halfSize = 0.2f;
                 _gl.TexCoord(0.0, 0.0f);
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(- halfSize, + halfSize);
                 _gl.TexCoord(0.0, 1.0f);
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(- halfSize, - halfSize);
                 _gl.TexCoord(1.0, 1.0f);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(+ halfSize, - halfSize);
                 _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(+ halfSize, + halfSize);
                 _gl.End();
                 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+                
+                _gl.PopMatrix();
             }
             else if (render.Type is not RenderingType.None)
             {
