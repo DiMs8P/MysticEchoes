@@ -87,8 +87,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
                 
                     var rect = new Rectangle(
-                        new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
-                        new Size(map.TileSize.Width, map.TileSize.Height)
+                        new Vector2((floor.X * map.TileSize.X), floor.Y * map.TileSize.Y),
+                        map.TileSize
                     );
                     
                     _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -96,11 +96,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.TexCoord(0.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
                     _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
                     _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
                     _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
                     _gl.End();
                     
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -114,8 +114,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
                     var rect = new Rectangle(
-                        new Point(floor.X * map.TileSize.Width, floor.Y * map.TileSize.Height),
-                        new Size(map.TileSize.Width, map.TileSize.Height)
+                        new Vector2(floor.X * map.TileSize.X, floor.Y * map.TileSize.Y),
+                        map.TileSize
                     );
 
                     _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -123,11 +123,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.TexCoord(0.0, 0.0f);
                     _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
                     _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
                     _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y + rect.Size.Height);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
                     _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.Width, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
                     _gl.End();
                     
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
