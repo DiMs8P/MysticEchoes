@@ -36,7 +36,7 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
             movement.Velocity = Vector2.Normalize(movement.Velocity);
 
             transform.Location += movement.Speed * movement.Velocity * _context.DeltaTime;
-            //transform.Rotation = movement.Velocity;
+            //transform.Rotation = movement.Velocity; // страшно удалять пока, может когда-то пригодиться
         }
     }
 }

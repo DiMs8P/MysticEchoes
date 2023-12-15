@@ -1,8 +1,6 @@
 ﻿using System.Numerics;
-using System.Windows;
 using System.Windows.Input;
 using MysticEchoes.Core.Input;
-using SharpGL.WPF;
 
 namespace MysticEchoes.Implementations;
 
@@ -32,14 +30,20 @@ public class BaseInputManager : IInputManager
         return _mousePosition;
     }
 
+    private Vector2 CalcMousePoint(MainWindow mainWindow)
+    {
+        _mousePosition = mainWindow._mousePosition;
+        _mousePosition.X = 2.0f * _mousePosition.X / (float)mainWindow.ActualWidth;
+        _mousePosition.Y = 2.0f * ((float)mainWindow.ActualHeight - _mousePosition.Y) / (float)mainWindow.ActualHeight;
+        return _mousePosition;
+    }
+
     public void Update(MainWindow mainWindow)
     {
         _horizontal = 0;
         _vertical = 0;
         _shooting = Mouse.LeftButton == MouseButtonState.Pressed;
-        _mousePosition = mainWindow._mousePosition;
-        _mousePosition.X = 2.0f * _mousePosition.X / (float)mainWindow.ActualWidth;
-        _mousePosition.Y = 2.0f * ((float)mainWindow.ActualHeight - _mousePosition.Y) / (float)mainWindow.ActualHeight ;
+        _mousePosition = CalcMousePoint(mainWindow);
 
         if (Keyboard.IsKeyDown(Key.W))
         {

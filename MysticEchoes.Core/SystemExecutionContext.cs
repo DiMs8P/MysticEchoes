@@ -2,7 +2,6 @@
 using MysticEchoes.Core.Loaders;
 using SharpGL.SceneGraph;
 
-
 namespace MysticEchoes.Core;
 
 public class SystemExecutionContext

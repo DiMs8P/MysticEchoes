@@ -3,7 +3,6 @@ using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
-using SharpGL;
 using SharpGL.SceneGraph;
 using System.Numerics;
 
@@ -12,13 +11,12 @@ namespace MysticEchoes.Core.Shooting;
 public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private IInputManager _inputManager;
-    [EcsInject] private OpenGL _gl;
+
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
 
     private EcsFilter _playerFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<WeaponComponent> _weapons;
-    private Vector2 _vector;
 
     public void Init(IEcsSystems systems)
     {
@@ -47,19 +45,19 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
 
     private Vector2 GetRotation(ref TransformComponent transformComponent)
     {
-        Matrix Mv = new Matrix(4, 4);
-        Matrix Mp = new Matrix(4, 4);
-        _vector = _inputManager.GetMousePoint();
-/*        Vector4 Vgood = new Vector4(_vector, 0, 1);
+        //Matrix Mv = new Matrix(4, 4);
+        //Matrix Mp = new Matrix(4, 4);
+        Vector2 vector = _inputManager.GetMousePoint();
+/*        Vector4 Vgood = new Vector4(vector, 0, 1);
         Mv = _systemExecutionContext.MatrixView;
         Mp = _systemExecutionContext.MatrixProjection;
 
         if (Mp is not null && Mv is not null)
         {
-            Vgood = Mv.MultMatrix4OnVector4(new Vector4 (transformComponent.Location,0,1));
+            Vgood = Mv.MultMatrix4OnVector4(new Vector4(transformComponent.Location, 0, 1));
             Vgood = Mp.MultMatrix4OnVector4(Vgood);
         }*/
 
-        return _vector - transformComponent.Location;
+        return vector - transformComponent.Location;
     }
 }

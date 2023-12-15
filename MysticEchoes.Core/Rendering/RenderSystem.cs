@@ -48,7 +48,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
         
-                
         _gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
         _gl.Enable( OpenGL.GL_BLEND );
     }
