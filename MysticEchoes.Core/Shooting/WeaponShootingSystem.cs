@@ -1,11 +1,15 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Scene;
 using SevenBoldPencil.EasyDi;
+using SharpGL;
+using SharpGL.SceneGraph;
 
 namespace MysticEchoes.Core.Shooting;
 
@@ -14,6 +18,8 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private IInputManager _inputManager;
+    [EcsInject] private OpenGL _gl;
 
     private EcsFilter _weaponsFilter;
     private EcsPool<TransformComponent> _transforms;

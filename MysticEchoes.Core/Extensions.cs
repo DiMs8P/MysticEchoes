@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using SharpGL;
+using SharpGL.SceneGraph;
 
 namespace MysticEchoes.Core;
 
@@ -47,5 +48,21 @@ public static class OpenGlExtensions
     public static void Rotate(this OpenGL gl, float angle)
     {
         gl.Rotate(angle, 0, 0, 1);
+    }
+}
+
+public static class Matrix4Extensions
+{
+    public static Vector4 MultMatrix4OnVector4(this Matrix matrix, Vector4 vector4)
+    {
+        Vector4 vector42 = new Vector4();
+        for (int i = 0;i<4;i++)
+        {
+            for(int j = 0;j<4;j++)
+            {
+                vector42[i] += (float)matrix[i, j] * vector4[j];
+            }
+        }
+        return vector42;
     }
 }

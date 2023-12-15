@@ -8,12 +8,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <wpf:OpenGLControl Name="GlControl"
+        <wpf:OpenGLControl Name="GlControl" 
                            OpenGLInitialized="GlControl_OnOpenGLInitialized"
                            OpenGLDraw="GlControl_OnOpenGLDraw"
                            Resized="GlControl_OnResized"
                            DrawFPS="True"
                            RenderContextType="FBO"
+                           MouseMove="GlControl_MouseMove"
                            />
     </Grid>
 </Window>

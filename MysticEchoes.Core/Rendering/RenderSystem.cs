@@ -47,6 +47,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _tileMaps = world.GetPool<TileMapComponent>();
         
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
+        
                 
         _gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
         _gl.Enable( OpenGL.GL_BLEND );
@@ -182,7 +183,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Bullet));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
-                
                 _gl.Translate(transform.Location);
                 _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX());
                 _gl.Scale(transform.Scale);

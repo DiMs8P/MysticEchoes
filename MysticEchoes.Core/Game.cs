@@ -9,6 +9,7 @@ using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
+using SharpGL.SceneGraph;
 
 namespace MysticEchoes.Core;
 
@@ -19,7 +20,7 @@ public class Game
     private readonly EcsWorld _world;
 
     private readonly EcsSystems _setupSystems;
-    private readonly EcsSystems _inputSystems;
+    private  EcsSystems _inputSystems;
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
     private readonly EcsSystems _cleanupSystems;
@@ -32,6 +33,7 @@ public class Game
 
     private readonly EntityFactory _entityFactory;
     private readonly Stopwatch _updateTimer;
+    private OpenGL _gl;
 
     //TODO inject settings in systems
     public Game(AssetManager assetManager, PrefabManager prefabManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
@@ -54,12 +56,7 @@ public class Game
             .Inject(_entityFactory, _prefabManager, _mazeGenerator, _systemExecutionContext)
             .Init();
 
-        _inputSystems = new EcsSystems(_world);
-        _inputSystems
-            .Add(new PlayerMovementSystem())
-            .Add(new PlayerShootingSystem())
-            .Inject(inputManager, _systemExecutionContext)
-            .Init();
+
 
         _shootingSystems = new EcsSystems(_world);
         _shootingSystems
@@ -83,8 +80,16 @@ public class Game
 
     public void InitializeRender(OpenGL gl)
     {
+        _gl = gl;
         _assetManager.InitializeGl(gl);
-        
+
+        _inputSystems = new EcsSystems(_world);
+        _inputSystems
+            .Add(new PlayerMovementSystem())
+            .Add(new PlayerShootingSystem())
+            .Inject(InputManager, _systemExecutionContext, gl)
+            .Init();
+
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())
@@ -103,12 +108,15 @@ public class Game
         _gameplaySystems.Run();
         _cleanupSystems.Run();
 
+
         // _updateTimer.Start();
     }
 
     public void Render()
     {
         _renderSystems.Run();
+        _systemExecutionContext.MatrixView = _gl.GetModelViewMatrix();
+        _systemExecutionContext.MatrixProjection = _gl.GetProjectionMatrix();
     }
 
     public void Destroy()

@@ -30,8 +30,8 @@
         "TypeName": "MysticEchoes.Core.Shooting.BurstFireComponent",
         "Parameters": {
           "MaxShotsInBurst": 10,
-          "TimeBetweenBursts": 1.0,
-          "TimeBetweenBurstShots": 0.2
+          "TimeBetweenBursts": 0.1,
+          "TimeBetweenBurstShots": 0.1
         }
       },
       {

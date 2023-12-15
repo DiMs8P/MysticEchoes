@@ -5,13 +5,13 @@
   "WeaponsSettings": {
     "OneShot": {
       "Damage": 10.0,
-      "BulletSpeed": 0.2,
+      "BulletSpeed": 0.05,
       "BulletSize": 0.5,
       "TimeBetweenShoots": 0.1
     },
     "TwoShot": {
       "Damage": 10.0,
-      "BulletSpeed": 0.2,
+      "BulletSpeed": 0.05,
       "BulletSize": 0.5,
       "TimeBetweenShoots": 0.1,
       "DistanceBetweenBullets": 0.08

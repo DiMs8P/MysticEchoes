@@ -63,7 +63,7 @@ public class App : Application
             _readyToRender = false;
 
             // TODO think about it
-            _mainWindow.Dispatcher.Invoke(_inputManager.Update);
+            _mainWindow.Dispatcher.Invoke(new Action (() => _inputManager.Update(_mainWindow)));
             _game.Update();
             try
             {
