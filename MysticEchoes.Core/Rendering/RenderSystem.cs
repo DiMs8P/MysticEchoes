@@ -152,7 +152,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Character)
             {
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Player));
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.PlayerIdle0));
                 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 

@@ -6,12 +6,17 @@ using MysticEchoes.Core.Scene;
 
 namespace MysticEchoes.Core.Loaders;
 
+// TODO store List<objects> - components for each prefab
 public class PrefabManager
 {
+    private IDataLoader _dataLoader;
+
     private Dictionary<PrefabType, Prefab> _prefabs;
     
     public PrefabManager(IDataLoader dataLoader)
     {
+        _dataLoader = dataLoader;
+        
         _prefabs = dataLoader.LoadPrefabs();
     }
 
@@ -78,6 +83,7 @@ public class PrefabManager
     
     private object ConvertParamToPropertyValue(PropertyInfo propertyInfo, object paramValue)
     {
+        // TODO TRY refactor
         object value;
         if (propertyInfo.PropertyType.IsEnum)
         {
@@ -96,6 +102,10 @@ public class PrefabManager
             float x = float.Parse(parts[0], CultureInfo.InvariantCulture);
             float y = float.Parse(parts[1], CultureInfo.InvariantCulture);
             value = new Vector2(x, y); 
+        }
+        else if (propertyInfo.PropertyType.IsGenericType)
+        {
+            value = _dataLoader.LoadObject(paramValue, propertyInfo.PropertyType);
         }
         else
         {

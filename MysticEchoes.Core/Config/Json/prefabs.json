@@ -35,6 +35,31 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
+        "Parameters": {
+          "Animations": {
+            "Idle": [
+              {
+                "Sprite": "PlayerIdle0",
+                "CurrentStateDuration": 3.0
+              }
+            ]
+          },
+          "InitialState": "Idle"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "PlayerIdle0"
+        }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
         "Parameters": {
           "Type": "Character"

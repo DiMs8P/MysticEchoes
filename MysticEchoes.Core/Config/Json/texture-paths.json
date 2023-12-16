@@ -1,5 +1,5 @@
 {
-  "Player": "player.png",
+  "PlayerIdle0": "player.png",
   "Bullet": "bullet.png",
   "Wall": "stoneFloor.jpg",
   "Floor": "stoneWall.jpg"

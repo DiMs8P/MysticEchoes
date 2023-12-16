@@ -4,7 +4,7 @@
 public enum AssetType
 {
     None,
-    Player,
+    PlayerIdle0,
     Bullet,
     Wall,
     Floor,
