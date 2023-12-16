@@ -56,6 +56,13 @@ public class Game
             .Inject(_entityFactory, _prefabManager, _mazeGenerator, _systemExecutionContext)
             .Init();
 
+        _inputSystems = new EcsSystems(_world);
+        _inputSystems
+            .Add(new PlayerMovementSystem())
+            .Add(new PlayerShootingSystem())
+            .Inject(InputManager, _systemExecutionContext)
+            .Init();
+
         _shootingSystems = new EcsSystems(_world);
         _shootingSystems
             .Add(new WeaponsStateSystem())
@@ -81,17 +88,10 @@ public class Game
         _gl = gl;
         _assetManager.InitializeGl(gl);
 
-        _inputSystems = new EcsSystems(_world);
-        _inputSystems
-            .Add(new PlayerMovementSystem())
-            .Add(new PlayerShootingSystem())
-            .Inject(InputManager, _systemExecutionContext, gl)
-            .Init();
-
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())
-            .Inject(gl, _assetManager)
+            .Inject(gl, _assetManager, _systemExecutionContext)
             .Init();
     }
 
@@ -112,8 +112,6 @@ public class Game
     public void Render()
     {
         _renderSystems.Run();
-        _systemExecutionContext.MatrixView = _gl.GetModelViewMatrix();
-        _systemExecutionContext.MatrixProjection = _gl.GetProjectionMatrix();
     }
 
     public void Destroy()

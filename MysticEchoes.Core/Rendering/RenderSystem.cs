@@ -19,6 +19,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private AssetManager _assetManager;
     [EcsInject] private OpenGL _gl;
+    [EcsInject] private SystemExecutionContext _systemExecutionContext;
 
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
@@ -60,6 +61,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
         _gl.LoadIdentity();
         _gl.Ortho(0, 2, 0, 2, -1, 1);
+
+        _systemExecutionContext.MatrixView = _gl.GetModelViewMatrix();
+        _systemExecutionContext.MatrixProjection = _gl.GetProjectionMatrix();
 
         foreach (var entityId in _rendersFilter)
         {

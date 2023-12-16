@@ -11,7 +11,6 @@ namespace MysticEchoes.Core.Shooting;
 public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private IInputManager _inputManager;
-
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
 
     private EcsFilter _playerFilter;
