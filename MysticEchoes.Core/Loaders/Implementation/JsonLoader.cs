@@ -33,11 +33,13 @@ public class JsonLoader : IDataLoader
         }
         else
         {
-            throw new ArgumentException("Unknown object type .");
+            throw new ArgumentException("Unknown object type");
         }
 
         if (result == null)
-            throw new InvalidOperationException("Can't deserialize json .");
+        {
+            throw new InvalidOperationException("Can't deserialize json");
+        }
 
         return result;
     }
@@ -55,7 +57,9 @@ public class JsonLoader : IDataLoader
         string json = File.ReadAllText(jsonPath);
         result = JsonConvert.DeserializeObject<T>(json);
         if (result == null)
+        {
             throw new InvalidOperationException("Can't deserialize json .");
+        }
 
         return result;
     }

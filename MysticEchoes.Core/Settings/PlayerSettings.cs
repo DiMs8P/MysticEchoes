@@ -6,5 +6,4 @@ namespace MysticEchoes.Core.Configuration;
 public class PlayerSettings
 {
     public float Speed { get; set; }
-    public CharacterState InitialState { get; set; }
 }

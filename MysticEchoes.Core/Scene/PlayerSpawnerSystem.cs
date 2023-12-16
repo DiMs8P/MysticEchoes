@@ -50,7 +50,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             }
             else
             {
-                throw new ArgumentException("Prefab setup error");
+                throw new ArgumentException("Player prefab must have Animation component if he has CharacterAnimationComponent and " +
+                                            "have animations for its initial state");
             }
         }
     }
@@ -67,7 +68,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             }
             else
             {
-                throw new ArgumentException("Prefab setup error");
+                throw new ArgumentException("Player prefab must have Sprite component if he has AnimationComponent and " +
+                                            "have initial sprite to render");
             }
         }
     }
