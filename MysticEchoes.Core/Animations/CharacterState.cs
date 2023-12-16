@@ -7,5 +7,6 @@ public enum CharacterState
     MovingRight,
     MovingLeft,
     MovingTop,
-    MovingDown
+    MovingDown,
+    Shooting
 }
