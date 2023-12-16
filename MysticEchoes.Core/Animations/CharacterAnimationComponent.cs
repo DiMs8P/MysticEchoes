@@ -2,12 +2,12 @@
 
 public struct CharacterAnimationComponent
 {
-    public Dictionary<CharacterState, AnimationState[]> Animations { get; set; }
+    public Dictionary<CharacterState, AnimationFrame[]> Animations { get; set; }
     public CharacterState InitialState { get; set; }
 
     public CharacterAnimationComponent()
     {
-        Animations = new Dictionary<CharacterState, AnimationState[]>();
+        Animations = new Dictionary<CharacterState, AnimationFrame[]>();
         InitialState = CharacterState.None;
     }
 }

@@ -2,14 +2,14 @@
 
 public struct AnimationComponent
 {
-    public AnimationState[] Frames { get; set; }
+    public AnimationFrame[] Frames { get; set; }
 
-    public int CurrentFrameElapsedTime { get; set; }
+    public float CurrentFrameElapsedTime { get; set; }
     public uint CurrentFrameIndex { get; set; }
 
     public AnimationComponent()
     {
-        Frames = new AnimationState[]{};
+        Frames = new AnimationFrame[]{};
 
         CurrentFrameElapsedTime = 0;
         CurrentFrameIndex = 0;

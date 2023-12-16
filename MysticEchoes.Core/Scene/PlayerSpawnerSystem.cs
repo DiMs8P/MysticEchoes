@@ -1,11 +1,8 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
-using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Rendering;
-using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Scene;

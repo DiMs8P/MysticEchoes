@@ -41,7 +41,7 @@
             "Idle": [
               {
                 "Sprite": "PlayerIdle0",
-                "CurrentStateDuration": 3.0
+                "CurrentFrameDuration": 3.0
               }
             ]
           },
@@ -80,6 +80,12 @@
       {
         "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
         "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "Bullet"
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",

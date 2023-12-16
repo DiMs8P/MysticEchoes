@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -22,6 +23,7 @@ public class Game
     private readonly EcsSystems _inputSystems;
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
+    private readonly EcsSystems _animationSystems;
     private readonly EcsSystems _cleanupSystems;
     private EcsSystems _renderSystems;
     
@@ -75,6 +77,12 @@ public class Game
             .Inject(_systemExecutionContext)
             .Init();
 
+        _animationSystems = new EcsSystems(_world);
+        _animationSystems
+            .Add(new AnimationSystem())
+            .Inject(_systemExecutionContext)
+            .Init();
+
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
             .Add(new ProjectileCleanupSystem())
@@ -101,6 +109,7 @@ public class Game
         _inputSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
+        _animationSystems.Run();
         _cleanupSystems.Run();
 
         // _updateTimer.Start();

@@ -2,8 +2,8 @@
 
 namespace MysticEchoes.Core.Animations;
 
-public class AnimationState
+public class AnimationFrame
 {
     public AssetType Sprite { get; set; }
-    public float CurrentStateDuration { get; set; }
+    public float CurrentFrameDuration { get; set; }
 }
