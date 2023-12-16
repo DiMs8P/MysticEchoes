@@ -1,5 +1,16 @@
 {
-  "PlayerIdle0": "player.png",
+  "PlayerIdle0": "Character\\tile000.png",
+  "PlayerIdle1": "Character\\tile001.png",
+  "PlayerIdle2": "Character\\tile002.png",
+  "PlayerMovingLeft0": "Character\\tile050.png",
+  "PlayerMovingLeft1": "Character\\tile051.png",
+  "PlayerMovingRight0": "Character\\tile074.png",
+  "PlayerMovingRight1": "Character\\tile077.png",
+  "PlayerMovingTop0": "Character\\tile063.png",
+  "PlayerMovingTop1": "Character\\tile068.png",
+  "PlayerMovingDown0": "Character\\tile048.png",
+  "PlayerMovingDown1": "Character\\tile043.png",
+  
   "Bullet": "bullet.png",
   "Wall": "stoneFloor.jpg",
   "Floor": "stoneWall.jpg"

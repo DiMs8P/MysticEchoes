@@ -5,6 +5,17 @@ public enum AssetType
 {
     None,
     PlayerIdle0,
+    PlayerIdle1,
+    PlayerIdle2,
+    PlayerMovingLeft0,
+    PlayerMovingLeft1,
+    PlayerMovingRight0,
+    PlayerMovingRight1,
+    PlayerMovingTop0,
+    PlayerMovingTop1,
+    PlayerMovingDown0,
+    PlayerMovingDown1,
+    
     Bullet,
     Wall,
     Floor,

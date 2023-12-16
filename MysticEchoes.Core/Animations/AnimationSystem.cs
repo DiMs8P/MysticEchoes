@@ -28,6 +28,11 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref AnimationComponent animationComponent = ref _animations.Get(entityId);
 
+            if (!animationComponent.IsActive)
+            {
+                continue;
+            }
+
             if (animationComponent.CurrentFrameElapsedTime > animationComponent.Frames[animationComponent.CurrentFrameIndex].CurrentFrameDuration)
             {
                 if (++animationComponent.CurrentFrameIndex >= animationComponent.Frames.Length)

@@ -41,7 +41,55 @@
             "Idle": [
               {
                 "Sprite": "PlayerIdle0",
-                "CurrentFrameDuration": 3.0
+                "CurrentFrameDuration": 3
+              },
+              {
+                "Sprite": "PlayerIdle1",
+                "CurrentFrameDuration": 0.1
+              },
+              {
+                "Sprite": "PlayerIdle2",
+                "CurrentFrameDuration": 0.05
+              }
+            ],
+            "MovingLeft": [
+              {
+                "Sprite": "PlayerMovingLeft0",
+                "CurrentFrameDuration": 0.2
+              },
+              {
+                "Sprite": "PlayerMovingLeft1",
+                "CurrentFrameDuration": 0.2
+              }
+            ],
+            "MovingRight": [
+              {
+                "Sprite": "PlayerMovingRight0",
+                "CurrentFrameDuration": 1.0
+              },
+              {
+                "Sprite": "PlayerMovingRight1",
+                "CurrentFrameDuration": 1.0
+              }
+            ],
+            "MovingTop": [
+              {
+                "Sprite": "PlayerMovingTop0",
+                "CurrentFrameDuration": 1.0
+              },
+              {
+                "Sprite": "PlayerMovingTop1",
+                "CurrentFrameDuration": 1.0
+              }
+            ],
+            "MovingDown": [
+              {
+                "Sprite": "PlayerMovingDown0",
+                "CurrentFrameDuration": 1.0
+              },
+              {
+                "Sprite": "PlayerMovingDown1",
+                "CurrentFrameDuration": 1.0
               }
             ]
           },

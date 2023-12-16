@@ -60,6 +60,7 @@ public class Game
         _inputSystems
             .Add(new PlayerMovementSystem())
             .Add(new PlayerShootingSystem())
+            .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
 
@@ -118,17 +119,5 @@ public class Game
     public void Render()
     {
         _renderSystems.Run();
-    }
-
-    public void Destroy()
-    {
-        _world.Destroy();
-        
-        _setupSystems.Destroy();
-        _inputSystems.Destroy();
-        _shootingSystems.Destroy();
-        _gameplaySystems.Destroy();
-        _cleanupSystems.Destroy();
-        _renderSystems.Destroy();
     }
 }
