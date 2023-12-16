@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -22,6 +23,7 @@ public class Game
     private readonly EcsSystems _inputSystems;
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
+    private readonly EcsSystems _animationSystems;
     private readonly EcsSystems _cleanupSystems;
     private EcsSystems _renderSystems;
     
@@ -51,13 +53,14 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _prefabManager, _mazeGenerator, _systemExecutionContext)
+            .Inject(_entityFactory, _prefabManager, _mazeGenerator)
             .Init();
 
         _inputSystems = new EcsSystems(_world);
         _inputSystems
             .Add(new PlayerMovementSystem())
             .Add(new PlayerShootingSystem())
+            .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
 
@@ -72,6 +75,12 @@ public class Game
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems
             .Add(new TransformSystem())
+            .Inject(_systemExecutionContext)
+            .Init();
+
+        _animationSystems = new EcsSystems(_world);
+        _animationSystems
+            .Add(new AnimationSystem())
             .Inject(_systemExecutionContext)
             .Init();
 
@@ -101,6 +110,7 @@ public class Game
         _inputSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
+        _animationSystems.Run();
         _cleanupSystems.Run();
 
         // _updateTimer.Start();
@@ -109,17 +119,5 @@ public class Game
     public void Render()
     {
         _renderSystems.Run();
-    }
-
-    public void Destroy()
-    {
-        _world.Destroy();
-        
-        _setupSystems.Destroy();
-        _inputSystems.Destroy();
-        _shootingSystems.Destroy();
-        _gameplaySystems.Destroy();
-        _cleanupSystems.Destroy();
-        _renderSystems.Destroy();
     }
 }
