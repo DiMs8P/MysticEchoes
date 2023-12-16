@@ -48,16 +48,16 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
         //Matrix Mv = new Matrix(4, 4);
         //Matrix Mp = new Matrix(4, 4);
         Vector2 vector = _inputManager.GetMousePoint();
-/*        Vector4 Vgood = new Vector4(vector, 0, 1);
-        Mv = _systemExecutionContext.MatrixView;
-        Mp = _systemExecutionContext.MatrixProjection;
+        /*        Vector4 Vgood = new Vector4(vector, 0, 1);
+                Mv = _systemExecutionContext.MatrixView;
+                Mp = _systemExecutionContext.MatrixProjection;
 
-        if (Mp is not null && Mv is not null)
-        {
-            Vgood = Mv.MultMatrix4OnVector4(new Vector4(transformComponent.Location, 0, 1));
-            Vgood = Mp.MultMatrix4OnVector4(Vgood);
-        }*/
-
-        return vector - transformComponent.Location;
+                if (Mp is not null && Mv is not null)
+                {
+                    Vgood = Mv.MultMatrix4OnVector4(new Vector4(transformComponent.Location, 0, 1));
+                    Vgood = Mp.MultMatrix4OnVector4(Vgood);
+                }*/
+        vector = Vector2.Normalize(vector - transformComponent.Location);
+        return vector;
     }
 }
