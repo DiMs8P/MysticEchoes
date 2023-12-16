@@ -21,13 +21,10 @@ public readonly struct Rectangle
         Size = size;
     }
 
-    public bool IntersectOrContains(Rectangle other)
+    public bool Intersects(Rectangle other)
     {
-        throw new NotImplementedException(); // Неверный алгоритм, переделать
-        return Contains(other.LeftBottom)
-            || Contains(other.LeftTop)
-            || Contains(other.RightBottom)
-            || Contains(other.RightTop);
+        return !(Left > other.Right || Right < other.Left) 
+            && !(Bottom > other.Top || Top < other.Bottom);
     }
 
     public bool Contains(Vector2 point)

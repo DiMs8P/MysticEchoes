@@ -27,9 +27,7 @@ public class QuadTree
 
     public void Add(Box area)
     {
-        if (!_boundary.IntersectOrContains(area.Shape)
-            && !area.Shape.IntersectOrContains(_boundary)
-           )
+        if (!_boundary.Intersects(area.Shape))
         {
             return;
         }
@@ -67,10 +65,7 @@ public class QuadTree
     {
         if (!IsDivided)
         {
-            foreach (var box in _boxes.Where(box => 
-                         rectangle.IntersectOrContains(box.Shape)
-                         || box.Shape.IntersectOrContains(rectangle)
-                    ))
+            foreach (var box in _boxes.Where(box => rectangle.Intersects(box.Shape)))
             {
                 intersectWith.Add(box.Id);
             }
@@ -136,6 +131,9 @@ public class QuadTree
 
     public override string ToString()
     {
-        return $"[Depth]={MaxDepthQuery()}|[Size]={_boxes.Count}|{_boundary}";
+        var height = MaxDepthQuery() - Depth;
+        return height != 0 
+            ? $"Height={height}|{_boundary}" 
+            : $"Boxes={_boxes.Count}|{_boundary}";
     }
 }
