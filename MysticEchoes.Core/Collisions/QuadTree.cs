@@ -5,29 +5,31 @@ namespace MysticEchoes.Core.Collisions;
 public class QuadTree
 {
     private bool IsDivided => _subTrees.Count > 0;
-    private readonly Rectangle _boundary;
+    public Rectangle Bound { get; }
+    public IReadOnlyCollection<QuadTree> SubTrees => _subTrees.Values;
+
     private readonly int _capacity;
     private readonly List<Box> _boxes = new();
     private readonly Dictionary<AreaType, QuadTree> _subTrees = new ();
     private int Depth;
 
-    public QuadTree(Rectangle boundary, int capacity)
+    public QuadTree(Rectangle bound, int capacity)
     {
-        _boundary = boundary;
+        Bound = bound;
         _capacity = capacity;
         Depth = 0;
     }
 
-    private QuadTree(Rectangle boundary, int capacity, int depth)
+    private QuadTree(Rectangle bound, int capacity, int depth)
     {
-        _boundary = boundary;
+        Bound = bound;
         _capacity = capacity;
         Depth = depth;
     }
 
     public void Add(Box area)
     {
-        if (!_boundary.Intersects(area.Shape))
+        if (!Bound.Intersects(area.Shape))
         {
             return;
         }
@@ -93,28 +95,28 @@ public class QuadTree
     private void Subdivide()
     {
         _subTrees.Add(AreaType.LeftBottom, new QuadTree(
-            new Rectangle(_boundary.LeftBottom, _boundary.Size / 2),
+            new Rectangle(Bound.LeftBottom, Bound.Size / 2),
             _capacity,
             Depth + 1
         ));
         _subTrees.Add(AreaType.LeftTop, new QuadTree(
             new Rectangle(
-                _boundary.LeftBottom + (_boundary.Size / 2) with { X = 0 }, 
-                _boundary.Size / 2),
+                Bound.LeftBottom + (Bound.Size / 2) with { X = 0 }, 
+                Bound.Size / 2),
             _capacity,
             Depth + 1
         ));
         _subTrees.Add(AreaType.RightBottom, new QuadTree(
             new Rectangle(
-                _boundary.LeftBottom + (_boundary.Size / 2) with { Y = 0 },
-                _boundary.Size / 2),
+                Bound.LeftBottom + (Bound.Size / 2) with { Y = 0 },
+                Bound.Size / 2),
             _capacity,
             Depth + 1
         ));
         _subTrees.Add(AreaType.RightTop, new QuadTree(
             new Rectangle(
-                _boundary.LeftBottom + _boundary.Size / 2,
-                _boundary.Size / 2),
+                Bound.LeftBottom + Bound.Size / 2,
+                Bound.Size / 2),
             _capacity,
             Depth + 1
         ));
@@ -133,7 +135,7 @@ public class QuadTree
     {
         var height = MaxDepthQuery() - Depth;
         return height != 0 
-            ? $"Height={height}|{_boundary}" 
-            : $"Boxes={_boxes.Count}|{_boundary}";
+            ? $"Height={height}|{Bound}" 
+            : $"Boxes={_boxes.Count}|{Bound}";
     }
 }
