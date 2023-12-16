@@ -9,7 +9,7 @@ public class BaseInputManager : IInputManager
     private int _horizontal = 0;
     private int _vertical = 0;
     private bool _shooting = false;
-    Vector2 _mousePosition;
+    public Vector2 _mousePosition;
     public int GetHorizontal()
     {
         return _horizontal;
@@ -30,20 +30,17 @@ public class BaseInputManager : IInputManager
         return _mousePosition;
     }
 
-    private Vector2 CalcMousePoint(MainWindow mainWindow)
+/*    private Vector2 CalcMousePoint()
     {
         _mousePosition = mainWindow._mousePosition;
-        _mousePosition.X = 2.0f * _mousePosition.X / (float)mainWindow.ActualWidth;
-        _mousePosition.Y = 2.0f * ((float)mainWindow.ActualHeight - _mousePosition.Y) / (float)mainWindow.ActualHeight;
         return _mousePosition;
-    }
+    }*/
 
-    public void Update(MainWindow mainWindow)
+    public void Update()
     {
         _horizontal = 0;
         _vertical = 0;
         _shooting = Mouse.LeftButton == MouseButtonState.Pressed;
-        _mousePosition = CalcMousePoint(mainWindow);
 
         if (Keyboard.IsKeyDown(Key.W))
         {

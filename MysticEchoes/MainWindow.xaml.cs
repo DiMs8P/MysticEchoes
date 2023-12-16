@@ -35,5 +35,7 @@ public partial class MainWindow : Window
     {
         Point mousePosition = e.GetPosition(GlControl);
         _mousePosition = new Vector2((float)mousePosition.X, (float)mousePosition.Y);
+        _mousePosition.X = 2.0f * _mousePosition.X / (float)ActualWidth;
+        _mousePosition.Y = 2.0f * ((float)ActualHeight - _mousePosition.Y) / (float)ActualHeight;
     }
 }
