@@ -32,21 +32,6 @@ public class PlayerAnimationSystem : IEcsInitSystem, IEcsRunSystem
     {
         foreach (var playerId in _playerFilter)
         {
-            /*ref AnimationComponent playerFrames = ref _animations.Get(playerId);
-            ref SpriteComponent playerSprite = ref _sprites.Get(playerId);
-            
-            if (_inputManager.GetVertical() == 0 && _inputManager.GetHorizontal() == 0)
-            {
-                playerFrames.IsActive = false;
-                playerFrames.CurrentFrameIndex = 0;
-                playerFrames.CurrentFrameElapsedTime = 0;
-
-                playerSprite.Sprite = playerFrames.Frames[playerFrames.CurrentFrameIndex].Sprite;
-            }
-            else
-            {
-                playerFrames.IsActive = true;
-            }*/
         }
     }
 }
