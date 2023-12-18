@@ -77,4 +77,11 @@ public class App : Application
             _readyToRender = true;
         }
     }
+    
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _renderTimer.Dispose();
+        
+        base.OnExit(e);
+    }
 }
