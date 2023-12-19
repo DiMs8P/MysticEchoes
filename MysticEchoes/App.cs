@@ -77,12 +77,11 @@ public class App : Application
             _readyToRender = true;
         }
     }
-
+    
     protected override void OnExit(ExitEventArgs e)
     {
         _renderTimer.Dispose();
         
-        _game.Destroy();
         base.OnExit(e);
     }
 }

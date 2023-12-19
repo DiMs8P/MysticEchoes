@@ -1,4 +1,5 @@
-﻿using MysticEchoes.Core.Shooting;
+﻿using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.Configuration;
 

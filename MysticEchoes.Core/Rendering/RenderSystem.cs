@@ -22,6 +22,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
+    private EcsPool<SpriteComponent> _sprites;
+    
     private EcsPool<SpaceTreeComponent> _spaceTrees;
 
     private EcsPool<TransformComponent> _transforms;
@@ -44,6 +46,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         EcsWorld world = systems.GetWorld();
 
         _renders = world.GetPool<RenderComponent>();
+        _sprites = world.GetPool<SpriteComponent>();
         _rendersFilter = world.Filter<RenderComponent>().End();
 
         _transforms = world.GetPool<TransformComponent>();
@@ -198,9 +201,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.Character)
             {
+                ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
+                
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Player));
-
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(spriteComponent.Sprite));
+                
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Begin(OpenGL.GL_QUADS);
@@ -242,11 +247,13 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.Bullet)
             {
+                ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
+                
                 _gl.PushMatrix();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Bullet));
-
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(spriteComponent.Sprite));
+                
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Translate(transform.Location);
