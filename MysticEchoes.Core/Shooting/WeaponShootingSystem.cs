@@ -112,8 +112,11 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         projectileDamageComponent.Damage = damage;
 
         ref DynamicCollider collider = ref _colliders.Get(projectile);
-        //collider.Box = new Box(projectile, new Rectangle(projectileLocation, ))
-
+        collider.Box = new Box(projectile, new Rectangle(
+            - Vector2.One * _weaponsSettings.OneShot.BulletSize / 4,
+            Vector2.One * _weaponsSettings.OneShot.BulletSize / 2
+            ));
+        //_weaponsSettings.OneShot.BulletSize
 
         return projectile;
     }

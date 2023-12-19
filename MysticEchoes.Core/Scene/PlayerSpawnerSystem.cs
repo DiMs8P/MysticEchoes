@@ -49,7 +49,6 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private void SetupCollider(int player)
     {
         ref var playerCollider = ref _colliders.Get(player);
-
         
         playerCollider.Box = new Box(player, new Rectangle(
             new Vector2(-0.15f, -0.2f),

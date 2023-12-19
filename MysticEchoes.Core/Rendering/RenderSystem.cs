@@ -280,6 +280,26 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PopMatrix();
                 _gl.GetModelViewMatrix();
+
+                _gl.PushMatrix();
+                _gl.Translate(transform.Location);
+                _gl.Scale(transform.Scale);
+
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                var collider = _dynamicColliders.Get(entityId);
+
+                var rect = collider.Box.Shape;
+
+                _gl.Color(1.0f, 0.3f, 0.0f);
+
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
+
+                _gl.PopMatrix();
+
             }
             else if (render.Type is not RenderingType.None)
             {
