@@ -2,7 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
-using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;

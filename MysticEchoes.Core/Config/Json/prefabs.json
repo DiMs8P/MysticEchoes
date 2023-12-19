@@ -130,6 +130,10 @@
         "Parameters": {}
       },
       {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": {}
+      },
+      {
         "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
         "Parameters": {}
       },

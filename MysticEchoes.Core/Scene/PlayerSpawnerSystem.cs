@@ -20,7 +20,6 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
 
-    private PlayerSettings _playersettings;
     private EcsPool<DynamicCollider> _colliders;
 
     public void Init(IEcsSystems systems)
@@ -31,9 +30,6 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _animations = world.GetPool<AnimationComponent>();
         _sprites = world.GetPool<SpriteComponent>();
         
-        _playersettings = _systemExecutionContext.Settings.PlayerSettings;
-
-        var world = systems.GetWorld();
         _colliders = world.GetPool<DynamicCollider>();
 
         CreatePlayer(_factory);
@@ -45,8 +41,20 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
+        SetupCollider(player);
 
         return player;
+    }
+
+    private void SetupCollider(int player)
+    {
+        ref var playerCollider = ref _colliders.Get(player);
+
+        
+        playerCollider.Box = new Box(player, new Rectangle(
+            new Vector2(-0.15f, -0.2f),
+            new Vector2(0.265f, 0.35f)
+        ));
     }
 
     private void SetupPlayerAnimations(int playerId)
@@ -72,15 +80,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_animations.Has(playerId))
         {
             ref AnimationComponent playerAnimationComponent = ref _animations.Get(playerId);
-        int player = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Player);
-        ref var playerCollider = ref _colliders.Get(player);
-
-        playerCollider.Box = new Box(player, new Rectangle(
-            new Vector2(-0.2f, -0.2f),
-            new Vector2(0.4f, 0.4f)
-        ));
-
-
+            
             if (playerAnimationComponent.Frames.Count() > playerAnimationComponent.CurrentFrameIndex && _sprites.Has(playerId))
             {
                 ref SpriteComponent playerAnimation = ref _sprites.Get(playerId);

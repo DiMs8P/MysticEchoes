@@ -10,7 +10,6 @@
     <Folder Include="Assets\Bullet\" />
     <Folder Include="Base\Exceptions\" />
     <Folder Include="Collisions\Новая папка\" />
-    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
