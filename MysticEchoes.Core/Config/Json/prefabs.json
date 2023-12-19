@@ -12,6 +12,10 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": { }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Location": "0.5 0.5",
@@ -23,7 +27,7 @@
         "Parameters": {
           "Type": "TwoShoot",
           "TimeBetweenShots": 0.2,
-          "ProjectilePrefab" : "Bullet"
+          "ProjectilePrefab": "Bullet"
         }
       },
       {

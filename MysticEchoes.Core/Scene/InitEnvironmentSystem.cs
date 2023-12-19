@@ -30,7 +30,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         var map = _mazeGenerator.Generate();
 
         var mapComponent = new TileMapComponent(map);
-        var mapEntity = _factory.Create()
+        _factory.Create()
             .Add(mapComponent)
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();

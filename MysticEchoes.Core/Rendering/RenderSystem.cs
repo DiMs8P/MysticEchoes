@@ -27,6 +27,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
+    private EcsPool<DynamicCollider> _dynamicColliders;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
     {
@@ -48,6 +49,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _transforms = world.GetPool<TransformComponent>();
         _tileMaps = world.GetPool<TileMapComponent>();
         _staticColliders = world.GetPool<StaticCollider>();
+        _dynamicColliders = world.GetPool<DynamicCollider>();
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
@@ -145,7 +147,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 var rect = collider.Box.Shape;
 
-                _gl.Color(1.0f, 0.3f, 0.0f, 1.0f);
+                _gl.Color(1.0f, 0.3f, 0.0f);
 
                 _gl.Vertex(rect.Left, rect.Bottom);
                 _gl.Vertex(rect.Left, rect.Top);
@@ -218,6 +220,25 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+
+                _gl.PushMatrix();
+                _gl.Translate(transform.Location);
+                _gl.Scale(transform.Scale);
+
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                var collider = _dynamicColliders.Get(entityId);
+
+                var rect = collider.Box.Shape;
+
+                _gl.Color(1.0f, 0.3f, 0.0f);
+
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
+
+                _gl.PopMatrix();
             }
             else if (render.Type is RenderingType.Bullet)
             {

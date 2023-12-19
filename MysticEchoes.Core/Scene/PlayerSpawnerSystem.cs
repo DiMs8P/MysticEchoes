@@ -1,4 +1,7 @@
-﻿using Leopotam.EcsLite;
+﻿using System.Numerics;
+using Leopotam.EcsLite;
+using MysticEchoes.Core.Base.Geometry;
+using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -14,10 +17,15 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     [EcsInject] private EntityFactory _factory;
 
     private PlayerSettings _playersettings;
+    private EcsPool<DynamicCollider> _colliders;
+
     public void Init(IEcsSystems systems)
     {
         _playersettings = _systemExecutionContext.Settings.PlayerSettings;
-        
+
+        var world = systems.GetWorld();
+        _colliders = world.GetPool<DynamicCollider>();
+
         CreatePlayer(_factory);
     }
 
@@ -31,6 +39,13 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         };
 
         int player = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Player);
+        ref var playerCollider = ref _colliders.Get(player);
+
+        playerCollider.Box = new Box(player, new Rectangle(
+            new Vector2(-0.2f, -0.2f),
+            new Vector2(0.4f, 0.4f)
+        ));
+
 
         return player;
     }
