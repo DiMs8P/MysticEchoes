@@ -132,7 +132,7 @@
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
-          "Sprite": "Bullet"
+          "Sprite": "Bullet1"
         }
       },
       {
