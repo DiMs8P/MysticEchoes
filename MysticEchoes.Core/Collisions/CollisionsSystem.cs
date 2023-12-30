@@ -146,11 +146,12 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             // Подвинуть героя 
             return;
         }
-        if (target.Behavior is CollisionBehavior.Wall &&
-            entity.Behavior is CollisionBehavior.AllyBullet or CollisionBehavior.EnemyBullet
-           )
+        if (entity.Behavior is CollisionBehavior.AllyBullet or CollisionBehavior.EnemyBullet)
         {
-            // Уничтожить снаряд
+            if (target.Behavior is CollisionBehavior.Wall)
+            {
+                // Уничтожить снаряд
+            }
             return;
         }
 

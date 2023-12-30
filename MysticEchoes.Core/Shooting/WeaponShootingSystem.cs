@@ -117,7 +117,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             - Vector2.One * _weaponsSettings.OneShot.BulletSize / 4,
             Vector2.One * _weaponsSettings.OneShot.BulletSize / 2
             ));
-        collider.Behavior = CollisionBehavior.Bullet;
+        collider.Behavior = CollisionBehavior.AllyBullet;
 
         return projectile;
     }

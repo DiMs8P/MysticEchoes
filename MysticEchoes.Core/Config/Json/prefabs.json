@@ -8,7 +8,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 1.0
+          "Speed": 0.3
         }
       },
       {
@@ -19,7 +19,8 @@
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Location": "0.5 0.5",
-          "Rotation": "0 1"
+          "Rotation": "0 1",
+          "Scale":  "0.15 0.15"
         }
       },
       {
@@ -123,7 +124,9 @@
     "Components": [
       {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
-        "Parameters": {}
+        "Parameters": {
+          "Scale": "0.15 0.15"
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",

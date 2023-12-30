@@ -203,11 +203,16 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.Character)
             {
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
-                
+
+                _gl.PushMatrix();
+
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(spriteComponent.Sprite));
-                
+
                 ref TransformComponent transform = ref _transforms.Get(entityId);
+
+                _gl.Translate(transform.Location);
+                _gl.Scale(transform.Scale);
 
                 _gl.Begin(OpenGL.GL_QUADS);
 
@@ -215,14 +220,20 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 const float halfSize = 0.2f;
                 _gl.TexCoord(0.0, 0.0f);
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(-halfSize, +halfSize);
                 _gl.TexCoord(0.0, 1.0f);
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(-halfSize, -halfSize);
                 _gl.TexCoord(1.0, 1.0f);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                _gl.Vertex(+halfSize, -halfSize);
                 _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
+                _gl.Vertex(+halfSize, +halfSize);
                 _gl.End();
+
+                _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+
+                _gl.PopMatrix();
+                _gl.GetModelViewMatrix();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);

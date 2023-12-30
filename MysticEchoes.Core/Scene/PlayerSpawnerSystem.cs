@@ -7,6 +7,7 @@ using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
+using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
 
@@ -20,8 +21,9 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
-
+    private EcsPool<TransformComponent> _transforms;
     private EcsPool<DynamicCollider> _colliders;
+    private EcsPool<MovementComponent> _movements;
 
     public void Init(IEcsSystems systems)
     {
@@ -30,16 +32,17 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _characterAnimations = world.GetPool<CharacterAnimationComponent>();
         _animations = world.GetPool<AnimationComponent>();
         _sprites = world.GetPool<SpriteComponent>();
-        
+        _transforms = world.GetPool<TransformComponent>();
         _colliders = world.GetPool<DynamicCollider>();
-
+        _movements = world.GetPool<MovementComponent>();
+        
         CreatePlayer(_factory);
     }
 
     private int CreatePlayer(EntityFactory factory)
     {
         int player = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.Player);
-
+        
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
@@ -50,10 +53,12 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private void SetupCollider(int player)
     {
         ref var playerCollider = ref _colliders.Get(player);
-        
+        ref var transform = ref _transforms.Get(player);
+        //transform.Scale /= 9;
+
         playerCollider.Box = new Box(player, new Rectangle(
-            new Vector2(-0.15f, -0.2f),
-            new Vector2(0.265f, 0.35f)
+            new Vector2(-0.15f, -0.2f) * transform.Scale,
+            new Vector2(0.265f, 0.35f) * transform.Scale
         ));
         playerCollider.Behavior = CollisionBehavior.AllyCharacter;
     }
