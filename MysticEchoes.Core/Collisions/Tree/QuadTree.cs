@@ -1,6 +1,6 @@
 ﻿using MysticEchoes.Core.Base.Geometry;
 
-namespace MysticEchoes.Core.Collisions;
+namespace MysticEchoes.Core.Collisions.Tree;
 
 public class QuadTree
 {
@@ -9,8 +9,8 @@ public class QuadTree
     public IReadOnlyCollection<QuadTree> SubTrees => _subTrees.Values;
 
     private readonly int _capacity;
-    private readonly List<Box> _boxes = new();
-    private readonly Dictionary<AreaType, QuadTree> _subTrees = new ();
+    private List<Box> _boxes = new();
+    private Dictionary<AreaType, QuadTree> _subTrees = new ();
     private int Depth;
 
     public QuadTree(Rectangle bound, int capacity)
@@ -51,14 +51,17 @@ public class QuadTree
         }
     }
 
+    public void Clear()
+    {
+        _subTrees = new();
+        _boxes = new();
+    }
+
     public HashSet<int> Query(Rectangle rectangle)
     {
         var result = new HashSet<int>();
 
-        foreach (var subTree in _subTrees.Values)
-        {
-            subTree.Query(rectangle, result);
-        }
+        Query(rectangle,  result);
 
         return result;
     }

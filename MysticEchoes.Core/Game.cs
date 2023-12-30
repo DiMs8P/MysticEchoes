@@ -122,6 +122,7 @@ public class Game
         _updateTimer.Restart();
         
         _inputSystems.Run();
+        _collisionSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
         _animationSystems.Run();

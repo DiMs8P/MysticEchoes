@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -46,7 +47,8 @@ public class InitEnvironmentSystem : IEcsInitSystem
                             new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
                             new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
                         )
-                    )
+                    ),
+                    Behavior = CollisionBehavior.Wall
                 })
                 .Add(new RenderComponent(RenderingType.ColliderDebugView))
                 .End();

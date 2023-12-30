@@ -1,4 +1,4 @@
-﻿namespace MysticEchoes.Core.Collisions;
+﻿namespace MysticEchoes.Core.Collisions.Tree;
 
 public struct SpaceTreeComponent
 {

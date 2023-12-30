@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -116,7 +117,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             - Vector2.One * _weaponsSettings.OneShot.BulletSize / 4,
             Vector2.One * _weaponsSettings.OneShot.BulletSize / 2
             ));
-        //_weaponsSettings.OneShot.BulletSize
+        collider.Behavior = CollisionBehavior.Bullet;
 
         return projectile;
     }

@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -54,6 +55,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             new Vector2(-0.15f, -0.2f),
             new Vector2(0.265f, 0.35f)
         ));
+        playerCollider.Behavior = CollisionBehavior.AllyCharacter;
     }
 
     private void SetupPlayerAnimations(int playerId)

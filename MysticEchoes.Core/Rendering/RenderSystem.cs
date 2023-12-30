@@ -3,6 +3,7 @@ using System.Numerics;
 using Leopotam.EcsLite;
 using MazeGeneration;
 using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.MapModule;
@@ -228,7 +229,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PushMatrix();
                 _gl.Translate(transform.Location);
-                _gl.Scale(transform.Scale);
 
                 _gl.Begin(OpenGL.GL_LINE_LOOP);
                 var collider = _dynamicColliders.Get(entityId);
