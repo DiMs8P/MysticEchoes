@@ -112,10 +112,11 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         ref DamageComponent projectileDamageComponent = ref _damages.Get(projectile);
         projectileDamageComponent.Damage = damage;
 
+        ref var transform = ref _transforms.Get(projectile);
         ref DynamicCollider collider = ref _colliders.Get(projectile);
         collider.Box = new Box(projectile, new Rectangle(
-            - Vector2.One * _weaponsSettings.OneShot.BulletSize / 4,
-            Vector2.One * _weaponsSettings.OneShot.BulletSize / 2
+            Vector2.Zero,
+            Vector2.One * _weaponsSettings.OneShot.BulletSize * transform.Scale  / 2
             ));
         collider.Behavior = CollisionBehavior.AllyBullet;
 

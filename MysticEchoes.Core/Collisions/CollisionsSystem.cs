@@ -14,6 +14,7 @@ namespace MysticEchoes.Core.Collisions;
 public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private SystemExecutionContext _context;
 
     private int _mapId;
     private EcsFilter _staticEntities;
@@ -24,6 +25,8 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _dynamicCollidersFilter;
     private QuadTree _dynamicCollidersTree;
     private EcsPool<TransformComponent> _transforms;
+    private EcsPool<MovementComponent> _movements;
+    private const float CollisionResolvingSensitivity = 1e-4f;
 
     public void Init(IEcsSystems systems)
     {
@@ -41,6 +44,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
         _transforms = world.GetPool<TransformComponent>();
+        _movements = world.GetPool<MovementComponent>();
 
         _dynamicCollidersFilter = world.Filter<DynamicCollider>()
             .Inc<MovementComponent>()
@@ -82,50 +86,56 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
         foreach (var entity in _dynamicCollidersFilter)
         {
-            ref var transform = ref _transforms.Get(entity);
             var collider = _dynamicColliders.Get(entity);
 
-            var transformedBox = GetTransformedBox(collider, transform);
-
-            _dynamicCollidersTree.Add(transformedBox);
+            _dynamicCollidersTree.Add(collider.Box);
         }
 
         foreach (var entity in _dynamicCollidersFilter)
         {
             ref var transform = ref _transforms.Get(entity);
             var collider = _dynamicColliders.Get(entity);
-            var transformedBox = GetTransformedBox(collider, transform);
+            var box = collider.Box;
 
-            var intersectedDynamicEntities = _dynamicCollidersTree.Query(transformedBox.Shape);
+            var intersectedDynamicEntities = _dynamicCollidersTree.Query(box.Shape);
             intersectedDynamicEntities.Remove(entity);
 
-            var staticIntersected = _staticCollidersTree.Query(transformedBox.Shape);
+            var staticIntersected = _staticCollidersTree.Query(box.Shape);
 
             foreach (var target in intersectedDynamicEntities)
             {
-                ref var targetTransform = ref _transforms.Get(target);
                 var targetCollider = _dynamicColliders.Get(target);
-                var transformedTargetBox = GetTransformedBox(targetCollider, targetTransform);
 
-                HandleCollisions(new CollisionHandlingEntityInfo
-                {
-                    Id = entity,
-                    Behavior = collider.Behavior,
-                    Box = transformedBox
-                }, new CollisionHandlingEntityInfo
-                {
-                    Id = target,
-                    Behavior = targetCollider.Behavior,
-                    Box = transformedTargetBox
-                });
+                //HandleCollisions(new CollisionHandlingEntityInfo
+                //{
+                //    Id = entity,
+                //    Behavior = collider.Behavior,
+                //    Box = box
+                //}, new CollisionHandlingEntityInfo
+                //{
+                //    Id = target,
+                //    Behavior = targetCollider.Behavior,
+                //    Box = targetCollider.Box
+                //});
             }
 
-            if (staticIntersected.Count > 0)
+            foreach (var target in staticIntersected)
             {
-                Console.WriteLine(123);
+                var targetCollider = _staticColliders.Get(target);
+                
+                //HandleCollisions(new CollisionHandlingEntityInfo
+                //{
+                //    Id = entity,
+                //    Behavior = collider.Behavior,
+                //    Box = box
+                //}, new CollisionHandlingEntityInfo
+                //{
+                //    Id = target,
+                //    Behavior = targetCollider.Behavior,
+                //    Box = targetCollider.Box
+                //});
             }
         }
-
     }
 
     private void HandleCollisions(CollisionHandlingEntityInfo entity, CollisionHandlingEntityInfo target)
@@ -139,10 +149,64 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             throw new InvalidOperationException();
         }
 
-        if (target.Behavior is CollisionBehavior.Wall && 
+        if (target.Behavior is CollisionBehavior.Wall &&
             entity.Behavior is CollisionBehavior.AllyCharacter or CollisionBehavior.EnemyCharacter
             )
         {
+            var shape = entity.Box.Shape;
+            var targetShape = target.Box.Shape;
+            ref var transform = ref _transforms.Get(entity.Id);
+            ref var movement = ref _movements.Get(entity.Id);
+            if (movement.Velocity == Vector2.Zero)
+            {
+                return;
+            }
+
+            //var k = 0;
+            if (movement.Velocity.Y > 0 && (targetShape.Bottom <= shape.Top && shape.Top <= targetShape.Top))
+            {
+                transform.Location = transform.Location with { Y = targetShape.Bottom - shape.Size.Y / 2 - 1e-5f };
+            }
+            else if (movement.Velocity.Y < 0 && (targetShape.Bottom <= shape.Bottom && shape.Bottom <= targetShape.Top))
+            {
+                transform.Location = transform.Location with { Y = targetShape.Top + shape.Size.Y / 2 + 1e-3f };
+            }
+            
+            if (movement.Velocity.X > 0 && (targetShape.Left <= shape.Right && shape.Right <= targetShape.Right))
+            {
+                transform.Location = transform.Location with { X = targetShape.Left - shape.Size.X / 2 - 1e-5f };
+            }
+            else if (movement.Velocity.X < 0 && (targetShape.Left <= shape.Left && shape.Left <= targetShape.Right))
+            {
+                transform.Location = transform.Location with { X = targetShape.Right + shape.Size.X / 2 + 1e-5f };
+            }
+            //while (targetShape.Intersects(shape))
+            //{
+            //    k++;
+            //    transform.Location -= movement.Velocity * CollisionResolvingSensitivity;
+            //    shape = shape with { LeftBottom = shape.LeftBottom - movement.Velocity * CollisionResolvingSensitivity };
+            //}
+
+            //if (targetShape.Left <= shape.Right && shape.Right <= targetShape.Right)
+            //{
+            //    transform.Location = transform.Location with { X = targetShape.Left - shape.Size.X / 2 - 1e-13f };
+            //    return;
+            //}
+            //if (targetShape.Left <= shape.Left && shape.Left <= targetShape.Right)
+            //{
+            //    transform.Location = transform.Location with { X = targetShape.Right + shape.Size.X / 2 + 1e-13f };
+            //    return;
+            //}
+            //if (targetShape.Bottom <= shape.Top && shape.Top <= targetShape.Top)
+            //{
+            //    transform.Location = transform.Location with { Y = targetShape.Bottom - shape.Size.Y / 2 - 1e-13f };
+            //    return;
+            //}
+            //if (targetShape.Bottom <= shape.Bottom && shape.Bottom <= targetShape.Top)
+            //{
+            //    transform.Location = transform.Location with { Y = targetShape.Top + shape.Size.Y / 2 + 1e-13f };
+            //    return;
+            //}
             // Подвинуть героя 
             return;
         }
@@ -177,18 +241,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
 
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
-    }
-
-    private static Box GetTransformedBox(DynamicCollider collider, TransformComponent transform)
-    {
-        var transformedCollider = collider.Box with
-        {
-            Shape = collider.Box.Shape with
-            {
-                LeftBottom = collider.Box.Shape.LeftBottom + transform.Location
-            }
-        };
-        return transformedCollider;
     }
 }
 

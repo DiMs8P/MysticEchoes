@@ -239,19 +239,19 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
 
                 _gl.PushMatrix();
-                _gl.Translate(transform.Location);
+
+                var collider = _dynamicColliders.Get(entityId);
+                var rect = collider.Box.Shape;
+                _gl.Translate(rect.LeftBottom);
 
                 _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _dynamicColliders.Get(entityId);
-
-                var rect = collider.Box.Shape;
 
                 _gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.Vertex(0, 0);
+                _gl.Vertex(0, rect.Size.Y);
+                _gl.Vertex(rect.Size.X, rect.Size.Y);
+                _gl.Vertex(rect.Size.X, 0);
                 _gl.End();
 
                 _gl.PopMatrix();
@@ -293,20 +293,19 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.GetModelViewMatrix();
 
                 _gl.PushMatrix();
-                _gl.Translate(transform.Location);
-                _gl.Scale(transform.Scale);
+
+                var collider = _dynamicColliders.Get(entityId);
+                var rect = collider.Box.Shape;
+                _gl.Translate(rect.LeftBottom);
 
                 _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _dynamicColliders.Get(entityId);
-
-                var rect = collider.Box.Shape;
 
                 _gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.Vertex(0, 0);
+                _gl.Vertex(0, rect.Size.Y);
+                _gl.Vertex(rect.Size.X, rect.Size.Y);
+                _gl.Vertex(rect.Size.X, 0);
                 _gl.End();
 
                 _gl.PopMatrix();

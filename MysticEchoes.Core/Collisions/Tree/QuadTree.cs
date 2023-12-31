@@ -6,7 +6,7 @@ public class QuadTree
 {
     private bool IsDivided => _subTrees.Count > 0;
     public Rectangle Bound { get; }
-    public IReadOnlyCollection<QuadTree> SubTrees => _subTrees.Values;
+    public List<QuadTree> SubTrees => _subTrees.Select(x => x.Value).ToList();
 
     private readonly int _capacity;
     private List<Box> _boxes = new();

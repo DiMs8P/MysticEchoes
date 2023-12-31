@@ -80,16 +80,17 @@ public class Game
             .Inject(_systemExecutionContext, _entityFactory, _prefabManager)
             .Init();
 
-        _collisionSystems = new EcsSystems(_world);
-        _collisionSystems
-            .Add(new CollisionsSystem())
-            .Inject(_entityFactory)
-            .Init();
-
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems
             .Add(new TransformSystem())
+            .Add(new CollidersMovementSystem())
             .Inject(_systemExecutionContext)
+            .Init();
+
+        _collisionSystems = new EcsSystems(_world);
+        _collisionSystems
+            .Add(new CollisionsSystem())
+            .Inject(_entityFactory, _systemExecutionContext)
             .Init();
 
         _animationSystems = new EcsSystems(_world);
@@ -119,12 +120,13 @@ public class Game
     {
         // _updateTimer.Stop();
         _systemExecutionContext.DeltaTime = _updateTimer.ElapsedMilliseconds / 1e3f;
+        _systemExecutionContext.FrameNumber += 1;
         _updateTimer.Restart();
         
         _inputSystems.Run();
-        _collisionSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
+        _collisionSystems.Run();
         _animationSystems.Run();
         _cleanupSystems.Run();
 

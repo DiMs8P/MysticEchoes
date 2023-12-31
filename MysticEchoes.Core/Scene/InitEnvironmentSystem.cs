@@ -53,7 +53,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 .Add(new RenderComponent(RenderingType.ColliderDebugView))
                 .End();
             ref var collider = ref _staticColliders.Get(wallEntityId);
-            collider.Box = collider.Box with {Id = wallEntityId};
+            collider.Box.Id = wallEntityId;
         }
 
     }

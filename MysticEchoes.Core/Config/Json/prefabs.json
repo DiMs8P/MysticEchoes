@@ -18,9 +18,9 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
-          "Location": "0.5 0.5",
+          "Location": "0.6 0.5",
           "Rotation": "0 1",
-          "Scale":  "0.15 0.15"
+          "Scale":  "0.11 0.11"
         }
       },
       {

@@ -57,7 +57,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         //transform.Scale /= 9;
 
         playerCollider.Box = new Box(player, new Rectangle(
-            new Vector2(-0.15f, -0.2f) * transform.Scale,
+            Vector2.Zero, 
             new Vector2(0.265f, 0.35f) * transform.Scale
         ));
         playerCollider.Behavior = CollisionBehavior.AllyCharacter;

@@ -43,7 +43,10 @@ public class App : Application
         
         _game = new Game(environment, settings);*/
         _game.InitializeRender(args.OpenGL);
-        _mainWindow.GlControl.OpenGLDraw += (_, _) => _game.Render();
+        _mainWindow.GlControl.OpenGLDraw += (_, _) =>
+        {
+            _game.Render();
+        };
     }
 
     public void RunGame()
@@ -51,7 +54,7 @@ public class App : Application
         _readyToRender = true;
         // Todo попробовать добавить в state mainWindow, game и readyToRender
         // Возможно это уменьшит количество сборок мусора
-        _renderTimer = new Timer(RenderTimerCallback!, null, 0, 20);
+        _renderTimer = new Timer(RenderTimerCallback!, null, 0, 40);
     }
 
     private void RenderTimerCallback(object _)
