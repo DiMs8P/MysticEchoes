@@ -16,5 +16,25 @@
       "TimeBetweenShoots": 0.1,
       "DistanceBetweenBullets": 0.08
     }
+  },
+  "ItemsSettings": {
+    "Items": {
+      "0": {
+        "Name": "Money",
+        "Description": "",
+        "Quality": "Common"
+      },
+      "1": {
+        "Name": "Laser",
+        "Description": "",
+        "Quality": "Rare"
+      }
+    },
+    "QualityPoints": {
+      "Common": 50,
+      "Rare": 10,
+      "Epic": 5,
+      "Legendary": 1
+    }
   }
 }
