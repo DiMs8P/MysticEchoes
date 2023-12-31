@@ -9,8 +9,8 @@ public class ItemsFactory
 
     static ItemsFactory()
     {
-        FactoryMethods.Add(Item.Money, parameters => new Money((uint)parameters[0]) { ItemId = Item.Money });
-        FactoryMethods.Add(Item.Laser, _ => new LaserItem() { ItemId = Item.Laser });
+        FactoryMethods.Add(Item.Money, parameters => new Money((uint)parameters[0]));
+        FactoryMethods.Add(Item.Laser, _ => new LaserItem());
     }
 
     public static BaseItem CreateItem(Item itemId, params object[] parameters)
