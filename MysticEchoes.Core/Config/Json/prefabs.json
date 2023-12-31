@@ -62,6 +62,15 @@
         "Parameters": {
           "Type": "Character"
         }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
+        "Parameters": {
+          "Money": 50,
+          "TakenItems": [
+            "Laser"
+          ]
+        }
       }
     ]
   },

@@ -4,22 +4,22 @@ namespace MysticEchoes.Core.Items;
 
 public class ItemsFactory
 {
-    private static readonly Dictionary<uint, Func<object[], BaseItem>> FactoryMethods
-        = new Dictionary<uint, Func<object[], BaseItem>>();
+    private static readonly Dictionary<Item, Func<object[], BaseItem>> FactoryMethods
+        = new Dictionary<Item, Func<object[], BaseItem>>();
 
     static ItemsFactory()
     {
-        FactoryMethods.Add(0, parameters => new Money((uint)parameters[0]) { EntityId = 0 });
-        FactoryMethods.Add(1, _ => new LaserItem() { EntityId = 1 });
+        FactoryMethods.Add(Item.Money, parameters => new Money((uint)parameters[0]) { ItemId = Item.Money });
+        FactoryMethods.Add(Item.Laser, _ => new LaserItem() { ItemId = Item.Laser });
     }
 
-    public static BaseItem CreateItem(uint id, params object[] parameters)
+    public static BaseItem CreateItem(Item itemId, params object[] parameters)
     {
-        if (FactoryMethods.TryGetValue(id, out Func<object[], BaseItem> factoryMethod))
+        if (FactoryMethods.TryGetValue(itemId, out Func<object[], BaseItem> factoryMethod))
         {
             return factoryMethod(parameters);
         }
 
-        throw new ArgumentException($"Invalid item Id: {id}");
+        throw new ArgumentException($"Invalid item Id: {itemId.ToString()}");
     }
 }

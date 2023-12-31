@@ -4,6 +4,6 @@ namespace MysticEchoes.Core.Configuration;
 
 public class ItemsSettings
 {
-    public Dictionary<uint, ItemInfo> Items { get; set; }
+    public Dictionary<Item, ItemInfo> Items { get; set; }
     public Dictionary<ItemQuality, uint> QualityPoints { get; set; }
 }

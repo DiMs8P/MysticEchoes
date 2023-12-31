@@ -19,12 +19,12 @@
   },
   "ItemsSettings": {
     "Items": {
-      "0": {
+      "Money": {
         "Name": "Money",
         "Description": "",
         "Quality": "Common"
       },
-      "1": {
+      "Laser": {
         "Name": "Laser",
         "Description": "",
         "Quality": "Rare"
