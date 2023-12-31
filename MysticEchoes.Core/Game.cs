@@ -27,6 +27,7 @@ public class Game
     private readonly EcsSystems _cleanupSystems;
     private EcsSystems _renderSystems;
     
+    private readonly AnimationManager _animationManager;
     private readonly AssetManager _assetManager;
     private readonly PrefabManager _prefabManager;
     private readonly IMazeGenerator _mazeGenerator;
@@ -36,10 +37,11 @@ public class Game
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
-    public Game(AssetManager assetManager, PrefabManager prefabManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
+    public Game(AnimationManager animationManager, AssetManager assetManager, PrefabManager prefabManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
     {
         _mazeGenerator = mazeGenerator;
         InputManager = inputManager;
+        _animationManager = animationManager;
         _assetManager = assetManager;
         _prefabManager = prefabManager;
         _systemExecutionContext = systemExecutionContext;
@@ -53,7 +55,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _prefabManager, _mazeGenerator)
+            .Inject(_entityFactory, _prefabManager, _animationManager, _mazeGenerator)
             .Init();
 
         _inputSystems = new EcsSystems(_world);
@@ -81,7 +83,7 @@ public class Game
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationSystem())
-            .Inject(_systemExecutionContext)
+            .Inject(_animationManager, _systemExecutionContext)
             .Init();
 
         _cleanupSystems = new EcsSystems(_world);

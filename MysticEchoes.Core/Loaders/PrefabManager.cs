@@ -114,7 +114,7 @@ public class PrefabManager
             float y = float.Parse(parts[1], CultureInfo.InvariantCulture);
             value = new Vector2(x, y); 
         }
-        else if (propertyInfo.PropertyType.IsPrimitive)
+        else if (propertyInfo.PropertyType.IsPrimitive || propertyInfo.PropertyType == typeof(string))
         {
             // Convert string to basic types like float/string/int etc
             value = Convert.ChangeType(paramValue, propertyInfo.PropertyType);

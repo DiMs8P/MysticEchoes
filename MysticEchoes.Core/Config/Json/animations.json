@@ -1,0 +1,298 @@
+﻿{
+  "Bullet": [
+    {
+      "Sprite": "Bullet1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet15",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet16",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet17",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet18",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet19",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet20",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet21",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet22",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet23",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet24",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet25",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet26",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet27",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet28",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet29",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet30",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet31",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet32",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet33",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet34",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet35",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet36",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet37",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet38",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet39",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet40",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet41",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet42",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet43",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet44",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet45",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet46",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet47",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet48",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet49",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet50",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet51",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet52",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet53",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet54",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet55",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet56",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet57",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet58",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet59",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "Bullet60",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "PlayerIdle": [
+    {
+      "Sprite": "PlayerIdle0",
+      "CurrentFrameDuration": 3
+    },
+    {
+      "Sprite": "PlayerIdle1",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerIdle2",
+      "CurrentFrameDuration": 0.05
+    }
+  ],
+  "PlayerMovingLeft": [
+    {
+      "Sprite": "PlayerMovingLeft0",
+      "CurrentFrameDuration": 0.2
+    },
+    {
+      "Sprite": "PlayerMovingLeft1",
+      "CurrentFrameDuration": 0.2
+    }
+  ],
+  "PlayerMovingRight": [
+    {
+      "Sprite": "PlayerMovingRight0",
+      "CurrentFrameDuration": 1.0
+    },
+    {
+      "Sprite": "PlayerMovingRight1",
+      "CurrentFrameDuration": 1.0
+    }
+  ],
+  "PlayerMovingTop": [
+    {
+      "Sprite": "PlayerMovingTop0",
+      "CurrentFrameDuration": 1.0
+    },
+    {
+      "Sprite": "PlayerMovingTop1",
+      "CurrentFrameDuration": 1.0
+    }
+  ],
+  "PlayerMovingDown": [
+    {
+      "Sprite": "PlayerMovingDown0",
+      "CurrentFrameDuration": 1.0
+    },
+    {
+      "Sprite": "PlayerMovingDown1",
+      "CurrentFrameDuration": 1.0
+    }
+  ]
+}

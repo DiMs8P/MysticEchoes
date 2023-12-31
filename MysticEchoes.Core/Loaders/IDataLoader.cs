@@ -1,4 +1,5 @@
-﻿using MysticEchoes.Core.Configuration;
+﻿using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.Loaders.Prefabs;
 
@@ -11,4 +12,5 @@ public interface IDataLoader
     Settings LoadSettings();
 
     object LoadObject(object objectValue, Type objectType);
+    Dictionary<string, AnimationFrame[]> LoadAnimations();
 }

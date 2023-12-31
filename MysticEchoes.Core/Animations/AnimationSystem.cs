@@ -1,4 +1,5 @@
 ﻿using Leopotam.EcsLite;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
 
@@ -7,6 +8,7 @@ namespace MysticEchoes.Core.Animations;
 public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
+    [EcsInject] private AnimationManager _animationManager;
 
     private EcsFilter _animationFilter;
     
@@ -33,9 +35,10 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
                 continue;
             }
 
-            if (animationComponent.CurrentFrameElapsedTime > animationComponent.Frames[animationComponent.CurrentFrameIndex].CurrentFrameDuration)
+            AnimationFrame[] animationFrames = _animationManager.GetAnimationFrames(animationComponent.AnimationId);
+            if (animationComponent.CurrentFrameElapsedTime > animationFrames[animationComponent.CurrentFrameIndex].CurrentFrameDuration)
             {
-                if (++animationComponent.CurrentFrameIndex >= animationComponent.Frames.Length)
+                if (++animationComponent.CurrentFrameIndex >= animationFrames.Length)
                 {
                     animationComponent.CurrentFrameIndex = 0;
                 }
@@ -43,7 +46,7 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
                 animationComponent.CurrentFrameElapsedTime = 0;
                 
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
-                spriteComponent.Sprite = animationComponent.Frames[animationComponent.CurrentFrameIndex].Sprite;
+                spriteComponent.Sprite = animationFrames[animationComponent.CurrentFrameIndex].Sprite;
             }
 
             animationComponent.CurrentFrameElapsedTime += _systemExecutionContext.DeltaTime;

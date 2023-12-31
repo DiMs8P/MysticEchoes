@@ -1,4 +1,5 @@
-﻿using MysticEchoes.Core.Configuration;
+﻿using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.Loaders.Prefabs;
 using Newtonsoft.Json;
@@ -21,6 +22,11 @@ public class JsonLoader : IDataLoader
     public Settings LoadSettings()
     {
         return Load<Settings>(Environment.CurrentDirectory + "\\Config\\Json\\game-settings.json");
+    }
+    
+    public Dictionary<string, AnimationFrame[]> LoadAnimations()
+    {
+        return Load<Dictionary<string, AnimationFrame[]>>(Environment.CurrentDirectory + "\\Config\\Json\\animations.json");
     }
 
     public object LoadObject(object objectValue, Type objectType)

@@ -10,6 +10,7 @@ namespace MysticEchoes.Core.Scene;
 public class PlayerSpawnerSystem : IEcsInitSystem
 {
     [EcsInject] private PrefabManager _prefabManager;
+    [EcsInject] private AnimationManager _animationManager;
     [EcsInject] private EntityFactory _factory;
 
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
@@ -42,11 +43,12 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_characterAnimations.Has(playerId))
         {
             ref CharacterAnimationComponent playerAnimationComponent = ref _characterAnimations.Get(playerId);
+            playerAnimationComponent.CurrentState = CharacterState.Idle;
 
-            if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.InitialState, out var animation) && _animations.Has(playerId))
+            if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.CurrentState, out var animation) && _animations.Has(playerId))
             {
                 ref AnimationComponent playerAnimation = ref _animations.Get(playerId);
-                playerAnimation.Frames = animation;
+                playerAnimation.AnimationId = animation;
             }
             else
             {
@@ -60,11 +62,11 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_animations.Has(playerId))
         {
             ref AnimationComponent playerAnimationComponent = ref _animations.Get(playerId);
-
-            if (playerAnimationComponent.Frames.Count() > playerAnimationComponent.CurrentFrameIndex && _sprites.Has(playerId))
+            AnimationFrame[] playerAnimations = _animationManager.GetAnimationFrames(playerAnimationComponent.AnimationId);
+            if (playerAnimations.Count() > playerAnimationComponent.CurrentFrameIndex && _sprites.Has(playerId))
             {
                 ref SpriteComponent playerAnimation = ref _sprites.Get(playerId);
-                playerAnimation.Sprite = playerAnimationComponent.Frames[playerAnimationComponent.CurrentFrameIndex].Sprite;
+                playerAnimation.Sprite = playerAnimations[playerAnimationComponent.CurrentFrameIndex].Sprite;
             }
             else
             {

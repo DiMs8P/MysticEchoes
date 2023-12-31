@@ -21,6 +21,7 @@ public static class Extensions
         services.AddScoped<SystemExecutionContext>();
         services.AddScoped<PrefabManager>();
         services.AddScoped<AssetManager>();
+        services.AddScoped<AnimationManager>();
         services.AddScoped<Game>();
     }
 }
