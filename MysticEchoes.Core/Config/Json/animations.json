@@ -294,5 +294,43 @@
       "Sprite": "PlayerMovingDown1",
       "CurrentFrameDuration": 1.0
     }
+  ],
+  "Coin": [
+    {
+      "Sprite": "Coin0",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin1",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin2",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin3",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin4",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin5",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin6",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin7",
+      "CurrentFrameDuration": 0.5
+    },
+    {
+      "Sprite": "Coin8",
+      "CurrentFrameDuration": 0.5
+    }
   ]
 }

@@ -98,5 +98,37 @@
         }
       }
     ]
+  },
+  "Coin": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Location": "0.5 0.6"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "Coin0"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+          "AnimationId": "Coin"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Bullet"
+        }
+      }
+    ]
   }
 }

@@ -77,6 +77,16 @@ public enum AssetType
     Bullet59,
     Bullet60,
     
+    Coin0,
+    Coin1,
+    Coin2,
+    Coin3,
+    Coin4,
+    Coin5,
+    Coin6,
+    Coin7,
+    Coin8,
+    
     Bullet,
     Wall,
     Floor,

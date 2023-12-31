@@ -71,6 +71,16 @@
   "Bullet58": "Bullet\\58.png",
   "Bullet59": "Bullet\\59.png",
   "Bullet60": "Bullet\\60.png",
+
+  "Coin0": "Coin\\tile000.png",
+  "Coin1": "Coin\\tile001.png",
+  "Coin2": "Coin\\tile002.png",
+  "Coin3": "Coin\\tile003.png",
+  "Coin4": "Coin\\tile004.png",
+  "Coin5": "Coin\\tile005.png",
+  "Coin6": "Coin\\tile006.png",
+  "Coin7": "Coin\\tile007.png",
+  "Coin8": "Coin\\tile008.png",
  
   "Bullet": "bullet.png",
   "Wall": "stoneFloor.jpg",

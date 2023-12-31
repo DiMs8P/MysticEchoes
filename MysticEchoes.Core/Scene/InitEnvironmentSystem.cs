@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -11,10 +13,12 @@ public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
     {
         CreateTiles();
         //CreateSquare();
+        CreateItem();
     }
 
     private void CreateTiles()
@@ -41,5 +45,10 @@ public class InitEnvironmentSystem : IEcsInitSystem
             })
             .Add(new RenderComponent(RenderingType.DebugUnitView))
             .End();
+    }
+    
+    private void CreateItem()
+    {
+        int entityId = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Coin);
     }
 }
