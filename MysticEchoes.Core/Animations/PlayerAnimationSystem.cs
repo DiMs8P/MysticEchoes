@@ -1,5 +1,5 @@
 ﻿using Leopotam.EcsLite;
-using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;

@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Base.Geometry;
+using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -22,6 +25,8 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<MuzzleComponent> _muzzles;
     private EcsPool<MagicComponent> _magics;
     private EcsPool<DamageComponent> _damages;
+    private EcsPool<DynamicCollider> _colliders;
+    
     private EcsPool<BurstFireComponent> _bursts;
     
     private EcsPool<ProjectileComponent> _projectiles;
@@ -37,6 +42,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _movements = world.GetPool<MovementComponent>();
         _weapons = world.GetPool<WeaponOwnerComponent>();
         _damages = world.GetPool<DamageComponent>();
+        _colliders = world.GetPool<DynamicCollider>();
         _muzzles = world.GetPool<MuzzleComponent>();
         _magics = world.GetPool<MagicComponent>();
 
@@ -164,7 +170,14 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         
         ref DamageComponent projectileDamageComponent = ref _damages.Get(projectile);
         projectileDamageComponent.Damage = damage;
-        
+
+        ref DynamicCollider collider = ref _colliders.Get(projectile);
+        collider.Box = new Box(projectile, new Rectangle(
+            Vector2.Zero,
+            Vector2.One * 0.5f * projectileTransformComponent.Scale  / 2
+            ));
+        collider.Behavior = CollisionBehavior.AllyBullet;
+
         return projectile;
     }
 }

@@ -10,7 +10,6 @@
     <Folder Include="Assets\Bullet\" />
     <Folder Include="Assets\Coin\" />
     <Folder Include="Base\Exceptions\" />
-    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
