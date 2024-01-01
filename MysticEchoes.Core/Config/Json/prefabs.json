@@ -79,19 +79,28 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
-        "Parameters": {}
+        "Parameters": {
+          "Damage": 10
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
-          "TimeBetweenShots": 0.2,
-          "ShootingType": "SingleShot"
+          "TimeBetweenShots": 10,
+          "ShootingType": "BurstFire"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.MagicComponent",
+        "Parameters": {
+          "AmmoPrefab": "Bullet",
+          "Type": "Projectile"
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.ProjectileComponent",
         "Parameters": {
-          "ProjectilePrefab": "Bullet"
+          "Speed": 0.2
         }
       },
       {

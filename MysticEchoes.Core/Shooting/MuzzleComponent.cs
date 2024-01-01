@@ -11,7 +11,7 @@ public struct MuzzleComponent
     {
         TimeBetweenShots = 0.0f;
         ElapsedTimeFromLastShot = 0.0f;
-        CanFire = false;
+        CanFire = true;
         ShootingType = ShootingType.None;
     }
 }

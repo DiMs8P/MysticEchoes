@@ -1,13 +1,11 @@
-﻿using MysticEchoes.Core.Loaders.Prefabs;
-
-namespace MysticEchoes.Core.Shooting;
+﻿namespace MysticEchoes.Core.Shooting;
 
 public struct ProjectileComponent
 {
-    public PrefabType ProjectilePrefab { get; set; }
+    public float Speed { get; set; }
 
     public ProjectileComponent()
     {
-        ProjectilePrefab = PrefabType.None;
+        Speed = 0.0f;
     }
 }

@@ -2,7 +2,7 @@
 
 public struct DamageComponent
 {
-    public float Damage;
+    public float Damage { get; set; }
 
     public DamageComponent()
     {
