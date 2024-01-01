@@ -48,7 +48,7 @@
         }
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.OwnerComponent",
+        "TypeName": "MysticEchoes.Core.Shooting.WeaponOwnerComponent",
         "Parameters": { }
       },
       {

@@ -15,81 +15,69 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private EntityFactory _factory;
 
-    private EcsFilter _weaponsFilter;
+    private EcsFilter _weaponOwnersFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
-    private EcsPool<OwnerComponent> _weapons;
+    private EcsPool<WeaponOwnerComponent> _weapons;
+    private EcsPool<MuzzleComponent> _muzzles;
+    private EcsPool<ProjectileComponent> _projectiles;
     private EcsPool<DamageComponent> _damages;
-
-    private WeaponsSettings _weaponsSettings;
 
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
 
-        _weaponsFilter = world.Filter<OwnerComponent>().Inc<TransformComponent>().End();
+        _weaponOwnersFilter = world.Filter<WeaponOwnerComponent>().Inc<TransformComponent>().End();
 
         _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
-        _weapons = world.GetPool<OwnerComponent>();
+        _weapons = world.GetPool<WeaponOwnerComponent>();
         _damages = world.GetPool<DamageComponent>();
-        _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
+        _muzzles = world.GetPool<MuzzleComponent>();
+        _projectiles = world.GetPool<ProjectileComponent>();
     }
 
     public void Run(IEcsSystems systems)
     {
-        /*foreach (var entityId in _weaponsFilter)
+        foreach (var weaponOwnerId in _weaponOwnersFilter)
         {
-            ref WeaponComponent weaponComponent = ref _weapons.Get(entityId);
+            ref WeaponOwnerComponent weaponOwnerComponent = ref _weapons.Get(weaponOwnerId);
 
-            if (weaponComponent.State == WeaponState.Shooting)
+
+            foreach (var weaponEntityId in weaponOwnerComponent.WeaponIds)
             {
-                MakeShot(entityId);
-                weaponComponent.ElapsedTimeFromLastShoot = 0;
-                weaponComponent.State = WeaponState.ReadyToFire;
-                continue;
-            }
+                ref MuzzleComponent muzzleComponent = ref _muzzles.Get(weaponEntityId);
 
-            weaponComponent.ElapsedTimeFromLastShoot += _systemExecutionContext.DeltaTime;
-        }*/
+                if (weaponOwnerComponent.IsShooting)
+                {
+                    if (muzzleComponent.ShootingType == ShootingType.SingleShot)
+                    {
+                        if (muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots)
+                        {
+                            MakeShot(weaponOwnerId, weaponEntityId);
+                            muzzleComponent.ElapsedTimeFromLastShot = 0;
+                            continue;
+                        }
+                    }
+                }
+                
+                muzzleComponent.ElapsedTimeFromLastShot += _systemExecutionContext.DeltaTime;
+            }
+        }
     }
 
-    /*private void MakeShot(int entityId)
+    private void MakeShot(int ownerEntityId, int weaponEntityId)
     {
-        ref WeaponComponent weapon = ref _weapons.Get(entityId);
+        ref ProjectileComponent projectileComponent = ref _projectiles.Get(weaponEntityId);
+        ref TransformComponent weaponLocalTransformComponent = ref _transforms.Get(weaponEntityId);
+        ref TransformComponent ownerTransformComponent = ref _transforms.Get(ownerEntityId);
 
-        if (weapon.Type is WeaponType.OneShoot)
-        {
-            ref TransformComponent transformComponent = ref _transforms.Get(entityId);
-
-            SpawnProjectile(_factory,
-                weapon.ProjectilePrefab,
-                transformComponent.Location,
-                transformComponent.Rotation,
-                _weaponsSettings.OneShot.Damage,
-                _weaponsSettings.OneShot.BulletSpeed);
-        }
-        else if (weapon.Type is WeaponType.TwoShoot)
-        {
-            ref TransformComponent transformComponent = ref _transforms.Get(entityId);
-
-            SpawnProjectile(_factory,
-                weapon.ProjectilePrefab,
-                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2,
-                transformComponent.Rotation,
-                _weaponsSettings.Twoshot.Damage,
-                _weaponsSettings.Twoshot.BulletSpeed);
-            SpawnProjectile(_factory,
-                weapon.ProjectilePrefab,
-                transformComponent.Location + transformComponent.Rotation.Inverse().ReflectY() * _weaponsSettings.Twoshot.DistanceBetweenBullets / 2 * (-1),
-                transformComponent.Rotation,
-                _weaponsSettings.Twoshot.Damage,
-                _weaponsSettings.Twoshot.BulletSpeed);
-        }
-        else if (weapon.Type is not WeaponType.None)
-        {
-            throw new NotImplementedException();
-        }
+        SpawnProjectile(_factory,
+            projectileComponent.ProjectilePrefab,
+            ownerTransformComponent.Location + weaponLocalTransformComponent.Location,
+            ownerTransformComponent.Rotation + weaponLocalTransformComponent.Rotation,
+            5,
+            0.2f);
     }
     
     private int SpawnProjectile(EntityFactory factory, PrefabType projectileId, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
@@ -108,5 +96,5 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         projectileDamageComponent.Damage = damage;
         
         return projectile;
-    }*/
+    }
 }

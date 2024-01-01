@@ -20,7 +20,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
     
-    private EcsPool<OwnerComponent> _weapons;
+    private EcsPool<WeaponOwnerComponent> _weapons;
     private EcsPool<OwningByComponent> _ownings;
     
     private EcsPool<StartingItems> _items;
@@ -33,7 +33,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _animations = world.GetPool<AnimationComponent>();
         _sprites = world.GetPool<SpriteComponent>();
 
-        _weapons = world.GetPool<OwnerComponent>();
+        _weapons = world.GetPool<WeaponOwnerComponent>();
         _ownings = world.GetPool<OwningByComponent>();
 
         _items = world.GetPool<StartingItems>();
@@ -95,8 +95,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     
     private void SetupPlayerWeapon(int player, int playerWeapon)
     {
-        ref OwnerComponent ownerComponent = ref _weapons.Get(player);
-        ownerComponent.OwningEntityIds.Add(playerWeapon);
+        ref WeaponOwnerComponent weaponOwnerComponent = ref _weapons.Get(player);
+        weaponOwnerComponent.WeaponIds.Add(playerWeapon);
 
         ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
         owningByComponent.Owner = player;
