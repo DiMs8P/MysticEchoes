@@ -1,8 +1,11 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Inventory;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Rendering;
+using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Scene;
@@ -16,6 +19,11 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
+    
+    private EcsPool<OwnerComponent> _weapons;
+    private EcsPool<OwningByComponent> _ownings;
+    
+    private EcsPool<StartingItems> _items;
 
     public void Init(IEcsSystems systems)
     {
@@ -24,16 +32,25 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _characterAnimations = world.GetPool<CharacterAnimationComponent>();
         _animations = world.GetPool<AnimationComponent>();
         _sprites = world.GetPool<SpriteComponent>();
+
+        _weapons = world.GetPool<OwnerComponent>();
+        _ownings = world.GetPool<OwningByComponent>();
+
+        _items = world.GetPool<StartingItems>();
         
-        CreatePlayer(_factory);
+        CreatePlayer(_factory, world);
     }
 
-    private int CreatePlayer(EntityFactory factory)
+    private int CreatePlayer(EntityFactory factory, EcsWorld world)
     {
         int player = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.Player);
-
+        int playerWeapon = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.DefaultWeapon);
+        
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
+
+        SetupPlayerWeapon(player, playerWeapon);
+        SetupPlayerStarterItems(player, world);
 
         return player;
     }
@@ -73,6 +90,31 @@ public class PlayerSpawnerSystem : IEcsInitSystem
                 throw new ArgumentException("Player prefab must have Sprite component if he has AnimationComponent and " +
                                             "have initial sprite to render");
             }
+        }
+    }
+    
+    private void SetupPlayerWeapon(int player, int playerWeapon)
+    {
+        ref OwnerComponent ownerComponent = ref _weapons.Get(player);
+        ownerComponent.OwningEntityIds.Add(playerWeapon);
+
+        ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
+        owningByComponent.Owner = player;
+    }
+    
+    private void SetupPlayerStarterItems(int player, EcsWorld world)
+    {
+        if (_items.Has(player))
+        {
+            ref StartingItems givenStartItems = ref _items.Get(player);
+
+            foreach (Item item in givenStartItems.Items)
+            {
+                BaseItem startItem = ItemsFactory.CreateItem(item);
+                startItem.OnItemTaken(player, world);
+            }
+            
+            _items.Del(player);
         }
     }
 }

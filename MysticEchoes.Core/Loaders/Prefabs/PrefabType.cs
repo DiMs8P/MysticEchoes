@@ -6,5 +6,6 @@ public enum PrefabType
     None,
     Player,
     Bullet,
-    Coin
+    Coin,
+    DefaultWeapon
 }

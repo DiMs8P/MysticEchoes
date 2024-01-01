@@ -19,22 +19,6 @@
         }
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.WeaponComponent",
-        "Parameters": {
-          "Type": "TwoShoot",
-          "TimeBetweenShots": 0.2,
-          "ProjectilePrefab": "Bullet"
-        }
-      },
-      {
-        "TypeName": "MysticEchoes.Core.Shooting.BurstFireComponent",
-        "Parameters": {
-          "MaxShotsInBurst": 10,
-          "TimeBetweenBursts": 1.0,
-          "TimeBetweenBurstShots": 0.2
-        }
-      },
-      {
         "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
         "Parameters": {
           "Animations": {
@@ -64,12 +48,57 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Shooting.OwnerComponent",
+        "Parameters": { }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
         "Parameters": {
-          "Money": 50,
-          "TakenItems": [
+          "Money": 50
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Inventory.StartingItems",
+        "Parameters": {
+          "Items": [
             "Laser"
           ]
+        }
+      }
+    ]
+  },
+  "DefaultWeapon": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.OwningByComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
+        "Parameters": {
+          "TimeBetweenShots": 0.2,
+          "ShootingType": "SingleShot"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.ProjectileComponent",
+        "Parameters": {
+          "ProjectilePrefab": "Bullet"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.BurstFireComponent",
+        "Parameters": {
+          "MaxShotsInBurst": 10,
+          "TimeBetweenBurstShots": 0.2
         }
       }
     ]

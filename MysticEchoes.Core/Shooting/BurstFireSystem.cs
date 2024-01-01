@@ -1,4 +1,4 @@
-﻿using Leopotam.EcsLite;
+﻿/*using Leopotam.EcsLite;
 
 namespace MysticEchoes.Core.Shooting;
 
@@ -41,4 +41,4 @@ public class BurstFireSystem : IEcsInitSystem, IEcsRunSystem
             }
         }
     }
-}
+}*/

@@ -68,8 +68,6 @@ public class Game
 
         _shootingSystems = new EcsSystems(_world);
         _shootingSystems
-            .Add(new WeaponsStateSystem())
-            .Add(new BurstFireSystem())
             .Add(new WeaponShootingSystem())
             .Inject(_systemExecutionContext, _entityFactory, _prefabManager)
             .Init();

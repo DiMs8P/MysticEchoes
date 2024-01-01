@@ -12,12 +12,11 @@ public class Money : BaseItem
         _value = value;
     }
 
-    public new void OnItemTaken(int itemEntityId, int instigator, EcsWorld world)
+    public override void OnItemTaken(int instigator, EcsWorld world)
     {
         EcsPool<InventoryComponent> inventoryPool = world.GetPool<InventoryComponent>();
         ref InventoryComponent inventoryComponent = ref inventoryPool.Get(instigator);
 
         inventoryComponent.Money += _value;
-        Destroy(itemEntityId, world);
     }
 }

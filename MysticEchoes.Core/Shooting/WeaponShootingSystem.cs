@@ -18,7 +18,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _weaponsFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
-    private EcsPool<WeaponComponent> _weapons;
+    private EcsPool<OwnerComponent> _weapons;
     private EcsPool<DamageComponent> _damages;
 
     private WeaponsSettings _weaponsSettings;
@@ -27,18 +27,18 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     {
         EcsWorld world = systems.GetWorld();
 
-        _weaponsFilter = world.Filter<WeaponComponent>().Inc<TransformComponent>().End();
+        _weaponsFilter = world.Filter<OwnerComponent>().Inc<TransformComponent>().End();
 
         _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
-        _weapons = world.GetPool<WeaponComponent>();
+        _weapons = world.GetPool<OwnerComponent>();
         _damages = world.GetPool<DamageComponent>();
         _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
     }
 
     public void Run(IEcsSystems systems)
     {
-        foreach (var entityId in _weaponsFilter)
+        /*foreach (var entityId in _weaponsFilter)
         {
             ref WeaponComponent weaponComponent = ref _weapons.Get(entityId);
 
@@ -51,10 +51,10 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             }
 
             weaponComponent.ElapsedTimeFromLastShoot += _systemExecutionContext.DeltaTime;
-        }
+        }*/
     }
 
-    private void MakeShot(int entityId)
+    /*private void MakeShot(int entityId)
     {
         ref WeaponComponent weapon = ref _weapons.Get(entityId);
 
@@ -108,5 +108,5 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         projectileDamageComponent.Damage = damage;
         
         return projectile;
-    }
+    }*/
 }
