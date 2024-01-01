@@ -12,4 +12,5 @@ public class BaseItem : IPickableItem
         
         inventoryComponent.TakenItems.Add(this);
     }
+
 }

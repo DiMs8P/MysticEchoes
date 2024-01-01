@@ -3,6 +3,8 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Items;
+using MysticEchoes.Core.Items.Implementation;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
@@ -19,12 +21,16 @@ public class InitEnvironmentSystem : IEcsInitSystem
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
 
+    private EcsPool<ItemComponent> _items;
+
     [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
+
+        _items = world.GetPool<ItemComponent>();
 
         CreateTiles();
 
@@ -83,12 +89,15 @@ public class InitEnvironmentSystem : IEcsInitSystem
     private void CreateItem()
     {
         int entityId = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Coin);
+
+        ref ItemComponent itemComponent = ref _items.Get(entityId);
+        itemComponent.Item = ItemsFactory.CreateItem(Item.Money, 100);
         
         ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
         collider.Box = new Box(entityId, new Rectangle(
             Vector2.Zero,
             Vector2.One * 0.4f * 0.1f  / 2
         ));
-        collider.Behavior = CollisionBehavior.AllyBullet;
+        collider.Behavior = CollisionBehavior.Item;
     }
 }

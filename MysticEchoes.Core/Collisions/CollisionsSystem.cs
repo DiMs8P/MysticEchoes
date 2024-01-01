@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -15,6 +16,8 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private EntityFactory _factory;
     [EcsInject] private SystemExecutionContext _context;
 
+    private EcsWorld _world;
+
     private int _mapId;
     private EcsFilter _staticEntities;
     private EcsFilter _dynamicEntities;
@@ -25,31 +28,33 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private QuadTree _dynamicCollidersTree;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
+    private EcsPool<ItemComponent> _items;
     private const float CollisionResolvingSensitivity = 1e-4f;
 
     public void Init(IEcsSystems systems)
     {
-        var world = systems.GetWorld();
+        _world = systems.GetWorld();
 
-        var mapFilter = world.Filter<TileMapComponent>().End();
+        var mapFilter = _world.Filter<TileMapComponent>().End();
         if (mapFilter.GetEntitiesCount() != 1)
         {
             throw new Exception("Must be 1 map");
         }
         _mapId = mapFilter.GetRawEntities()[0];
 
-        _staticEntities = world.Filter<StaticCollider>().End();
-        _dynamicEntities = world.Filter<DynamicCollider>().End();
-        _staticColliders = world.GetPool<StaticCollider>();
-        _dynamicColliders = world.GetPool<DynamicCollider>();
-        _transforms = world.GetPool<TransformComponent>();
-        _movements = world.GetPool<MovementComponent>();
+        _staticEntities = _world.Filter<StaticCollider>().End();
+        _dynamicEntities = _world.Filter<DynamicCollider>().End();
+        _staticColliders = _world.GetPool<StaticCollider>();
+        _dynamicColliders = _world.GetPool<DynamicCollider>();
+        _transforms = _world.GetPool<TransformComponent>();
+        _movements = _world.GetPool<MovementComponent>();
+        _items = _world.GetPool<ItemComponent>();
 
-        _dynamicCollidersFilter = world.Filter<DynamicCollider>()
+        _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
             .Inc<MovementComponent>()
             .End();
 
-        ref var map = ref world.GetPool<TileMapComponent>().Get(_mapId);
+        ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
 
         _staticCollidersTree = new QuadTree(
             new Rectangle(
@@ -104,17 +109,17 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             {
                 var targetCollider = _dynamicColliders.Get(target);
 
-                //HandleCollisions(new CollisionHandlingEntityInfo
-                //{
-                //    Id = entity,
-                //    Behavior = collider.Behavior,
-                //    Box = box
-                //}, new CollisionHandlingEntityInfo
-                //{
-                //    Id = target,
-                //    Behavior = targetCollider.Behavior,
-                //    Box = targetCollider.Box
-                //});
+                HandleCollisions(new CollisionHandlingEntityInfo
+                {
+                    Id = entity,
+                    Behavior = collider.Behavior,
+                    Box = box
+                }, new CollisionHandlingEntityInfo
+                {
+                    Id = target,
+                    Behavior = targetCollider.Behavior,
+                    Box = targetCollider.Box
+                });
             }
 
             foreach (var target in staticIntersected)
@@ -160,6 +165,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             if (target.Behavior is CollisionBehavior.Wall)
             {
                 // Уничтожить снаряд
+                /*_world.DelEntity(entity.Id);*/
             }
             return;
         }
@@ -172,6 +178,15 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 return;
             }
 
+            if (target.Behavior is CollisionBehavior.Item)
+            {
+                ref ItemComponent itemComponent = ref _items.Get(target.Id);
+                itemComponent.Item.OnItemTaken(entity.Id, _world);
+                _world.DelEntity(target.Id);
+                
+                return;
+            }
+            
             return;
         }
         if (entity.Behavior is CollisionBehavior.EnemyCharacter)
@@ -182,6 +197,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 return;
             }
 
+            return;
+        }
+        
+        if (entity.Behavior is CollisionBehavior.Item)
+        {
             return;
         }
 

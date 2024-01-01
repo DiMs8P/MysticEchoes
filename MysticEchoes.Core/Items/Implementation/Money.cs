@@ -5,9 +5,9 @@ namespace MysticEchoes.Core.Items.Implementation;
 
 public class Money : BaseItem
 {
-    private readonly uint _value;
+    private readonly int _value;
 
-    public Money(uint value)
+    public Money(int value)
     {
         _value = value;
     }

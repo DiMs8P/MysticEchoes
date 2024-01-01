@@ -9,7 +9,7 @@ public class ItemsFactory
 
     static ItemsFactory()
     {
-        FactoryMethods.Add(Item.Money, parameters => new Money((uint)parameters[0]));
+        FactoryMethods.Add(Item.Money, parameters => new Money((int)parameters[0]));
         FactoryMethods.Add(Item.Laser, _ => new LaserItem());
     }
 

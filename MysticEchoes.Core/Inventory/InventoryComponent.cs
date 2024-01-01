@@ -4,7 +4,7 @@ namespace MysticEchoes.Core.Inventory;
 
 public struct InventoryComponent
 {
-    public uint Money { get; set; }
+    public int Money { get; set; }
     //public Dictionary<BaseItem, uint> ConsumableItems { get; set; }
     public List<BaseItem> TakenItems { get; set; }
 
