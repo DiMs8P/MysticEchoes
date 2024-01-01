@@ -25,7 +25,6 @@ public class Game
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
     private readonly EcsSystems _animationSystems;
-    private readonly EcsSystems _cleanupSystems;
     private readonly EcsSystems _collisionSystems;
     private EcsSystems _renderSystems;
     
@@ -99,11 +98,6 @@ public class Game
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
             .Init();
-
-        _cleanupSystems = new EcsSystems(_world);
-        _cleanupSystems
-            .Add(new ProjectileCleanupSystem())
-            .Init();
     }
 
     public void InitializeRender(OpenGL gl)
@@ -129,7 +123,6 @@ public class Game
         _gameplaySystems.Run();
         _collisionSystems.Run();
         _animationSystems.Run();
-        _cleanupSystems.Run();
 
         // _updateTimer.Start();
     }

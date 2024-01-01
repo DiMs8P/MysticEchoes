@@ -29,7 +29,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<DynamicCollider> _colliders;
     private EcsPool<MovementComponent> _movements;
     
-    private EcsPool<WeaponOwnerComponent> _weapons;
+    private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<OwningByComponent> _ownings;
     
     private EcsPool<StartingItems> _items;
@@ -45,7 +45,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _colliders = world.GetPool<DynamicCollider>();
         _movements = world.GetPool<MovementComponent>();
 
-        _weapons = world.GetPool<WeaponOwnerComponent>();
+        _weapons = world.GetPool<RangeWeaponComponent>();
         _ownings = world.GetPool<OwningByComponent>();
 
         _items = world.GetPool<StartingItems>();
@@ -121,8 +121,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     
     private void SetupPlayerWeapon(int player, int playerWeapon)
     {
-        ref WeaponOwnerComponent weaponOwnerComponent = ref _weapons.Get(player);
-        weaponOwnerComponent.WeaponIds.Add(playerWeapon);
+        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(player);
+        rangeWeaponComponent.MuzzleIds.Add(playerWeapon);
 
         ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
         owningByComponent.Owner = player;

@@ -1,6 +1,6 @@
 ﻿namespace MysticEchoes.Core.Shooting;
 
-public enum AmmoType
+public enum MagicType
 {
     None = -1,
     Projectile,

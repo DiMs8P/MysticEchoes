@@ -21,7 +21,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _weaponOwnersFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
-    private EcsPool<WeaponOwnerComponent> _weapons;
+    private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<MuzzleComponent> _muzzles;
     private EcsPool<MagicComponent> _magics;
     private EcsPool<DamageComponent> _damages;
@@ -37,11 +37,11 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     {
         EcsWorld world = systems.GetWorld();
 
-        _weaponOwnersFilter = world.Filter<WeaponOwnerComponent>().Inc<TransformComponent>().End();
+        _weaponOwnersFilter = world.Filter<RangeWeaponComponent>().Inc<TransformComponent>().End();
 
         _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
-        _weapons = world.GetPool<WeaponOwnerComponent>();
+        _weapons = world.GetPool<RangeWeaponComponent>();
         _damages = world.GetPool<DamageComponent>();
         _colliders = world.GetPool<DynamicCollider>();
         _muzzles = world.GetPool<MuzzleComponent>();
@@ -58,9 +58,9 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     {
         foreach (var weaponOwnerId in _weaponOwnersFilter)
         {
-            ref WeaponOwnerComponent weaponOwnerComponent = ref _weapons.Get(weaponOwnerId);
+            ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(weaponOwnerId);
 
-            foreach (var weaponEntityId in weaponOwnerComponent.WeaponIds)
+            foreach (var weaponEntityId in rangeWeaponComponent.MuzzleIds)
             {
                 ref MuzzleComponent muzzleComponent = ref _muzzles.Get(weaponEntityId);
 
@@ -71,7 +71,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 
                 if (muzzleComponent.ShootingType == ShootingType.SingleShot)
                 {
-                    if (weaponOwnerComponent.IsShooting)
+                    if (rangeWeaponComponent.IsShooting)
                     {
                         if (muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots)
                         {
@@ -87,7 +87,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     ref BurstFireComponent burstFireComponent = ref _bursts.Get(weaponEntityId);
 
                     bool isShootingTime = (burstFireComponent.FiredShots != 0 && muzzleComponent.ElapsedTimeFromLastShot > burstFireComponent.TimeBetweenBurstShots) ||
-                                          (burstFireComponent.FiredShots == 0 && weaponOwnerComponent.IsShooting && muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots);
+                                          (burstFireComponent.FiredShots == 0 && rangeWeaponComponent.IsShooting && muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots);
     
                     if (!isShootingTime)
                         return;
@@ -105,14 +105,14 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 {
                     ref ChargeFireComponent chargeFireComponent = ref _charges.Get(weaponEntityId);
     
-                    if (weaponOwnerComponent.IsShooting)
+                    if (rangeWeaponComponent.IsShooting)
                     {
                         chargeFireComponent.CurrentChargeTime += _systemExecutionContext.DeltaTime;
                     }
 
-                    if ((weaponOwnerComponent.IsShooting && 
+                    if ((rangeWeaponComponent.IsShooting && 
                          chargeFireComponent.CurrentChargeTime > chargeFireComponent.MaxChargeTime) ||
-                        (!weaponOwnerComponent.IsShooting && chargeFireComponent.CurrentChargeTime > chargeFireComponent.MinChargeTime))
+                        (!rangeWeaponComponent.IsShooting && chargeFireComponent.CurrentChargeTime > chargeFireComponent.MinChargeTime))
                     {
                         chargeFireComponent.CurrentChargeTime = 0;
                         MakeShot(weaponOwnerId, weaponEntityId);
@@ -120,7 +120,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                         continue;
                     }
 
-                    if (!weaponOwnerComponent.IsShooting)
+                    if (!rangeWeaponComponent.IsShooting)
                     {
                         chargeFireComponent.CurrentChargeTime = 0;
                     }
@@ -139,19 +139,19 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         
         ref DamageComponent weaponDamageComponent = ref _damages.Get(weaponEntityId);
 
-        if (magicComponent.Type == AmmoType.Projectile)
+        if (magicComponent.Type == MagicType.Projectile)
         {
             ref ProjectileComponent projectileComponent = ref _projectiles.Get(weaponEntityId);
             
             SpawnProjectile(_factory,
-                magicComponent.AmmoPrefab,
+                magicComponent.MagicPrefab,
                 ownerTransformComponent.Location + weaponLocalTransformComponent.Location,
                 ownerTransformComponent.Rotation + weaponLocalTransformComponent.Rotation,
                 weaponDamageComponent.Damage,
                 projectileComponent.Speed);
         }
 
-        if (magicComponent.Type == AmmoType.Hitscan)
+        if (magicComponent.Type == MagicType.Hitscan)
         {
             ref HitscanComponent hitscanComponent = ref _hitscans.Get(weaponEntityId);
             
