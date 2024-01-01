@@ -194,7 +194,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         ref var movement = ref _movements.Get(entity.Id);
         if (movement.Velocity == Vector2.Zero)
         {
-            return true;
+            return;
         }
 
         var P1 = transform.Location;
