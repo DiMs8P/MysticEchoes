@@ -1,4 +1,4 @@
-﻿namespace MysticEchoes.Core.Input;
+﻿namespace MysticEchoes.Core.Config.Input;
 
 public interface IInputManager
 {

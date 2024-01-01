@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Config.Input;
 
 namespace MysticEchoes.Implementations;
 

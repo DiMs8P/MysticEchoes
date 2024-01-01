@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Base.Geometry;
+using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -20,6 +23,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<MovementComponent> _movements;
     private EcsPool<WeaponComponent> _weapons;
     private EcsPool<DamageComponent> _damages;
+    private EcsPool<DynamicCollider> _colliders;
 
     private WeaponsSettings _weaponsSettings;
 
@@ -33,6 +37,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _movements = world.GetPool<MovementComponent>();
         _weapons = world.GetPool<WeaponComponent>();
         _damages = world.GetPool<DamageComponent>();
+        _colliders = world.GetPool<DynamicCollider>();
         _weaponsSettings = _systemExecutionContext.Settings.WeaponsSettings;
     }
 
@@ -106,7 +111,15 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         
         ref DamageComponent projectileDamageComponent = ref _damages.Get(projectile);
         projectileDamageComponent.Damage = damage;
-        
+
+        ref var transform = ref _transforms.Get(projectile);
+        ref DynamicCollider collider = ref _colliders.Get(projectile);
+        collider.Box = new Box(projectile, new Rectangle(
+            Vector2.Zero,
+            Vector2.One * _weaponsSettings.OneShot.BulletSize * transform.Scale  / 2
+            ));
+        collider.Behavior = CollisionBehavior.AllyBullet;
+
         return projectile;
     }
 }

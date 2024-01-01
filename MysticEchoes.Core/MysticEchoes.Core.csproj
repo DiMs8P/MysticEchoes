@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Assets\Bullet\" />
     <Folder Include="Base\Exceptions\" />
-    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,8 @@ public enum RenderingType
 {
     None,
     TileMap,
+    ColliderDebugView,
+    ColliderSpaceTreeView,
     DebugUnitView,
     Character,
     Bullet

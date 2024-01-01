@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
-using MysticEchoes.Core.Input;
+using MysticEchoes.Core.Collisions;
+using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
@@ -25,6 +26,7 @@ public class Game
     private readonly EcsSystems _gameplaySystems;
     private readonly EcsSystems _animationSystems;
     private readonly EcsSystems _cleanupSystems;
+    private readonly EcsSystems _collisionSystems;
     private EcsSystems _renderSystems;
     
     private readonly AssetManager _assetManager;
@@ -36,7 +38,13 @@ public class Game
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
-    public Game(AssetManager assetManager, PrefabManager prefabManager, IInputManager inputManager, IMazeGenerator mazeGenerator, SystemExecutionContext systemExecutionContext)
+    public Game(
+        AssetManager assetManager, 
+        PrefabManager prefabManager, 
+        IInputManager inputManager, 
+        IMazeGenerator mazeGenerator, 
+        SystemExecutionContext systemExecutionContext
+        )
     {
         _mazeGenerator = mazeGenerator;
         InputManager = inputManager;
@@ -71,11 +79,18 @@ public class Game
             .Add(new WeaponShootingSystem())
             .Inject(_systemExecutionContext, _entityFactory, _prefabManager)
             .Init();
-        
+
         _gameplaySystems = new EcsSystems(_world);
         _gameplaySystems
             .Add(new TransformSystem())
+            .Add(new CollidersMovementSystem())
             .Inject(_systemExecutionContext)
+            .Init();
+
+        _collisionSystems = new EcsSystems(_world);
+        _collisionSystems
+            .Add(new CollisionsSystem())
+            .Inject(_entityFactory, _systemExecutionContext)
             .Init();
 
         _animationSystems = new EcsSystems(_world);
@@ -105,11 +120,13 @@ public class Game
     {
         // _updateTimer.Stop();
         _systemExecutionContext.DeltaTime = _updateTimer.ElapsedMilliseconds / 1e3f;
+        _systemExecutionContext.FrameNumber += 1;
         _updateTimer.Restart();
         
         _inputSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
+        _collisionSystems.Run();
         _animationSystems.Run();
         _cleanupSystems.Run();
 

@@ -9,6 +9,7 @@ public class SystemExecutionContext
     {
         Settings = dataLoader.LoadSettings();
     }
+    public int FrameNumber { get; set; }
     public float DeltaTime { get; set; }
     public Settings Settings { get; set; }
 }
