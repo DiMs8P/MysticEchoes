@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using System.Reflection;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
@@ -93,7 +92,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
         foreach (var entity in _dynamicCollidersFilter)
         {
-            ref var transform = ref _transforms.Get(entity);
             var collider = _dynamicColliders.Get(entity);
             var box = collider.Box;
 
@@ -153,108 +151,8 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             entity.Behavior is CollisionBehavior.AllyCharacter or CollisionBehavior.EnemyCharacter
             )
         {
-            var shape = entity.Box.Shape;
-            var targetShape = target.Box.Shape;
-            ref var transform = ref _transforms.Get(entity.Id);
-            ref var movement = ref _movements.Get(entity.Id);
-            if (movement.Velocity == Vector2.Zero)
-            {
-                return;
-            }
-            var P1 = transform.Location;
-            var P0 = transform.Location - movement.Speed * movement.Velocity * _context.DeltaTime;
-            var shift = P1 - P0;
-            var h = entity.Box.Shape.Size / 2;
-            if (shift.X == 0 || shift.Y == 0)
-            {
-                // Todo реализовать коллизии при движении вдоль одной оси
-                return;
-            }
-            var expandedTarget = new Rectangle
-            {
-                LeftBottom = target.Box.Shape.LeftBottom - h,
-                Size = target.Box.Shape.Size + 2 * h
-            };
-            var tNear = (expandedTarget.LeftBottom - P0) / shift;
-            var tFar = (expandedTarget.RightTop - P0) / shift;
-            if (tNear.X > tFar.X)
-            {
-                (tNear.X, tFar.X) = (tFar.X, tNear.X);
-            }
-            if (tNear.Y > tFar.Y)
-            {
-                (tNear.Y, tFar.Y) = (tFar.Y, tNear.Y);
-            }
+            HandleCharacterAndWallCollision(entity, target);
 
-            
-            var tHitNear = float.Max(tNear.X, tNear.Y);
-            var tHitFar = float.Min(tFar.X, tFar.Y);
-            if (tHitFar < 0)
-            {
-                return;
-            }
-
-            var contactPoint = P0 + tHitNear * shift;
-            var contactNormal = GetContactNormal(tNear, shift);
-
-            var rollback = contactNormal * Vector2.Abs(shift) * (1f - tHitNear);
-            transform.Location += rollback;
-            ref var collider = ref _dynamicColliders.Get(entity.Id);
-            collider.Box.Shape = collider.Box.Shape with
-            {
-                LeftBottom = collider.Box.Shape.LeftBottom + rollback 
-            } ;
-
-
-
-
-            //if (movement.Velocity.Y > 0 && (targetShape.Bottom <= shape.Top && shape.Top <= targetShape.Top))
-            //{
-            //    transform.Location = transform.Location with { Y = targetShape.Bottom - shape.Size.Y / 2 - 1e-5f };
-            //}
-            //else if (movement.Velocity.Y < 0 && (targetShape.Bottom <= shape.Bottom && shape.Bottom <= targetShape.Top))
-            //{
-            //    transform.Location = transform.Location with { Y = targetShape.Top + shape.Size.Y / 2 + 1e-3f };
-            //}
-
-            //if (movement.Velocity.X > 0 && (targetShape.Left <= shape.Right && shape.Right <= targetShape.Right))
-            //{
-            //    transform.Location = transform.Location with { X = targetShape.Left - shape.Size.X / 2 - 1e-5f };
-            //}
-            //else if (movement.Velocity.X < 0 && (targetShape.Left <= shape.Left && shape.Left <= targetShape.Right))
-            //{
-            //    transform.Location = transform.Location with { X = targetShape.Right + shape.Size.X / 2 + 1e-5f };
-            //}
-
-            //var k = 0;
-            //while (targetShape.Intersects(shape))
-            //{
-            //    k++;
-            //    transform.Location -= movement.Velocity * CollisionResolvingSensitivity;
-            //    shape = shape with { LeftBottom = shape.LeftBottom - movement.Velocity * CollisionResolvingSensitivity };
-            //}
-
-            //if (targetShape.Left <= shape.Right && shape.Right <= targetShape.Right)
-            //{
-            //    transform.Location = transform.Location with { X = targetShape.Left - shape.Size.X / 2 - 1e-13f };
-            //    return;
-            //}
-            //if (targetShape.Left <= shape.Left && shape.Left <= targetShape.Right)
-            //{
-            //    transform.Location = transform.Location with { X = targetShape.Right + shape.Size.X / 2 + 1e-13f };
-            //    return;
-            //}
-            //if (targetShape.Bottom <= shape.Top && shape.Top <= targetShape.Top)
-            //{
-            //    transform.Location = transform.Location with { Y = targetShape.Bottom - shape.Size.Y / 2 - 1e-13f };
-            //    return;
-            //}
-            //if (targetShape.Bottom <= shape.Bottom && shape.Bottom <= targetShape.Top)
-            //{
-            //    transform.Location = transform.Location with { Y = targetShape.Top + shape.Size.Y / 2 + 1e-13f };
-            //    return;
-            //}
-            // Подвинуть героя 
             return;
         }
         if (entity.Behavior is CollisionBehavior.AllyBullet or CollisionBehavior.EnemyBullet)
@@ -290,6 +188,55 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
     }
 
+    private void HandleCharacterAndWallCollision(CollisionHandlingEntityInfo entity, CollisionHandlingEntityInfo target)
+    {
+        ref var transform = ref _transforms.Get(entity.Id);
+        ref var movement = ref _movements.Get(entity.Id);
+        if (movement.Velocity == Vector2.Zero)
+        {
+            return true;
+        }
+
+        var P1 = transform.Location;
+        var P0 = transform.Location - movement.Speed * movement.Velocity * _context.DeltaTime;
+        var shift = P1 - P0;
+        var h = entity.Box.Shape.Size / 2;
+        var expandedTarget = new Rectangle
+        {
+            LeftBottom = target.Box.Shape.LeftBottom - h,
+            Size = target.Box.Shape.Size + 2 * h
+        };
+        var tNear = (expandedTarget.LeftBottom - P0) / shift;
+        var tFar = (expandedTarget.RightTop - P0) / shift;
+        if (tNear.X > tFar.X)
+        {
+            (tNear.X, tFar.X) = (tFar.X, tNear.X);
+        }
+
+        if (tNear.Y > tFar.Y)
+        {
+            (tNear.Y, tFar.Y) = (tFar.Y, tNear.Y);
+        }
+
+        var tHitNear = float.Max(tNear.X, tNear.Y);
+        var tHitFar = float.Min(tFar.X, tFar.Y);
+        if (tHitFar < 0)
+        {
+            return;
+        }
+
+        var contactNormal = GetContactNormal(tNear, shift);
+
+        var rollback = contactNormal * Vector2.Abs(shift) * (1f - tHitNear + CollisionResolvingSensitivity);
+        transform.Location += rollback;
+        ref var collider = ref _dynamicColliders.Get(entity.Id);
+        collider.Box.Shape = collider.Box.Shape with
+        {
+            LeftBottom = collider.Box.Shape.LeftBottom + rollback
+        };
+        return;
+    }
+
     private Vector2 GetContactNormal(Vector2 tNear, Vector2 rayDirection)
     {
         if (tNear.X > tNear.Y)
@@ -309,7 +256,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return -1f * Vector2.UnitY;
         }
         return Vector2.Zero;
-        throw new InvalidOperationException();
     }
 }
 
