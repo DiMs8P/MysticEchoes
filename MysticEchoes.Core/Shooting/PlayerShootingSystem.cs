@@ -1,5 +1,6 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Config.Input;
+using MysticEchoes.Core.Control;
 using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
 
@@ -11,6 +12,7 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
     
     private EcsFilter _playerFilter;
     private EcsPool<WeaponComponent> _weapons;
+    private EcsPool<UnitControlComponent> _controls;
 
     public void Init(IEcsSystems systems)
     {
@@ -22,6 +24,7 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
             throw new Exception("Must be 1 player");
         }
 
+        _controls = world.GetPool<UnitControlComponent>();
         _weapons = world.GetPool<WeaponComponent>();
     }
 
@@ -30,7 +33,9 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var playerId in _playerFilter)
         {
             ref WeaponComponent playerWeapon = ref _weapons.Get(playerId);
-            playerWeapon.State = _inputManager.IsShooting() ? WeaponState.WantsToFire : WeaponState.ReadyToFire;
+            ref var control = ref _controls.Get(playerId);
+
+            playerWeapon.State = control.IsShoot ? WeaponState.WantsToFire : WeaponState.ReadyToFire;
         }
     }
 }
