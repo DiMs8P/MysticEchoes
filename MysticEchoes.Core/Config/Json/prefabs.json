@@ -114,6 +114,13 @@
           "MaxShotsInBurst": 10,
           "TimeBetweenBurstShots": 0.2
         }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.ChargeFireComponent",
+        "Parameters": {
+          "MaxChargeTime": 2,
+          "MinChargeTime": 0.2
+        }
       }
     ]
   },

@@ -28,6 +28,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<DynamicCollider> _colliders;
     
     private EcsPool<BurstFireComponent> _bursts;
+    private EcsPool<ChargeFireComponent> _charges;
     
     private EcsPool<ProjectileComponent> _projectiles;
     private EcsPool<HitscanComponent> _hitscans;
@@ -47,6 +48,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _magics = world.GetPool<MagicComponent>();
 
         _bursts = world.GetPool<BurstFireComponent>();
+        _charges = world.GetPool<ChargeFireComponent>();
 
         _projectiles = world.GetPool<ProjectileComponent>();
         _hitscans = world.GetPool<HitscanComponent>();
@@ -84,40 +86,46 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 {
                     ref BurstFireComponent burstFireComponent = ref _bursts.Get(weaponEntityId);
 
-                    if (burstFireComponent.FiredShots != 0)
+                    bool isShootingTime = (burstFireComponent.FiredShots != 0 && muzzleComponent.ElapsedTimeFromLastShot > burstFireComponent.TimeBetweenBurstShots) ||
+                                          (burstFireComponent.FiredShots == 0 && weaponOwnerComponent.IsShooting && muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots);
+    
+                    if (!isShootingTime)
+                        return;
+
+                    MakeShot(weaponOwnerId, weaponEntityId);
+                    muzzleComponent.ElapsedTimeFromLastShot = 0;
+
+                    bool reachedBurstLimit = burstFireComponent.FiredShots + 1 >= burstFireComponent.MaxShotsInBurst;
+                    burstFireComponent.FiredShots = reachedBurstLimit ? 0 : burstFireComponent.FiredShots + 1;
+
+                    continue;
+                }
+
+                if (muzzleComponent.ShootingType == ShootingType.Chargeable)
+                {
+                    ref ChargeFireComponent chargeFireComponent = ref _charges.Get(weaponEntityId);
+    
+                    if (weaponOwnerComponent.IsShooting)
                     {
-                        if (muzzleComponent.ElapsedTimeFromLastShot > burstFireComponent.TimeBetweenBurstShots)
-                        {
-                            MakeShot(weaponOwnerId, weaponEntityId);
-                            muzzleComponent.ElapsedTimeFromLastShot = 0;
-                            
-                            if (burstFireComponent.FiredShots + 1 >= burstFireComponent.MaxShotsInBurst)
-                            {
-                                burstFireComponent.FiredShots = 0;
-                            }
-                            else
-                            {
-                                ++burstFireComponent.FiredShots;
-                            }
-                            
-                            continue;
-                        }
+                        chargeFireComponent.CurrentChargeTime += _systemExecutionContext.DeltaTime;
                     }
-                    else
+
+                    if ((weaponOwnerComponent.IsShooting && 
+                         chargeFireComponent.CurrentChargeTime > chargeFireComponent.MaxChargeTime) ||
+                        (!weaponOwnerComponent.IsShooting && chargeFireComponent.CurrentChargeTime > chargeFireComponent.MinChargeTime))
                     {
-                        if (weaponOwnerComponent.IsShooting)
-                        {
-                            if (muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots)
-                            {
-                                MakeShot(weaponOwnerId, weaponEntityId);
-                                muzzleComponent.ElapsedTimeFromLastShot = 0;
-                                ++burstFireComponent.FiredShots;
-                                continue;
-                            }
-                        }
+                        chargeFireComponent.CurrentChargeTime = 0;
+                        MakeShot(weaponOwnerId, weaponEntityId);
+                        muzzleComponent.ElapsedTimeFromLastShot = 0;
+                        continue;
+                    }
+
+                    if (!weaponOwnerComponent.IsShooting)
+                    {
+                        chargeFireComponent.CurrentChargeTime = 0;
                     }
                 }
-                
+
                 muzzleComponent.ElapsedTimeFromLastShot += _systemExecutionContext.DeltaTime;
             }
         }
