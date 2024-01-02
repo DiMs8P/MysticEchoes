@@ -21,6 +21,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private AnimationManager _animationManager;
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private ItemsFactory _itemsFactory;
 
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
     private EcsPool<AnimationComponent> _animations;
@@ -136,7 +137,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 
             foreach (Item item in givenStartItems.Items)
             {
-                BaseItem startItem = ItemsFactory.CreateItem(item);
+                BaseItem startItem = _itemsFactory.CreateItem(item);
                 startItem.OnItemTaken(player, world);
             }
             

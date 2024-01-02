@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
@@ -36,6 +37,7 @@ public class Game
     private readonly SystemExecutionContext _systemExecutionContext;
 
     private readonly EntityFactory _entityFactory;
+    private readonly ItemsFactory _itemsFactory;
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
@@ -57,6 +59,7 @@ public class Game
             
         _world = new EcsWorld();
         _entityFactory = new EntityFactory(_world);
+        _itemsFactory = new ItemsFactory(_world, _entityFactory, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         
         _updateTimer = new Stopwatch();
         
@@ -64,7 +67,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _prefabManager, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Inject(_entityFactory, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _inputSystems = new EcsSystems(_world);
