@@ -7,7 +7,9 @@
       "Money": {
         "Name": "Money",
         "Description": "",
-        "Quality": "Common"
+        "Quality": "Common",
+        "AnimationId": "Coin",
+        "SpriteId": "Coin0"
       },
       "Laser": {
         "Name": "Laser",
@@ -17,7 +19,8 @@
       "CricketsHead": {
         "Name": "CricketsHead",
         "Description": "",
-        "Quality": "Epic"
+        "Quality": "Epic",
+        "SpriteId": "Coin0"
       }
     },
     "QualityPoints": {

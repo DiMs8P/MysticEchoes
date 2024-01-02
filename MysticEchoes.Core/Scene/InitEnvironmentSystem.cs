@@ -1,8 +1,10 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Items.Implementation;
 using MysticEchoes.Core.Loaders;
@@ -17,11 +19,13 @@ namespace MysticEchoes.Core.Scene;
 public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
+    [EcsInject] private Settings _settings;
     [EcsInject] private EntityFactory _factory;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
 
     private EcsPool<ItemComponent> _items;
+    private EcsPool<SpriteComponent> _sprites;
 
     [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
@@ -31,6 +35,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         _dynamicColliders = world.GetPool<DynamicCollider>();
 
         _items = world.GetPool<ItemComponent>();
+        _sprites = world.GetPool<SpriteComponent>();
 
         CreateTiles();
 
@@ -88,7 +93,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
     
     private void CreateItem()
     {
-        int entityId = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.Coin);
+        int entityId = _prefabManager.CreateEntityFromPrefab(_factory, PrefabType.BaseItem);
 
         ref ItemComponent itemComponent = ref _items.Get(entityId);
         itemComponent.Item = ItemsFactory.CreateItem(Item.Money, 100);
@@ -99,5 +104,21 @@ public class InitEnvironmentSystem : IEcsInitSystem
             Vector2.One * 0.4f * 0.1f  / 2
         ));
         collider.Behavior = CollisionBehavior.Item;
+
+        if (_settings.ItemsSettings.Items.TryGetValue(Item.Money, out ItemInfo itemInfo))
+        {
+            if (itemInfo.AnimationId is not null)
+            {
+                AnimationComponent animationComponent = new AnimationComponent()
+                {
+                    AnimationId = itemInfo.AnimationId
+                };
+
+                _factory.AddTo(entityId, animationComponent);
+            }
+
+            ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
+            spriteComponent.Sprite = itemInfo.SpriteId;
+        }
     }
 }

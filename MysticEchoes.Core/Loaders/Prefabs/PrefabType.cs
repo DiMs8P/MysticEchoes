@@ -6,7 +6,7 @@ public enum PrefabType
     None,
     Player,
     Bullet,
-    Coin,
+    BaseItem,
     DefaultWeapon,
     SimpleExplosion
 }

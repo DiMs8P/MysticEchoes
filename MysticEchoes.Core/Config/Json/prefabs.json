@@ -220,7 +220,7 @@
       }
     ]
   },
-  "Coin": {
+  "BaseItem": {
     "Components": [
       {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
@@ -235,15 +235,7 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
-        "Parameters": {
-          "Sprite": "Coin0"
-        }
-      },
-      {
-        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
-        "Parameters": {
-          "AnimationId": "Coin"
-        }
+        "Parameters": {}
       },
       {
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
