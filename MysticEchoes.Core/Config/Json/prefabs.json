@@ -197,13 +197,13 @@
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
-          "Sprite": "Coin0"
+          "Sprite": "SimpleExplosion0"
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {
-          "AnimationId": "Coin"
+          "AnimationId": "SimpleExplosion"
         }
       },
       {
