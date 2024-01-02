@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MazeGeneration.TreeModule;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
@@ -74,7 +75,26 @@ public class InitEnvironmentSystem : IEcsInitSystem
             collider.Box.Id = wallEntityId;
         }
 
+        foreach (var door in map.DoorTiles)
+        {
+            var doorId = _factory.Create()
+                .Add(new DynamicCollider()
+                {
+                    Box = new Box(
+                        0,
+                    new Rectangle(
+                    new Vector2(door.X * mapComponent.TileSize.X, door.Y * mapComponent.TileSize.Y),
+                            new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                        )
+                    ),
+                    Behavior = CollisionBehavior.Door
+                })
+                .Add(new RenderComponent(RenderingType.ColliderDebugView))
+                .End();
 
+            ref var collider = ref _staticColliders.Get(doorId);
+            collider.Box.Id = doorId;
+        }
 
     }
     
