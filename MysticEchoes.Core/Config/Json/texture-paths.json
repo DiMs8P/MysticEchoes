@@ -143,7 +143,6 @@
   "Coin7": "Coin\\tile007.png",
   "Coin8": "Coin\\tile008.png",
  
-  "Bullet": "bullet.png",
   "Wall": "stoneFloor.jpg",
   "Floor": "stoneWall.jpg"
 }

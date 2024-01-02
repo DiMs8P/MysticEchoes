@@ -148,7 +148,6 @@ public enum AssetType
     Coin7,
     Coin8,
     
-    Bullet,
     Wall,
     Floor,
 }
