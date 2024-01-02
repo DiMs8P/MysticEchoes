@@ -24,7 +24,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<MuzzleComponent> _muzzles;
     private EcsPool<MagicComponent> _magics;
-    private EcsPool<DamageComponent> _damages;
+    private EcsPool<OwningByComponent> _ownings;
     private EcsPool<DynamicCollider> _colliders;
     
     private EcsPool<BurstFireComponent> _bursts;
@@ -42,7 +42,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
         _weapons = world.GetPool<RangeWeaponComponent>();
-        _damages = world.GetPool<DamageComponent>();
+        _ownings = world.GetPool<OwningByComponent>();
         _colliders = world.GetPool<DynamicCollider>();
         _muzzles = world.GetPool<MuzzleComponent>();
         _magics = world.GetPool<MagicComponent>();
@@ -69,7 +69,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     continue;
                 }
                 
-                if (muzzleComponent.ShootingType == ShootingType.SingleShot)
+                if (muzzleComponent.ShootingType is ShootingType.SingleShot)
                 {
                     if (rangeWeaponComponent.IsShooting)
                     {
@@ -82,7 +82,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     }
                 }
                 
-                if (muzzleComponent.ShootingType == ShootingType.BurstFire)
+                if (muzzleComponent.ShootingType is ShootingType.BurstFire)
                 {
                     ref BurstFireComponent burstFireComponent = ref _bursts.Get(weaponEntityId);
 
@@ -99,7 +99,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     }
                 }
 
-                if (muzzleComponent.ShootingType == ShootingType.Chargeable)
+                if (muzzleComponent.ShootingType is ShootingType.Chargeable)
                 {
                     ref ChargeFireComponent chargeFireComponent = ref _charges.Get(weaponEntityId);
     
@@ -124,34 +124,6 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     }
                 }
 
-                if (muzzleComponent.ShootingType == ShootingType.Combination)
-                {
-                    if (_bursts.Has(weaponEntityId) && _charges.Has(weaponEntityId))
-                    {
-                        ref ChargeFireComponent chargeFireComponent = ref _charges.Get(weaponEntityId);
-    
-                        if (rangeWeaponComponent.IsShooting)
-                        {
-                            chargeFireComponent.CurrentChargeTime += _systemExecutionContext.DeltaTime;
-                        }
-
-                        if ((rangeWeaponComponent.IsShooting && 
-                             chargeFireComponent.CurrentChargeTime > chargeFireComponent.MaxChargeTime) ||
-                            (!rangeWeaponComponent.IsShooting && chargeFireComponent.CurrentChargeTime > chargeFireComponent.MinChargeTime))
-                        {
-                            chargeFireComponent.CurrentChargeTime = 0;
-                            MakeShot(weaponOwnerId, weaponEntityId);
-                            muzzleComponent.ElapsedTimeFromLastShot = 0;
-                            continue;
-                        }
-
-                        if (!rangeWeaponComponent.IsShooting)
-                        {
-                            chargeFireComponent.CurrentChargeTime = 0;
-                        }
-                    }
-                }
-
                 muzzleComponent.ElapsedTimeFromLastShot += _systemExecutionContext.DeltaTime;
             }
         }
@@ -165,20 +137,19 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         
         int magic = _prefabManager.CreateEntityFromPrefab(_factory, muzzleComponent.MagicPrefab);
         ref MagicComponent magicComponent = ref _magics.Get(magic);
-        ref DamageComponent magicDamageComponent = ref _damages.Get(magic);
 
-        if (magicComponent.Type == MagicType.Projectile)
+        if (magicComponent.Type is MagicType.Projectile)
         {
             ref ProjectileComponent projectileComponent = ref _projectiles.Get(magic);
             
             InitializeProjectile(magic,
+                weaponEntityId,
                 ownerTransformComponent.Location + weaponLocalTransformComponent.Location,
                 ownerTransformComponent.Rotation + weaponLocalTransformComponent.Rotation,
-                magicDamageComponent.Damage,
-                projectileComponent.Speed);
+                projectileComponent.Size);
         }
 
-        if (magicComponent.Type == MagicType.Hitscan)
+        if (magicComponent.Type is MagicType.Hitscan)
         {
             ref HitscanComponent hitscanComponent = ref _hitscans.Get(weaponEntityId);
             
@@ -191,23 +162,22 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         }
     }
     
-    private void InitializeProjectile(int magicId, Vector2 projectileLocation, Vector2 projectileRotation, float damage, float speed)
+    private void InitializeProjectile(int magicId, int weaponEntityId, Vector2 projectileLocation, Vector2 projectileRotation, float size)
     {
+        ref OwningByComponent owningByComponent = ref _ownings.Get(weaponEntityId);
+        owningByComponent.Owner = weaponEntityId;
+        
         ref TransformComponent projectileTransformComponent = ref _transforms.Get(magicId);
         projectileTransformComponent.Location = projectileLocation;
         projectileTransformComponent.Rotation = projectileRotation;
         
         ref MovementComponent projectileMovementComponent = ref _movements.Get(magicId);
         projectileMovementComponent.Velocity = projectileRotation;
-        projectileMovementComponent.Speed = speed;
-        
-        ref DamageComponent projectileDamageComponent = ref _damages.Get(magicId);
-        projectileDamageComponent.Damage = damage;
 
         ref DynamicCollider collider = ref _colliders.Get(magicId);
         collider.Box = new Box(magicId, new Rectangle(
             Vector2.Zero,
-            Vector2.One * 0.5f * projectileTransformComponent.Scale  / 2
+            Vector2.One * size * projectileTransformComponent.Scale  / 2
             ));
         collider.Behavior = CollisionBehavior.AllyBullet;
     }

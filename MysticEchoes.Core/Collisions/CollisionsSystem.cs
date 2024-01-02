@@ -3,10 +3,12 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Items;
+using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
+using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Collisions;
@@ -14,6 +16,7 @@ namespace MysticEchoes.Core.Collisions;
 public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private SystemExecutionContext _context;
 
     private EcsWorld _world;
@@ -29,6 +32,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
     private EcsPool<ItemComponent> _items;
+    private EcsPool<ExplosionComponent> _explosions;
     private const float CollisionResolvingSensitivity = 1e-4f;
 
     public void Init(IEcsSystems systems)
@@ -46,6 +50,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _dynamicEntities = _world.Filter<DynamicCollider>().End();
         _staticColliders = _world.GetPool<StaticCollider>();
         _dynamicColliders = _world.GetPool<DynamicCollider>();
+        _explosions = _world.GetPool<ExplosionComponent>();
         _transforms = _world.GetPool<TransformComponent>();
         _movements = _world.GetPool<MovementComponent>();
         _items = _world.GetPool<ItemComponent>();
@@ -164,8 +169,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             if (target.Behavior is CollisionBehavior.Wall)
             {
-                // Уничтожить снаряд
-                /*_world.DelEntity(entity.Id);*/
+
             }
             return;
         }
@@ -180,9 +184,9 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
             if (target.Behavior is CollisionBehavior.Item)
             {
-                ref ItemComponent itemComponent = ref _items.Get(target.Id);
+                /*ref ItemComponent itemComponent = ref _items.Get(target.Id);
                 itemComponent.Item.OnItemTaken(entity.Id, _world);
-                _world.DelEntity(target.Id);
+                _world.DelEntity(target.Id);*/
                 
                 return;
             }
@@ -201,6 +205,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
         
         if (entity.Behavior is CollisionBehavior.Item)
+        {
+            return;
+        }
+        
+        if (entity.Behavior is CollisionBehavior.Nothing)
         {
             return;
         }

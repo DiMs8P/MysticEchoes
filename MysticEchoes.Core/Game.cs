@@ -25,6 +25,7 @@ public class Game
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
     private readonly EcsSystems _animationSystems;
+    private readonly EcsSystems _cleanupSystems;
     private readonly EcsSystems _collisionSystems;
     private EcsSystems _renderSystems;
     
@@ -90,13 +91,19 @@ public class Game
         _collisionSystems = new EcsSystems(_world);
         _collisionSystems
             .Add(new CollisionsSystem())
-            .Inject(_entityFactory, _systemExecutionContext)
+            .Inject(_entityFactory, _systemExecutionContext, _prefabManager)
             .Init();
 
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
+            .Init();
+        
+        _cleanupSystems = new EcsSystems(_world);
+        _cleanupSystems
+            .Add(new LifeTimeCleanupSystem())
+            .Inject(_systemExecutionContext)
             .Init();
     }
 
@@ -123,6 +130,7 @@ public class Game
         _gameplaySystems.Run();
         _collisionSystems.Run();
         _animationSystems.Run();
+        _cleanupSystems.Run();
 
         // _updateTimer.Start();
     }

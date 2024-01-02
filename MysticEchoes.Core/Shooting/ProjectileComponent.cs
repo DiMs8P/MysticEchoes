@@ -2,10 +2,10 @@
 
 public struct ProjectileComponent
 {
-    public float Speed { get; set; }
+    public float Size { get; set; }
 
     public ProjectileComponent()
     {
-        Speed = 0.0f;
+        Size = 0.0f;
     }
 }

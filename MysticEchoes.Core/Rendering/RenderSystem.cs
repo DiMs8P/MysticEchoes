@@ -256,7 +256,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PopMatrix();
             }
-            else if (render.Type is RenderingType.Bullet)
+            else if (render.Type is RenderingType.General)
             {
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
                 

@@ -86,7 +86,7 @@
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
           "TimeBetweenShots": 1,
-          "ShootingType": "BurstFire",
+          "ShootingType": "SingleShot",
           "MagicPrefab": "Bullet"
         }
       },
@@ -124,7 +124,9 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
-        "Parameters": {}
+        "Parameters": {
+          "Speed": 0.2
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
@@ -151,7 +153,7 @@
       {
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
         "Parameters": {
-          "Type": "Bullet"
+          "Type": "General"
         }
       },
       {
@@ -163,7 +165,57 @@
       {
         "TypeName": "MysticEchoes.Core.Shooting.ProjectileComponent",
         "Parameters": {
-          "Speed": 0.2
+          "Size": 0.5
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.ExplosionComponent",
+        "Parameters": {
+          "ExplosionPrefab": "SimpleExplosion"
+        }
+      }
+    ]
+  },
+  "SimpleExplosion": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Scale": "0.15 0.15"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "Parameters": {
+          "Damage": 10
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "Coin0"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+          "AnimationId": "Coin"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "General"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
+        "Parameters": {
+          "LifeTime": 1
         }
       }
     ]
@@ -196,7 +248,7 @@
       {
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
         "Parameters": {
-          "Type": "Bullet"
+          "Type": "General"
         }
       },
       {
