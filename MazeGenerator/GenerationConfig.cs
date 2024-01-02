@@ -13,19 +13,21 @@ public class GenerationConfig
     public double MaxHeightToWidthProportion { get; set; }
     public double MaxDivideShift { get; set; }
     public int ThreeDepth { get; set; }
+    public RandomWalkParameter RoomRandomWalkParameter { get; set; }
 
     public static GenerationConfig Default =>
         new()
         {
-            MinNodeSize = new(10, 10),
-            MinRoomSize = new(4, 4),
-            MinRoomPadding = new(4, 4),
-            MazeSize = new(50, 50),
-            Random = new GenerationRandom(123),
+            MinNodeSize = new(30, 25),
+            MinRoomSize = new(12, 12),
+            MinRoomPadding = new(2, 2),
+            MazeSize = new(70, 70),
+            Random = new GenerationRandom(5441),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 2.1,
             MaxDivideShift = 0,
-            ThreeDepth = 3
+            ThreeDepth = 3,
+            RoomRandomWalkParameter = new RandomWalkParameter(25, 30, false) 
         };
     // Пересекающиеся дороги
     //MinNodeSize = new (20, 20),
