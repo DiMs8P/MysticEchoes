@@ -8,5 +8,5 @@ public enum RenderingType
     ColliderSpaceTreeView,
     DebugUnitView,
     Character,
-    Bullet
+    General
 }

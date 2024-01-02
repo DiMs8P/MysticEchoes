@@ -18,7 +18,7 @@ public class TransformSystem : IEcsInitSystem, IEcsRunSystem
         
         _transforms = world.GetPool<TransformComponent>();
         _movements = world.GetPool<MovementComponent>();
-        _transformsFilter = world.Filter<TransformComponent>().End();
+        _transformsFilter = world.Filter<TransformComponent>().Inc<MovementComponent>().End();
     }
 
     public void Run(IEcsSystems systems)

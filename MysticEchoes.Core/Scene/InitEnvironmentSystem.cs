@@ -1,8 +1,14 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Items;
+using MysticEchoes.Core.Items.Implementation;
+using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -13,17 +19,29 @@ namespace MysticEchoes.Core.Scene;
 public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
+    [EcsInject] private Settings _settings;
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private ItemsFactory _itemsFactory;
     private EcsPool<StaticCollider> _staticColliders;
+    private EcsPool<DynamicCollider> _dynamicColliders;
 
+    private EcsPool<ItemComponent> _items;
+    private EcsPool<SpriteComponent> _sprites;
+
+    [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
+        _dynamicColliders = world.GetPool<DynamicCollider>();
+
+        _items = world.GetPool<ItemComponent>();
+        _sprites = world.GetPool<SpriteComponent>();
 
         CreateTiles();
 
         //CreateSquare();
+        CreateItem();
     }
 
     private void CreateTiles()
@@ -72,5 +90,17 @@ public class InitEnvironmentSystem : IEcsInitSystem
             })
             .Add(new RenderComponent(RenderingType.DebugUnitView))
             .End();
+    }
+    
+    private void CreateItem()
+    {
+        int entityId = _itemsFactory.CreateItemEntity(Item.Money, 100);
+        
+        ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
+        collider.Box = new Box(entityId, new Rectangle(
+            Vector2.Zero,
+            Vector2.One * 0.4f * 0.1f  / 2
+        ));
+        collider.Behavior = CollisionBehavior.Item;
     }
 }

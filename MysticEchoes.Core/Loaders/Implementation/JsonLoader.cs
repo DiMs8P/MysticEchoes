@@ -1,5 +1,5 @@
-﻿using MysticEchoes.Core.Configuration;
-using MysticEchoes.Core.Loaders.Assets;
+﻿using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders.Prefabs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,9 +8,9 @@ namespace MysticEchoes.Core.Loaders.Implementation;
 
 public class JsonLoader : IDataLoader
 {
-    public Dictionary<AssetType, string> LoadTexturePaths()
+    public Dictionary<string, string> LoadTexturePaths()
     {
-        return Load<Dictionary<AssetType, string>>(Environment.CurrentDirectory + "\\Config\\Json\\texture-paths.json");
+        return Load<Dictionary<string, string>>(Environment.CurrentDirectory + "\\Config\\Json\\texture-paths.json");
     }
 
     public Dictionary<PrefabType, Prefab> LoadPrefabs()
@@ -21,6 +21,11 @@ public class JsonLoader : IDataLoader
     public Settings LoadSettings()
     {
         return Load<Settings>(Environment.CurrentDirectory + "\\Config\\Json\\game-settings.json");
+    }
+    
+    public Dictionary<string, AnimationFrame[]> LoadAnimations()
+    {
+        return Load<Dictionary<string, AnimationFrame[]>>(Environment.CurrentDirectory + "\\Config\\Json\\animations.json");
     }
 
     public object LoadObject(object objectValue, Type objectType)

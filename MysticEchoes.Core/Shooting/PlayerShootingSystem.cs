@@ -10,27 +10,27 @@ public class PlayerShootingSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private IInputManager _inputManager;
     
     private EcsFilter _playerFilter;
-    private EcsPool<WeaponComponent> _weapons;
+    private EcsPool<RangeWeaponComponent> _weapons;
 
     public void Init(IEcsSystems systems)
     {
         EcsWorld world = systems.GetWorld();
 
-        _playerFilter = world.Filter<PlayerMarker>().Inc<WeaponComponent>().End();
+        _playerFilter = world.Filter<PlayerMarker>().Inc<RangeWeaponComponent>().End();
         if (_playerFilter.GetEntitiesCount() != 1)
         {
             throw new Exception("Must be 1 player");
         }
 
-        _weapons = world.GetPool<WeaponComponent>();
+        _weapons = world.GetPool<RangeWeaponComponent>();
     }
 
     public void Run(IEcsSystems systems)
     {
         foreach (var playerId in _playerFilter)
         {
-            ref WeaponComponent playerWeapon = ref _weapons.Get(playerId);
-            playerWeapon.State = _inputManager.IsShooting() ? WeaponState.WantsToFire : WeaponState.ReadyToFire;
+            ref RangeWeaponComponent playerRangeWeapon = ref _weapons.Get(playerId);
+            playerRangeWeapon.IsShooting = _inputManager.IsShooting();
         }
     }
 }

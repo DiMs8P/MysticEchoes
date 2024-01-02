@@ -37,4 +37,17 @@ public class EntityFactory
         _currentEntity = -1;
         return result;
     }
+    
+    public EntityFactory AddTo<T>(int entityId, T component) where T : struct {
+        var poolWithTemplateComponent = _world.GetPool<T>();
+
+        if (poolWithTemplateComponent.Has(entityId))
+        {
+            throw new System.Exception("You can have only one component instance of that type.");
+        }
+        
+        poolWithTemplateComponent.Add(entityId) = component;
+        
+        return this;
+    }
 }

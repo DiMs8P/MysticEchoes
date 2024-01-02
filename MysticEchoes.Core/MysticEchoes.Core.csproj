@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Assets\Bullet\" />
+    <Folder Include="Assets\Coin\" />
+    <Folder Include="Assets\SimpleExplosion\" />
     <Folder Include="Base\Exceptions\" />
   </ItemGroup>
 
