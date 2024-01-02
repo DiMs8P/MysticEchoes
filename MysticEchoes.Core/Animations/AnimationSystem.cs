@@ -30,7 +30,7 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref AnimationComponent animationComponent = ref _animations.Get(entityId);
 
-            if (!animationComponent.IsActive)
+            if (!animationComponent.IsActive || animationComponent.AnimationId is null)
             {
                 continue;
             }
