@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
+using MysticEchoes.Core.Control;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -22,7 +23,7 @@ public class Game
     private readonly EcsWorld _world;
 
     private readonly EcsSystems _setupSystems;
-    private readonly EcsSystems _inputSystems;
+    private readonly EcsSystems _controlsSystems;
     private readonly EcsSystems _shootingSystems;
     private readonly EcsSystems _gameplaySystems;
     private readonly EcsSystems _animationSystems;
@@ -70,9 +71,10 @@ public class Game
             .Inject(_entityFactory, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
-        _inputSystems = new EcsSystems(_world);
-        _inputSystems
-            .Add(new PlayerMovementSystem())
+        _controlsSystems = new EcsSystems(_world);
+        _controlsSystems
+            .Add(new PlayerControlSystem())
+            .Add(new UnitsMovementSystem())
             .Add(new PlayerShootingSystem())
             .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
@@ -128,7 +130,7 @@ public class Game
         _systemExecutionContext.FrameNumber += 1;
         _updateTimer.Restart();
         
-        _inputSystems.Run();
+        _controlsSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();
         _collisionSystems.Run();
