@@ -1,4 +1,6 @@
-﻿namespace MysticEchoes.Core.Shooting;
+﻿using MysticEchoes.Core.Loaders.Prefabs;
+
+namespace MysticEchoes.Core.Shooting;
 
 public struct MuzzleComponent
 {
@@ -6,6 +8,7 @@ public struct MuzzleComponent
     public float ElapsedTimeFromLastShot { get; set; }
     public bool CanFire { get; set; }
     public ShootingType ShootingType { get; set; }
+    public PrefabType MagicPrefab { get; set; }
 
     public MuzzleComponent()
     {
@@ -13,5 +16,6 @@ public struct MuzzleComponent
         ElapsedTimeFromLastShot = 0.0f;
         CanFire = true;
         ShootingType = ShootingType.None;
+        MagicPrefab = PrefabType.None;
     }
 }

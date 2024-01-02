@@ -83,34 +83,16 @@
         "Parameters": {}
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
-        "Parameters": {
-          "Damage": 10
-        }
-      },
-      {
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
           "TimeBetweenShots": 1,
-          "ShootingType": "SingleShot"
+          "ShootingType": "BurstFire",
+          "MagicPrefab": "Bullet"
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.PrimaryMuzzleComponent",
         "Parameters": {}
-      },
-      {
-        "TypeName": "MysticEchoes.Core.Shooting.MagicComponent",
-        "Parameters": {
-          "MagicPrefab": "Bullet",
-          "Type": "Projectile"
-        }
-      },
-      {
-        "TypeName": "MysticEchoes.Core.Shooting.ProjectileComponent",
-        "Parameters": {
-          "Speed": 0.2
-        }
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.BurstFireComponent",
@@ -131,6 +113,10 @@
   "Bullet": {
     "Components": [
       {
+        "TypeName": "MysticEchoes.Core.Shooting.OwningByComponent",
+        "Parameters": {}
+      },
+      {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Scale": "0.15 0.15"
@@ -146,7 +132,9 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
-        "Parameters": {}
+        "Parameters": {
+          "Damage": 10
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
@@ -164,6 +152,18 @@
         "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
         "Parameters": {
           "Type": "Bullet"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.MagicComponent",
+        "Parameters": {
+          "Type": "Projectile"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.ProjectileComponent",
+        "Parameters": {
+          "Speed": 0.2
         }
       }
     ]

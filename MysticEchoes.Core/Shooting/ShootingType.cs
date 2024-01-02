@@ -5,5 +5,6 @@ public enum ShootingType
     None = -1,
     SingleShot,
     Chargeable,
-    BurstFire
+    BurstFire,
+    Combination
 }
