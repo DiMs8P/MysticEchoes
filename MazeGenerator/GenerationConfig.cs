@@ -21,7 +21,7 @@ public class GenerationConfig
             MinRoomSize = new(4, 4),
             MinRoomPadding = new(4, 4),
             MazeSize = new(50, 50),
-            Random = new GenerationRandom(123),
+            Random = new GenerationRandom(7354543),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 2.1,
             MaxDivideShift = 0,

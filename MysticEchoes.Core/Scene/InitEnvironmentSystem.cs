@@ -38,13 +38,13 @@ public class InitEnvironmentSystem : IEcsInitSystem
         _items = world.GetPool<ItemComponent>();
         _sprites = world.GetPool<SpriteComponent>();
 
-        CreateTiles();
+        CreateMap();
 
         //CreateSquare();
         CreateItem();
     }
 
-    private void CreateTiles()
+    private void CreateMap()
     {
         var map = _mazeGenerator.Generate();
 
@@ -73,6 +73,8 @@ public class InitEnvironmentSystem : IEcsInitSystem
             ref var collider = ref _staticColliders.Get(wallEntityId);
             collider.Box.Id = wallEntityId;
         }
+
+
 
     }
     

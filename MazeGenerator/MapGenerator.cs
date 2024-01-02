@@ -26,11 +26,80 @@ public class MapGenerator
         NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
 
+        MakeDoors(tree);
         MarkUp(tree, map);
-
+        MarkUpDoors(tree, map);
         MakeWalls(map);
 
         return map;
+    }
+
+    private void MakeDoors(Tree<RoomNode> tree)
+    {
+        Point GetEdgePoint(Point direction, Rectangle room, Point innerPoint)
+        {
+            if (direction.Y == 0)
+            {
+                var edgeX = direction.X > 0
+                    ? room.Right
+                    : room.Left;
+                
+                return innerPoint with { X = edgeX };
+            }
+            var edgeY = direction.Y > 0
+                ? room.Y + room.Height
+                : room.Y;
+
+            return innerPoint with { Y = edgeY };
+        }
+
+        var roomNodes = tree.DeepCrawl()
+            .Where(x => x.Room is not null)
+            .ToList();
+
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null)
+                )
+        {
+            var hall = node.Hall!;
+            var i = 0;
+            Point start;
+            Point end;
+            do
+            {
+                start = hall.ControlPoints[i];
+                end = hall.ControlPoints[i + 1];
+                i++;
+            } while (hall.StartRoom.ContainsNotStrict(end));
+
+            var direction = GetDirection(start, end);
+            var startDoor = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
+            var startDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(startDoor));
+            startDoorNode.Doors.Add(new Point(
+                startDoor.X + direction.X,
+                startDoor.Y + direction.Y
+            ));
+
+            i = hall.ControlPoints.Count - 1;
+            do
+            {
+                start = hall.ControlPoints[i - 1];
+                end = hall.ControlPoints[i];
+
+                i--;
+            } while (hall.EndRoom.ContainsNotStrict(start));
+            i++;
+
+            // end и start поменяны местами т.к. end это точка, содержащаяся в hall.EndRoom
+            direction = GetDirection(end, start);
+            var endDoor = GetEdgePoint(direction, hall.EndRoom, end);
+            var endDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(endDoor));
+
+            endDoorNode.Doors.Add(new Point(
+                endDoor.X + direction.X,
+                endDoor.Y + direction.Y
+            ));
+        }
     }
 
     private void MakeLeafs(Tree<RoomNode> tree)
@@ -358,6 +427,18 @@ public class MapGenerator
 
 
                 startPoint = lastPoint;
+            }
+        }
+    }
+
+    private void MarkUpDoors(Tree<RoomNode> tree, Map map)
+    {
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Doors.Count > 0))
+        {
+            foreach (var door in node.Doors)
+            {
+                map.DoorTiles.Add(door);
             }
         }
     }

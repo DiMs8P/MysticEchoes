@@ -7,6 +7,7 @@ public class Map
 {
     public Size Size { get; }
     public HashSet<Point> FloorTiles { get; } = new();
+    public HashSet<Point> DoorTiles { get; set; } = new();
     public HashSet<Point> WallTiles { get; } = new();
     public Tree<RoomNode> BinarySpaceTree { get; }
 

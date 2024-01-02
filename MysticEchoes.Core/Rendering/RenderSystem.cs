@@ -23,13 +23,14 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
     private EcsPool<SpriteComponent> _sprites;
-    
+
     private EcsPool<SpaceTreeComponent> _spaceTrees;
 
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
+    private double t;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
     {
@@ -68,7 +69,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
         _gl.LoadIdentity();
-        _gl.Ortho(0, 2, 0, 2, -1, 1);
+        _gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
+        _gl.Translate(-(1-0.29f), -1.4, 0f);
+        t += 0.001;
 
         foreach (var entityId in _rendersFilter)
         {
@@ -115,7 +118,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
-                foreach (var floor in map.Tiles.WallTiles)
+                foreach (var wall in map.Tiles.WallTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Wall"));
@@ -123,7 +126,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
                     var rect = new Rectangle(
-                        new Vector2(floor.X * map.TileSize.X, floor.Y * map.TileSize.Y),
+                        new Vector2(wall.X * map.TileSize.X, wall.Y * map.TileSize.Y),
                         map.TileSize
                     );
 
@@ -142,29 +145,69 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
+                foreach (var door in map.Tiles.DoorTiles)
+                {
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    var textureName = String.Empty;
+                    if (map.Tiles.WallTiles.Contains(door with {X = door.X + 1}) &&
+                        map.Tiles.WallTiles.Contains(door with {X = door.X - 1}))
+                    {
+                        textureName = "HorizontalDoor";
+                    }
+                    else
+                    {
+                        textureName = "VerticalDoor";
+                    }
+
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(textureName));
+
+                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+
+                    var rect = new Rectangle(
+                        new Vector2(door.X * map.TileSize.X, door.Y * map.TileSize.Y),
+                        map.TileSize
+                    );
+
+                    _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+                    _gl.TexCoord(0.0, 0.0f);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.TexCoord(0.0, 1.0f);
+                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.TexCoord(1.0, 1.0f);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.TexCoord(1.0, 0.0f);
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
+                    _gl.End();
+
+                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
+                    _gl.End();
+                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+                }
             }
             else if (render.Type is RenderingType.ColliderDebugView)
             {
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _staticColliders.Get(entityId);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //var collider = _staticColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
+                //var rect = collider.Box.Shape;
 
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.ColliderSpaceTreeView)
             {
                 var tree = _spaceTrees.Get(entityId).Tree;
-                
+
                 var stack = new Stack<QuadTree>();
                 stack.Push(tree);
-                
+
                 while (stack.Count > 0)
                 {
                     tree = stack.Pop();
@@ -258,12 +301,12 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.General)
             {
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
-                
+
                 _gl.PushMatrix();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(spriteComponent.Sprite));
-                
+
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Translate(transform.Location);
@@ -315,5 +358,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 throw new NotImplementedException();
             }
         }
+
+        
     }
 }

@@ -142,7 +142,10 @@
   "Coin6": "Coin\\tile006.png",
   "Coin7": "Coin\\tile007.png",
   "Coin8": "Coin\\tile008.png",
- 
-  "Wall": "stoneFloor.jpg",
-  "Floor": "stoneWall.jpg"
+
+  "Wall": "HorizontalWall.png",
+  "Floor": "Floor.png",
+  "Door": "Door.jpg",
+  "VerticalDoor": "VerticalDoor.png",
+  "HorizontalDoor": "HorizontalDoorOpen.png"
 }
