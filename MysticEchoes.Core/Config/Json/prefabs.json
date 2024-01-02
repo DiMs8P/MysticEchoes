@@ -113,10 +113,6 @@
   "Bullet": {
     "Components": [
       {
-        "TypeName": "MysticEchoes.Core.Shooting.OwningByComponent",
-        "Parameters": {}
-      },
-      {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Scale": "0.15 0.15"

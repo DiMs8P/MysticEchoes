@@ -76,18 +76,15 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 
                 if (muzzleComponent.ShootingType is ShootingType.SingleShot)
                 {
-                    if (rangeWeaponComponent.IsShooting)
+                    if (rangeWeaponComponent.IsShooting && muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots)
                     {
-                        if (muzzleComponent.ElapsedTimeFromLastShot > muzzleComponent.TimeBetweenShots)
-                        {
-                            MakeShot(weaponOwnerId, weaponEntityId);
-                            muzzleComponent.ElapsedTimeFromLastShot = 0;
-                            continue;
-                        }
+                        MakeShot(weaponOwnerId, weaponEntityId);
+                        muzzleComponent.ElapsedTimeFromLastShot = 0;
+                        
+                        continue;
                     }
                 }
-                
-                if (muzzleComponent.ShootingType is ShootingType.BurstFire)
+                else if (muzzleComponent.ShootingType is ShootingType.BurstFire)
                 {
                     ref BurstFireComponent burstFireComponent = ref _bursts.Get(weaponEntityId);
 
@@ -101,10 +98,11 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 
                         bool reachedBurstLimit = burstFireComponent.FiredShots + 1 >= burstFireComponent.MaxShotsInBurst;
                         burstFireComponent.FiredShots = reachedBurstLimit ? 0 : burstFireComponent.FiredShots + 1;
+                        
+                        continue;
                     }
                 }
-
-                if (muzzleComponent.ShootingType is ShootingType.Chargeable)
+                else if (muzzleComponent.ShootingType is ShootingType.Chargeable)
                 {
                     ref ChargeFireComponent chargeFireComponent = ref _charges.Get(weaponEntityId);
     
@@ -117,9 +115,10 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                          chargeFireComponent.CurrentChargeTime > chargeFireComponent.MaxChargeTime) ||
                         (!rangeWeaponComponent.IsShooting && chargeFireComponent.CurrentChargeTime > chargeFireComponent.MinChargeTime))
                     {
-                        chargeFireComponent.CurrentChargeTime = 0;
                         MakeShot(weaponOwnerId, weaponEntityId);
                         muzzleComponent.ElapsedTimeFromLastShot = 0;
+                        
+                        chargeFireComponent.CurrentChargeTime = 0;
                         continue;
                     }
 
@@ -127,6 +126,10 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                     {
                         chargeFireComponent.CurrentChargeTime = 0;
                     }
+                }
+                else if (muzzleComponent.ShootingType is not ShootingType.None || muzzleComponent.ShootingType is ShootingType.None)
+                {
+                    throw new NotImplementedException();
                 }
 
                 muzzleComponent.ElapsedTimeFromLastShot += _systemExecutionContext.DeltaTime;
@@ -143,22 +146,13 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         int magic = _prefabManager.CreateEntityFromPrefab(_factory, muzzleComponent.MagicPrefab);
         ref MagicComponent magicComponent = ref _magics.Get(magic);
 
-        if (_inventories.Has(ownerEntityId))
-        {
-            ref InventoryComponent inventoryComponent = ref _inventories.Get(ownerEntityId);
-
-            foreach (MagicAffectedItem item in inventoryComponent.MagicAffectedItems)
-            {
-                item.Apply(magic, _world);
-            }
-        }
+        ApplyInventoryItems(ownerEntityId, magic);
 
         if (magicComponent.Type is MagicType.Projectile)
         {
             ref ProjectileComponent projectileComponent = ref _projectiles.Get(magic);
             
             InitializeProjectile(magic,
-                weaponEntityId,
                 ownerTransformComponent.Location + weaponLocalTransformComponent.Location,
                 ownerTransformComponent.Rotation + weaponLocalTransformComponent.Rotation,
                 projectileComponent.Size);
@@ -176,12 +170,22 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
                 0.2f);*/
         }
     }
-    
-    private void InitializeProjectile(int magicId, int weaponEntityId, Vector2 projectileLocation, Vector2 projectileRotation, float size)
+
+    private void ApplyInventoryItems(int ownerEntityId, int magic)
     {
-        ref OwningByComponent owningByComponent = ref _ownings.Get(weaponEntityId);
-        owningByComponent.Owner = weaponEntityId;
-        
+        if (_inventories.Has(ownerEntityId))
+        {
+            ref InventoryComponent inventoryComponent = ref _inventories.Get(ownerEntityId);
+
+            foreach (MagicAffectedItem item in inventoryComponent.MagicAffectedItems)
+            {
+                item.Apply(magic, _world);
+            }
+        }
+    }
+
+    private void InitializeProjectile(int magicId, Vector2 projectileLocation, Vector2 projectileRotation, float size)
+    {
         ref TransformComponent projectileTransformComponent = ref _transforms.Get(magicId);
         projectileTransformComponent.Location = projectileLocation;
         projectileTransformComponent.Rotation = projectileRotation;

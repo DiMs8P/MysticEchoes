@@ -208,11 +208,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             return;
         }
-        
-        if (entity.Behavior is CollisionBehavior.Nothing)
-        {
-            return;
-        }
 
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
     }

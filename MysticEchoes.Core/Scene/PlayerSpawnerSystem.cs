@@ -23,6 +23,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     [EcsInject] private EntityFactory _factory;
     [EcsInject] private ItemsFactory _itemsFactory;
 
+    private EcsWorld _world;
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
@@ -37,24 +38,24 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 
     public void Init(IEcsSystems systems)
     {
-        EcsWorld world = systems.GetWorld();
+        _world = systems.GetWorld();
 
-        _characterAnimations = world.GetPool<CharacterAnimationComponent>();
-        _animations = world.GetPool<AnimationComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
-        _transforms = world.GetPool<TransformComponent>();
-        _colliders = world.GetPool<DynamicCollider>();
-        _movements = world.GetPool<MovementComponent>();
+        _characterAnimations = _world.GetPool<CharacterAnimationComponent>();
+        _animations = _world.GetPool<AnimationComponent>();
+        _sprites = _world.GetPool<SpriteComponent>();
+        _transforms = _world.GetPool<TransformComponent>();
+        _colliders = _world.GetPool<DynamicCollider>();
+        _movements = _world.GetPool<MovementComponent>();
 
-        _weapons = world.GetPool<RangeWeaponComponent>();
-        _ownings = world.GetPool<OwningByComponent>();
+        _weapons = _world.GetPool<RangeWeaponComponent>();
+        _ownings = _world.GetPool<OwningByComponent>();
 
-        _items = world.GetPool<StartingItems>();
+        _items = _world.GetPool<StartingItems>();
         
-        CreatePlayer(_factory, world);
+        CreatePlayer(_factory);
     }
 
-    private int CreatePlayer(EntityFactory factory, EcsWorld world)
+    private int CreatePlayer(EntityFactory factory)
     {
         int player = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.Player);
         int playerWeapon = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.DefaultWeapon);
@@ -64,7 +65,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         SetupCollider(player);
 
         SetupPlayerWeapon(player, playerWeapon);
-        SetupPlayerStarterItems(player, world);
+        SetupPlayerStarterItems(player);
 
         return player;
     }
@@ -129,7 +130,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         owningByComponent.Owner = player;
     }
     
-    private void SetupPlayerStarterItems(int player, EcsWorld world)
+    private void SetupPlayerStarterItems(int player)
     {
         if (_items.Has(player))
         {
@@ -138,7 +139,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
             foreach (Item item in givenStartItems.Items)
             {
                 BaseItem startItem = _itemsFactory.CreateItem(item);
-                startItem.OnItemTaken(player, world);
+                startItem.OnItemTaken(player, _world);
             }
             
             _items.Del(player);
