@@ -13,6 +13,11 @@
         "Name": "Laser",
         "Description": "",
         "Quality": "Rare"
+      },
+      "CricketsHead": {
+        "Name": "CricketsHead",
+        "Description": "",
+        "Quality": "Epic"
       }
     },
     "QualityPoints": {

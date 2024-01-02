@@ -4,6 +4,8 @@ using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Inventory;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
@@ -18,12 +20,14 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private EntityFactory _factory;
 
+    private EcsWorld _world;
     private EcsFilter _weaponOwnersFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<MuzzleComponent> _muzzles;
     private EcsPool<MagicComponent> _magics;
+    private EcsPool<InventoryComponent> _inventories;
     private EcsPool<OwningByComponent> _ownings;
     private EcsPool<DynamicCollider> _colliders;
     
@@ -35,23 +39,24 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 
     public void Init(IEcsSystems systems)
     {
-        EcsWorld world = systems.GetWorld();
+        _world = systems.GetWorld();
 
-        _weaponOwnersFilter = world.Filter<RangeWeaponComponent>().Inc<TransformComponent>().End();
+        _weaponOwnersFilter = _world.Filter<RangeWeaponComponent>().Inc<TransformComponent>().End();
 
-        _transforms = world.GetPool<TransformComponent>();
-        _movements = world.GetPool<MovementComponent>();
-        _weapons = world.GetPool<RangeWeaponComponent>();
-        _ownings = world.GetPool<OwningByComponent>();
-        _colliders = world.GetPool<DynamicCollider>();
-        _muzzles = world.GetPool<MuzzleComponent>();
-        _magics = world.GetPool<MagicComponent>();
+        _transforms = _world.GetPool<TransformComponent>();
+        _movements = _world.GetPool<MovementComponent>();
+        _weapons = _world.GetPool<RangeWeaponComponent>();
+        _ownings = _world.GetPool<OwningByComponent>();
+        _colliders = _world.GetPool<DynamicCollider>();
+        _muzzles = _world.GetPool<MuzzleComponent>();
+        _magics = _world.GetPool<MagicComponent>();
+        _inventories = _world.GetPool<InventoryComponent>();
 
-        _bursts = world.GetPool<BurstFireComponent>();
-        _charges = world.GetPool<ChargeFireComponent>();
+        _bursts = _world.GetPool<BurstFireComponent>();
+        _charges = _world.GetPool<ChargeFireComponent>();
 
-        _projectiles = world.GetPool<ProjectileComponent>();
-        _hitscans = world.GetPool<HitscanComponent>();
+        _projectiles = _world.GetPool<ProjectileComponent>();
+        _hitscans = _world.GetPool<HitscanComponent>();
     }
 
     public void Run(IEcsSystems systems)
@@ -137,6 +142,16 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         
         int magic = _prefabManager.CreateEntityFromPrefab(_factory, muzzleComponent.MagicPrefab);
         ref MagicComponent magicComponent = ref _magics.Get(magic);
+
+        if (_inventories.Has(ownerEntityId))
+        {
+            ref InventoryComponent inventoryComponent = ref _inventories.Get(ownerEntityId);
+
+            foreach (MagicAffectedItem item in inventoryComponent.MagicAffectedItems)
+            {
+                item.Apply(magic, _world);
+            }
+        }
 
         if (magicComponent.Type is MagicType.Projectile)
         {

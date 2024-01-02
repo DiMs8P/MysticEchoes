@@ -1,4 +1,6 @@
-﻿namespace MysticEchoes.Core.Items;
+﻿using MysticEchoes.Core.Loaders.Assets;
+
+namespace MysticEchoes.Core.Items;
 
 public class ItemInfo
 {

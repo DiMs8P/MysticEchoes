@@ -11,6 +11,7 @@ public class ItemsFactory
     {
         FactoryMethods.Add(Item.Money, parameters => new Money((int)parameters[0]));
         FactoryMethods.Add(Item.Laser, _ => new LaserItem());
+        FactoryMethods.Add(Item.CricketsHead, _ => new CricketsHead());
     }
 
     public static BaseItem CreateItem(Item itemId, params object[] parameters)
