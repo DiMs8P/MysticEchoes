@@ -1,6 +1,8 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Inventory;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
@@ -9,6 +11,7 @@ using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
+using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Scene;
@@ -16,25 +19,38 @@ namespace MysticEchoes.Core.Scene;
 public class PlayerSpawnerSystem : IEcsInitSystem
 {
     [EcsInject] private PrefabManager _prefabManager;
+    [EcsInject] private AnimationManager _animationManager;
     [EcsInject] private EntityFactory _factory;
+    [EcsInject] private ItemsFactory _itemsFactory;
 
+    private EcsWorld _world;
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<DynamicCollider> _colliders;
     private EcsPool<MovementComponent> _movements;
+    
+    private EcsPool<RangeWeaponComponent> _weapons;
+    private EcsPool<OwningByComponent> _ownings;
+    
+    private EcsPool<StartingItems> _items;
 
     public void Init(IEcsSystems systems)
     {
-        EcsWorld world = systems.GetWorld();
+        _world = systems.GetWorld();
 
-        _characterAnimations = world.GetPool<CharacterAnimationComponent>();
-        _animations = world.GetPool<AnimationComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
-        _transforms = world.GetPool<TransformComponent>();
-        _colliders = world.GetPool<DynamicCollider>();
-        _movements = world.GetPool<MovementComponent>();
+        _characterAnimations = _world.GetPool<CharacterAnimationComponent>();
+        _animations = _world.GetPool<AnimationComponent>();
+        _sprites = _world.GetPool<SpriteComponent>();
+        _transforms = _world.GetPool<TransformComponent>();
+        _colliders = _world.GetPool<DynamicCollider>();
+        _movements = _world.GetPool<MovementComponent>();
+
+        _weapons = _world.GetPool<RangeWeaponComponent>();
+        _ownings = _world.GetPool<OwningByComponent>();
+
+        _items = _world.GetPool<StartingItems>();
         
         CreatePlayer(_factory);
     }
@@ -42,10 +58,14 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private int CreatePlayer(EntityFactory factory)
     {
         int player = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.Player);
+        int playerWeapon = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.DefaultWeapon);
         
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
+
+        SetupPlayerWeapon(player, playerWeapon);
+        SetupPlayerStarterItems(player);
 
         return player;
     }
@@ -68,11 +88,12 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_characterAnimations.Has(playerId))
         {
             ref CharacterAnimationComponent playerAnimationComponent = ref _characterAnimations.Get(playerId);
+            playerAnimationComponent.CurrentState = CharacterState.Idle;
 
-            if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.InitialState, out var animation) && _animations.Has(playerId))
+            if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.CurrentState, out var animation) && _animations.Has(playerId))
             {
                 ref AnimationComponent playerAnimation = ref _animations.Get(playerId);
-                playerAnimation.Frames = animation;
+                playerAnimation.AnimationId = animation;
             }
             else
             {
@@ -86,17 +107,42 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_animations.Has(playerId))
         {
             ref AnimationComponent playerAnimationComponent = ref _animations.Get(playerId);
-            
-            if (playerAnimationComponent.Frames.Count() > playerAnimationComponent.CurrentFrameIndex && _sprites.Has(playerId))
+            AnimationFrame[] playerAnimations = _animationManager.GetAnimationFrames(playerAnimationComponent.AnimationId);
+            if (playerAnimations.Count() > playerAnimationComponent.CurrentFrameIndex && _sprites.Has(playerId))
             {
                 ref SpriteComponent playerAnimation = ref _sprites.Get(playerId);
-                playerAnimation.Sprite = playerAnimationComponent.Frames[playerAnimationComponent.CurrentFrameIndex].Sprite;
+                playerAnimation.Sprite = playerAnimations[playerAnimationComponent.CurrentFrameIndex].Sprite;
             }
             else
             {
                 throw new ArgumentException("Player prefab must have Sprite component if he has AnimationComponent and " +
                                             "have initial sprite to render");
             }
+        }
+    }
+    
+    private void SetupPlayerWeapon(int player, int playerWeapon)
+    {
+        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(player);
+        rangeWeaponComponent.MuzzleIds.Add(playerWeapon);
+
+        ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
+        owningByComponent.Owner = player;
+    }
+    
+    private void SetupPlayerStarterItems(int player)
+    {
+        if (_items.Has(player))
+        {
+            ref StartingItems givenStartItems = ref _items.Get(player);
+
+            foreach (Item item in givenStartItems.Items)
+            {
+                BaseItem startItem = _itemsFactory.CreateItem(item);
+                startItem.OnItemTaken(player, _world);
+            }
+            
+            _items.Del(player);
         }
     }
 }

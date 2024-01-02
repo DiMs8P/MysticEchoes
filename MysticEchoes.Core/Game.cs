@@ -4,6 +4,7 @@ using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
@@ -30,16 +31,19 @@ public class Game
     private readonly EcsSystems _collisionSystems;
     private EcsSystems _renderSystems;
     
+    private readonly AnimationManager _animationManager;
     private readonly AssetManager _assetManager;
     private readonly PrefabManager _prefabManager;
     private readonly IMazeGenerator _mazeGenerator;
     private readonly SystemExecutionContext _systemExecutionContext;
 
     private readonly EntityFactory _entityFactory;
+    private readonly ItemsFactory _itemsFactory;
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
     public Game(
+        AnimationManager animationManager,
         AssetManager assetManager, 
         PrefabManager prefabManager, 
         IInputManager inputManager, 
@@ -49,12 +53,14 @@ public class Game
     {
         _mazeGenerator = mazeGenerator;
         InputManager = inputManager;
+        _animationManager = animationManager;
         _assetManager = assetManager;
         _prefabManager = prefabManager;
         _systemExecutionContext = systemExecutionContext;
             
         _world = new EcsWorld();
         _entityFactory = new EntityFactory(_world);
+        _itemsFactory = new ItemsFactory(_world, _entityFactory, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         
         _updateTimer = new Stopwatch();
         
@@ -62,7 +68,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _prefabManager, _mazeGenerator)
+            .Inject(_entityFactory, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);
@@ -76,8 +82,6 @@ public class Game
 
         _shootingSystems = new EcsSystems(_world);
         _shootingSystems
-            .Add(new WeaponsStateSystem())
-            .Add(new BurstFireSystem())
             .Add(new WeaponShootingSystem())
             .Inject(_systemExecutionContext, _entityFactory, _prefabManager)
             .Init();
@@ -92,18 +96,19 @@ public class Game
         _collisionSystems = new EcsSystems(_world);
         _collisionSystems
             .Add(new CollisionsSystem())
-            .Inject(_entityFactory, _systemExecutionContext)
+            .Inject(_entityFactory, _systemExecutionContext, _prefabManager)
             .Init();
 
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationSystem())
-            .Inject(_systemExecutionContext)
+            .Inject(_animationManager, _systemExecutionContext)
             .Init();
-
+        
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
-            .Add(new ProjectileCleanupSystem())
+            .Add(new LifeTimeCleanupSystem())
+            .Inject(_systemExecutionContext)
             .Init();
     }
 

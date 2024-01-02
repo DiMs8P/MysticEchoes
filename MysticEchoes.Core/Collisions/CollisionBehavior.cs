@@ -7,5 +7,6 @@ public enum CollisionBehavior
     EnemyBullet,
     AllyCharacter,
     EnemyCharacter,
-    Wall
+    Wall,
+    Item
 }

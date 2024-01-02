@@ -2,19 +2,32 @@
   "PlayerSettings": {
     "Speed": 1.0
   },
-  "WeaponsSettings": {
-    "OneShot": {
-      "Damage": 10.0,
-      "BulletSpeed": 0.2,
-      "BulletSize": 0.5,
-      "TimeBetweenShoots": 0.1
+  "ItemsSettings": {
+    "Items": {
+      "Money": {
+        "Name": "Money",
+        "Description": "",
+        "Quality": "Common",
+        "AnimationId": "Coin",
+        "SpriteId": "Coin0"
+      },
+      "Laser": {
+        "Name": "Laser",
+        "Description": "",
+        "Quality": "Rare"
+      },
+      "CricketsHead": {
+        "Name": "CricketsHead",
+        "Description": "",
+        "Quality": "Epic",
+        "SpriteId": "Coin0"
+      }
     },
-    "TwoShot": {
-      "Damage": 10.0,
-      "BulletSpeed": 0.2,
-      "BulletSize": 0.5,
-      "TimeBetweenShoots": 0.1,
-      "DistanceBetweenBullets": 0.08
+    "QualityPoints": {
+      "Common": 50,
+      "Rare": 10,
+      "Epic": 5,
+      "Legendary": 1
     }
   }
 }

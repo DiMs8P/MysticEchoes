@@ -5,7 +5,6 @@ using MazeGeneration;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Assets;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;
@@ -92,7 +91,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 foreach (var floor in map.Tiles.FloorTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Floor));
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Floor"));
 
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
@@ -119,7 +118,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 foreach (var floor in map.Tiles.WallTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(AssetType.Wall));
+                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Wall"));
 
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
@@ -256,7 +255,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PopMatrix();
             }
-            else if (render.Type is RenderingType.Bullet)
+            else if (render.Type is RenderingType.General)
             {
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
                 
