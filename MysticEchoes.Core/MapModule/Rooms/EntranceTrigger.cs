@@ -3,4 +3,5 @@
 public struct EntranceTrigger
 {
     public int RoomId { get; set; }
+    public bool IsActivated { get; set; }
 }

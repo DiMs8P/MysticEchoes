@@ -41,8 +41,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         _sprites = world.GetPool<SpriteComponent>();
 
         CreateMap();
-
-        //CreateSquare();
+        
         CreateItem();
     }
 
@@ -81,10 +80,26 @@ public class InitEnvironmentSystem : IEcsInitSystem
             var doorId = _factory.Create()
                 .Add(new DoorComponent
                 {
-                    IsOpen = true
+                    IsOpen = true,
+                    Tile = door
                 })
                 .End();
 
+            //_factory.AddTo(doorId, new DynamicCollider
+            //{
+            //    Box = new Box(
+            //        doorId,
+            //        new Rectangle(
+            //            new Vector2(door.X * mapComponent.TileSize.X, door.Y * mapComponent.TileSize.Y),
+            //            new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            //        )
+            //    ),
+            //    Behavior = CollisionBehavior.Wall
+            //});
+            //_factory.AddTo(doorId, new RenderComponent()
+            //{
+            //    Type = RenderingType.DynamicColliderDebugView
+            //});
             doorEntities.Add(door, doorId);
         }
 
@@ -114,7 +129,6 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 })
                 .Add(new RenderComponent(RenderingType.DynamicColliderDebugView))
                 .End();
-
             _factory.AddTo(entranceTrigger, new DynamicCollider
             {
                 Box = new Box(
@@ -129,24 +143,6 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 Behavior = CollisionBehavior.RoomEntranceTrigger
             });
         }
-
-    }
-
-    private void CreateSquare()
-    {
-        _factory.Create()
-            .Add(new TransformComponent
-            {
-                Location = new Vector2(0, 0.3f),
-                Rotation = new Vector2(1.0f, 0.0f)
-            })
-            .Add(new MovementComponent()
-            {
-                Speed = 1.0f,
-                Velocity = new Vector2(0.5f, 0.5f)
-            })
-            .Add(new RenderComponent(RenderingType.DebugUnitView))
-            .End();
     }
 
     private void CreateItem()

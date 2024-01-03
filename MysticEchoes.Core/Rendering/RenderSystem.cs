@@ -374,7 +374,5 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 throw new NotImplementedException();
             }
         }
-
-        
     }
 }
