@@ -1,12 +1,12 @@
 ﻿using MazeGeneration.TreeModule;
 using System.Drawing;
+using MazeGeneration.Walls;
 
 namespace MazeGeneration;
 
 public class MapGenerator
 {
     private readonly GenerationConfig _config;
-    private static readonly Point[] Directions = { new(1, 0), new(0, 1), new(-1, 0), new(0, -1) };
 
     public MapGenerator(GenerationConfig config)
     {
@@ -445,14 +445,8 @@ public class MapGenerator
 
     private void MakeWalls(Map map)
     {
-        foreach (var neighborPosition in map.FloorTiles
-                     .SelectMany(
-                         _ => Directions,
-                         (floor, direction) => new Point(floor.X + direction.X, floor.Y + direction.Y))
-                     .Where(neighborPosition => !map.FloorTiles.Contains(neighborPosition)))
-        {
-            map.WallTiles.Add(neighborPosition);
-        }
+        var wallGenerator = new WallGenerator();
+        wallGenerator.CreateWalls(map);
     }
 
     private Point GetDirection(Point start, Point end)

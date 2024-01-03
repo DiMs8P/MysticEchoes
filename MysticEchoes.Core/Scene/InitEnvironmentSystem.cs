@@ -54,7 +54,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();
 
-        foreach (var wall in map.WallTiles)
+        foreach (var wall in map.WallTopTiles)
         {
             var wallEntityId = _factory.Create()
                 .Add(new StaticCollider

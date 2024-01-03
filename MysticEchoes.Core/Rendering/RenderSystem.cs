@@ -107,19 +107,19 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                     _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Left, rect.Top);
                     _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Left, rect.Bottom);
                     _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Right, rect.Bottom);
                     _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Right, rect.Top);
                     _gl.End();
 
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
-                foreach (var wall in map.Tiles.WallTiles)
+                foreach (var wall in map.Tiles.WallTopTiles)
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Wall"));
@@ -134,13 +134,13 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                     _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Left, rect.Top);
                     _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Left, rect.Bottom);
                     _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Right, rect.Bottom);
                     _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Right, rect.Top);
                     _gl.End();
 
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -150,14 +150,14 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 {
                     _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                     var textureName = String.Empty;
-                    if (map.Tiles.WallTiles.Contains(door with {X = door.X + 1}) &&
-                        map.Tiles.WallTiles.Contains(door with {X = door.X - 1}))
+                    if (map.Tiles.WallTopTiles.Contains(door with {X = door.X + 1}) &&
+                        map.Tiles.WallTopTiles.Contains(door with {X = door.X - 1}))
                     {
                         textureName = "HorizontalDoor";
                     }
                     else
                     {
-                        textureName = "VerticalDoor";
+                        textureName = "DoorLeft";
                     }
 
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(textureName));
@@ -172,13 +172,13 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                     _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Left, rect.Top);
                     _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Left, rect.Bottom);
                     _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
+                    _gl.Vertex(rect.Right, rect.Bottom);
                     _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
+                    _gl.Vertex(rect.Right, rect.Top);
                     _gl.End();
 
                     _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);

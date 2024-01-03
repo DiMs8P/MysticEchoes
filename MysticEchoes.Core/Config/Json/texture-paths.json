@@ -146,6 +146,6 @@
   "Wall": "HorizontalWall.png",
   "Floor": "Floor.png",
   "Door": "Door.jpg",
-  "VerticalDoor": "VerticalDoor.png",
-  "HorizontalDoor": "HorizontalDoorOpen.png"
+  "DoorLeft": "DoorLeft.png",
+  "HorizontalDoor": "HorizontalDoor.png"
 }
