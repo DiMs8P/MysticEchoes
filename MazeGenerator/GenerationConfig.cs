@@ -13,6 +13,7 @@ public class GenerationConfig
     public double MaxHeightToWidthProportion { get; set; }
     public double MaxDivideShift { get; set; }
     public int ThreeDepth { get; set; }
+    public RandomWalkParameter RoomRandomWalkParameter { get; set; }
 
     public static GenerationConfig Default =>
         new()
@@ -25,7 +26,8 @@ public class GenerationConfig
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
-            ThreeDepth = 3
+            ThreeDepth = 3,
+            RoomRandomWalkParameter = new RandomWalkParameter(25, 30, false) 
         };
     // Пересекающиеся дороги
     //MinNodeSize = new (20, 20),
