@@ -23,7 +23,7 @@ public class MapGenerator
         MakeLeafs(tree);
         MakeRooms(tree);
         MakeHalls(tree);
-        NormalizeHalls(tree);
+        //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
 
         MakeDoors(tree);
@@ -391,14 +391,7 @@ public class MapGenerator
                      .Where(x => x.Room is not null))
         {
             var room = node.Room.Value;
-            for (var x = room.Left; x <= room.Right; x++)
-            {
-                for (int y = room.Top; y <= room.Bottom; y++)
-                {
-                    map.FloorTiles.Add(new Point(x, y));
-                    map.FloorTiles.Add(new Point(x, y));
-                }
-            }
+            MarkUpRandomWalkRoom(map, room);
         }
 
         foreach (var node in tree.DeepCrawl()
@@ -439,6 +432,69 @@ public class MapGenerator
             foreach (var door in node.Doors)
             {
                 map.DoorTiles.Add(door);
+            }
+        }
+    }
+
+    private static void MarkUpSimpleRoom(Map map, Rectangle room)
+    {
+        for (var x = room.Left; x <= room.Right; x++)
+        {
+            for (int y = room.Top; y <= room.Bottom; y++)
+            {
+                map.FloorTiles.Add(new Point(x, y));
+                map.FloorTiles.Add(new Point(x, y));
+            }
+        }
+    }
+
+    private void MarkUpRandomWalkRoom(Map map, Rectangle room)
+    {
+        HashSet<Point> SimpleRandomWalk(Point start, int walkLength)
+        {
+            var path = new HashSet<Point>();
+            path.Add(start);
+            var previousPosition = start;
+
+            for (int i = 0; i < walkLength; i++)
+            {
+                var direction = _config.Random.NextCardinalDirection();
+                var newPosition = new Point(
+                    previousPosition.X + direction.X,
+                    previousPosition.Y + direction.Y
+                );
+                path.Add(newPosition);
+                previousPosition = newPosition;
+            }
+
+            return path;
+        }
+
+        var parameter = _config.RoomRandomWalkParameter;
+
+        var floor = new HashSet<Point>();
+        var center = new Point(
+            (room.Left + room.Right) / 2,
+            (room.Top + room.Bottom) / 2
+        );
+
+        var currentPosition = center;
+        for (int i = 0; i < parameter.Iterations; i++)
+        {
+            var path = SimpleRandomWalk(currentPosition, parameter.WalkLength);
+
+            floor.UnionWith(path);
+            if (parameter.StartRandomlyEachIteration)
+            {
+                currentPosition = floor.ElementAt(_config.Random.Next(0, floor.Count));
+            }
+        }
+
+        foreach (var point in floor)
+        {
+            if (room.ContainsNotStrict(point))
+            {
+                map.FloorTiles.Add(point);
             }
         }
     }
