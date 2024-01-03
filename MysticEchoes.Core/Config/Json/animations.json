@@ -244,17 +244,11 @@
   "SimpleExplosion": [
     {
       "Sprite": "SimpleExplosion0",
-      "CurrentFrameDuration": 0.016666,
-      "AnimNotifies": [
-        "MysticEchoes.Core.Animations.AnimNotify"
-      ]
+      "CurrentFrameDuration": 0.016666
     },
     {
       "Sprite": "SimpleExplosion1",
-      "CurrentFrameDuration": 0.016666,
-      "AnimNotifies": [
-        "MysticEchoes.Core.Animations.AnimNotify"
-      ]
+      "CurrentFrameDuration": 0.016666
     },
     {
       "Sprite": "SimpleExplosion2",
