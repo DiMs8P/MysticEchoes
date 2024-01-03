@@ -4,7 +4,7 @@ using MysticEchoes.Core.Loaders.Prefabs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace MysticEchoes.Core.Loaders.Implementation;
+namespace MysticEchoes.Core.Loaders.Json;
 
 public class JsonLoader : IDataLoader
 {
@@ -25,7 +25,10 @@ public class JsonLoader : IDataLoader
     
     public Dictionary<string, AnimationFrame[]> LoadAnimations()
     {
-        return Load<Dictionary<string, AnimationFrame[]>>(Environment.CurrentDirectory + "\\Config\\Json\\animations.json");
+        var settings = new JsonSerializerSettings();
+        settings.Converters.Add(new AnimNotifyConverter());
+        
+        return Load<Dictionary<string, AnimationFrame[]>>(Environment.CurrentDirectory + "\\Config\\Json\\animations.json", settings);
     }
 
     public object LoadObject(object objectValue, Type objectType)
@@ -49,7 +52,7 @@ public class JsonLoader : IDataLoader
         return result;
     }
 
-    private T Load<T>(string jsonPath)
+    private T Load<T>(string jsonPath, JsonSerializerSettings? settings = null)
     {
         T result = default(T);
 
@@ -60,7 +63,9 @@ public class JsonLoader : IDataLoader
             throw new FileNotFoundException("Json file is not found.", jsonPath);
 
         string json = File.ReadAllText(jsonPath);
-        result = JsonConvert.DeserializeObject<T>(json);
+
+        result = settings is not null ? JsonConvert.DeserializeObject<T>(json, settings) : JsonConvert.DeserializeObject<T>(json);
+        
         if (result == null)
         {
             throw new InvalidOperationException("Can't deserialize json .");
