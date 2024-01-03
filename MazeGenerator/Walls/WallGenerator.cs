@@ -31,8 +31,7 @@ public class WallGenerator
                 }
             }
 
-            // CornerWall
-            //map.WallTiles.Add(position, neighborsBinary);
+            map.AddSingleCornerWall(position, neighborsBinary);
         }
     }
 
@@ -54,7 +53,6 @@ public class WallGenerator
                 }
             }
             map.AddSingleBasicWall(position, neighborsBinary);
-            //map.WallTiles.Add(position, neighborsBinary);
         }
     }
 

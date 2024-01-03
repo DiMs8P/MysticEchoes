@@ -103,7 +103,6 @@ public class WallTypesHelper
         0b0101,
         0b1101,
         0b1001
-
     };
 
     public static HashSet<int> WallFullEightDirections = new()

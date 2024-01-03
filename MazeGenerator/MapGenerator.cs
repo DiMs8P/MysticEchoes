@@ -28,8 +28,8 @@ public class MapGenerator
 
         MakeDoors(tree);
         MarkUp(tree, map);
-        MarkUpDoors(tree, map);
         MakeWalls(map);
+        MarkUpDoors(tree, map);
 
         return map;
     }
@@ -43,7 +43,7 @@ public class MapGenerator
                 var edgeX = direction.X > 0
                     ? room.Right
                     : room.Left;
-                
+
                 return innerPoint with { X = edgeX };
             }
             var edgeY = direction.Y > 0
@@ -452,13 +452,16 @@ public class MapGenerator
     {
         HashSet<Point> SimpleRandomWalk(Point start, int walkLength)
         {
-            var path = new HashSet<Point>();
-            path.Add(start);
+            var path = new HashSet<Point> { start };
             var previousPosition = start;
 
             for (int i = 0; i < walkLength; i++)
             {
                 var direction = _config.Random.NextCardinalDirection();
+                if (direction.X != 0 && direction.Y != 0)
+                {
+                    Console.WriteLine(123);
+                }
                 var newPosition = new Point(
                     previousPosition.X + direction.X,
                     previousPosition.Y + direction.Y
@@ -473,10 +476,7 @@ public class MapGenerator
         var parameter = _config.RoomRandomWalkParameter;
 
         var floor = new HashSet<Point>();
-        var center = new Point(
-            (room.Left + room.Right) / 2,
-            (room.Top + room.Bottom) / 2
-        );
+        var center = room.GetCenter();
 
         var currentPosition = center;
         for (int i = 0; i < parameter.Iterations; i++)

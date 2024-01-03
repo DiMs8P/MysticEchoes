@@ -18,16 +18,16 @@ public class GenerationConfig
     public static GenerationConfig Default =>
         new()
         {
-            MinNodeSize = new(10, 10),
+            MinNodeSize = new(14, 10),
             MinRoomSize = new(4, 4),
-            MinRoomPadding = new(4, 4),
-            MazeSize = new(50, 50),
+            MinRoomPadding = new(2, 2),
+            MazeSize = new(70, 50),
             Random = new GenerationRandom(7354543),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
             ThreeDepth = 3,
-            RoomRandomWalkParameter = new RandomWalkParameter(25, 30, false) 
+            RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false) 
         };
     // Пересекающиеся дороги
     //MinNodeSize = new (20, 20),
