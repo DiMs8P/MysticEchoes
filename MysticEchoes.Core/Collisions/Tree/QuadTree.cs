@@ -50,6 +50,19 @@ public class QuadTree
             kv.Value.Add(area);
         }
     }
+    
+    public void Remove(Box area)
+    {
+        if (_boxes.Contains(area))
+        {
+            _boxes.Remove(area);
+        }
+
+        foreach (var kv in _subTrees)
+        {
+            kv.Value.Remove(area);
+        }
+    }
 
     public void Clear()
     {

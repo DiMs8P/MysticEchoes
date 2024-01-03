@@ -9,5 +9,6 @@ public enum CollisionBehavior
     EnemyCharacter,
     Wall,
     Item,
+    Ignore,
     RoomEntranceTrigger
 }

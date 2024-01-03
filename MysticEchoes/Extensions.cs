@@ -3,7 +3,7 @@ using MysticEchoes.Core;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Implementation;
+using MysticEchoes.Core.Loaders.Json;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Implementations;
