@@ -4,6 +4,7 @@ using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -34,6 +35,8 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<ItemComponent> _items;
     private EcsPool<ExplosionComponent> _explosions;
     private const float CollisionResolvingSensitivity = 1e-4f;
+
+    private HashSet<int> _deletedEntities = new HashSet<int>();
 
     public void Init(IEcsSystems systems)
     {
@@ -92,6 +95,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     public void Run(IEcsSystems systems)
     {
         _dynamicCollidersTree.Clear();
+        _deletedEntities.Clear();
 
         foreach (var entity in _dynamicCollidersFilter)
         {
@@ -169,7 +173,30 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             if (target.Behavior is CollisionBehavior.Wall)
             {
+                if (!_deletedEntities.Contains(entity.Id))
+                {
+                    if (_explosions.Has(entity.Id))
+                    {
+                        ref ExplosionComponent explosionComponent = ref _explosions.Get(entity.Id);
+                    
+                        int explosionId = _prefabManager.CreateEntityFromPrefab(_factory, explosionComponent.ExplosionPrefab);
 
+                        ref TransformComponent explosionTransform =  ref _transforms.Get(explosionId);
+                        ref TransformComponent bulletTransform =  ref _transforms.Get(entity.Id);
+
+                        explosionTransform.Location = bulletTransform.Location;
+                        
+                        ref var explosionCollider = ref _dynamicColliders.Get(explosionId);
+                        Vector2 boxSize = new Vector2(0.265f, 0.35f) * explosionTransform.Scale;
+                        explosionCollider.Box = new Box(explosionId, new Rectangle(
+                            explosionTransform.Location - boxSize / 2, 
+                            boxSize
+                        ));
+                        explosionCollider.Behavior = CollisionBehavior.Ignore;
+                    }
+                
+                    DeleteEntity(entity.Id);
+                }
             }
             return;
         }
@@ -184,9 +211,13 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
             if (target.Behavior is CollisionBehavior.Item)
             {
-                /*ref ItemComponent itemComponent = ref _items.Get(target.Id);
-                itemComponent.Item.OnItemTaken(entity.Id, _world);
-                _world.DelEntity(target.Id);*/
+                if (!_deletedEntities.Contains(target.Id))
+                {
+                    ref ItemComponent itemComponent = ref _items.Get(target.Id);
+                    itemComponent.Item.OnItemTaken(entity.Id, _world);
+                    
+                    DeleteEntity(target.Id);
+                }
                 
                 return;
             }
@@ -205,6 +236,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
         
         if (entity.Behavior is CollisionBehavior.Item)
+        {
+            return;
+        }
+
+        if (entity.Behavior is CollisionBehavior.Ignore)
         {
             return;
         }
@@ -280,6 +316,16 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return -1f * Vector2.UnitY;
         }
         return Vector2.Zero;
+    }
+    
+    private void DeleteEntity(int entityId)
+    {
+        var collider = _dynamicColliders.Get(entityId);
+        var box = collider.Box;
+        _dynamicCollidersTree.Remove(box);
+        
+        _world.DelEntity(entityId);
+        _deletedEntities.Add(entityId);
     }
 }
 

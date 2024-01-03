@@ -8,5 +8,6 @@ public enum CollisionBehavior
     AllyCharacter,
     EnemyCharacter,
     Wall,
-    Item
+    Item,
+    Ignore
 }
