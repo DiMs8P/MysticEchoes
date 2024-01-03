@@ -69,9 +69,10 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
         _gl.LoadIdentity();
-        _gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
-        _gl.Translate(-(1-0.29f), -1.4, 0f);
-        t += 0.001;
+        _gl.Ortho(0, 2, 0, 2, -1, 1);
+        //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
+        //_gl.Translate(-(1-0.29f), -1.4, 0f);
+        //t += 0.001;
 
         foreach (var entityId in _rendersFilter)
         {
@@ -186,7 +187,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                 }
             }
-            else if (render.Type is RenderingType.ColliderDebugView)
+            else if (render.Type is RenderingType.StaticColliderDebugView)
             {
                 _gl.Begin(OpenGL.GL_LINE_LOOP);
                 var collider = _staticColliders.Get(entityId);
@@ -194,6 +195,21 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 var rect = collider.Box.Shape;
 
                 _gl.Color(1.0f, 0.3f, 0.0f);
+
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
+            }
+            else if (render.Type is RenderingType.DynamicColliderDebugView)
+            {
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                var collider = _dynamicColliders.Get(entityId);
+
+                var rect = collider.Box.Shape;
+
+                _gl.Color(0.1f, 0.4f, 1.0f);
 
                 _gl.Vertex(rect.Left, rect.Bottom);
                 _gl.Vertex(rect.Left, rect.Top);

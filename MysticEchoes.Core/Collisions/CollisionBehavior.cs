@@ -8,6 +8,6 @@ public enum CollisionBehavior
     AllyCharacter,
     EnemyCharacter,
     Wall,
-    Door,
-    Item
+    Item,
+    RoomEntranceTrigger
 }

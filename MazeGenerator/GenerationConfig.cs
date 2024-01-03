@@ -23,7 +23,7 @@ public class GenerationConfig
             MazeSize = new(50, 50),
             Random = new GenerationRandom(7354543),
             MaxHeightToWidthProportion = 1.4,
-            MaxWidthToHeightProportion = 2.1,
+            MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
             ThreeDepth = 3
         };
