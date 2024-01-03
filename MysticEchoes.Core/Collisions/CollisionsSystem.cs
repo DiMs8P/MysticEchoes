@@ -101,6 +101,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
     public void Run(IEcsSystems systems)
     {
+        _entitiesToClear.Clear();
         _dynamicCollidersTree.Clear();
         _deletedEntities.Clear();
 
@@ -206,7 +207,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                         explosionCollider.Behavior = CollisionBehavior.Ignore;
                     }
                 
-                    DeleteEntity(entity.Id);
+                    _entitiesToClear.Add(entity.Id);
                 }
             }
             return;
@@ -251,11 +252,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return;
         }
 
-        if (entity.Behavior is CollisionBehavior.Ignore)
-        {
-            return;
-        }
-
         if (entity.Behavior is CollisionBehavior.RoomEntranceTrigger)
         {
             if (target.Behavior == CollisionBehavior.AllyCharacter)
@@ -293,6 +289,10 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                     });
                 }
             }
+            return;
+        }
+        if (entity.Behavior is CollisionBehavior.Ignore)
+        {
             return;
         }
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
