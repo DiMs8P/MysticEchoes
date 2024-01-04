@@ -67,17 +67,21 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var room = roomNode.Room!.Shape;
             var doors = roomNode.Room.Doors;
-            var doorIds = doors.Select(x => doorEntities[x]).ToList();
 
             var roomBound = new Rectangle(
                 new Vector2(room.X * mapComponent.TileSize.X, room.Y * mapComponent.TileSize.Y),
                 new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
             );
+            var doorIds = doors.Select(x => doorEntities[x]).ToList();
+            var enemySpawnIds = CreateEnemySpawn(roomNode, mapComponent);
+
+
             var roomId = _builder.Create()
-                .Add(new RoomComponent()
+                .Add(new RoomComponent
                 {
+                    Doors = doorIds,
                     Bound = roomBound,
-                    Doors = doorIds
+                    EnemySpawns = enemySpawnIds
                 })
                 .End();
 
@@ -102,6 +106,40 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 Behavior = CollisionBehavior.RoomEntranceTrigger
             });
         }
+    }
+
+    private List<int> CreateEnemySpawn(RoomNode roomNode, TileMapComponent mapComponent)
+    {
+        var enemySpawnIds = new List<int>();
+        foreach (var spawn in roomNode.Room.EnemySpawns)
+        {
+            var spawnId = _builder.Create()
+                .End();
+            enemySpawnIds.Add(spawnId);
+            _builder.AddTo(spawnId, new DynamicCollider
+                {
+                    Box = new Box(
+                        spawnId,
+                        new Rectangle(
+                            new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
+                                spawn.Area.Top * mapComponent.TileSize.Y),
+                            new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
+                                spawn.Area.Height * mapComponent.TileSize.Y)
+                        )
+                    ),
+                    Behavior = CollisionBehavior.Ignore
+                })
+                .AddTo(spawnId, new RenderComponent
+                {
+                    Type = RenderingType.EnemySpawn
+                })
+                .AddTo(spawnId, new EnemySpawnComponent
+                {
+                    Data = spawn
+                });
+        }
+
+        return enemySpawnIds;
     }
 
     private void CreateWalls(Map map, TileMapComponent mapComponent)

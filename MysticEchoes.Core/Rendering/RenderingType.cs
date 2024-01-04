@@ -9,5 +9,6 @@ public enum RenderingType
     ColliderSpaceTreeView,
     DebugUnitView,
     Character,
-    General
+    General,
+    EnemySpawn
 }
