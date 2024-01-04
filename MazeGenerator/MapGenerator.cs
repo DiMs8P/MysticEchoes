@@ -25,11 +25,13 @@ public class MapGenerator
         MakeHalls(tree);
         //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
-
+        
         MakeDoors(tree);
         MarkUp(tree, map);
         MakeWalls(map);
         MarkUpDoors(tree, map);
+        //MakeEnemySpawns(tree);
+
 
         return map;
     }

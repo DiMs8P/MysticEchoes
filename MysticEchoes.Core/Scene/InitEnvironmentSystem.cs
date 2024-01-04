@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MazeGeneration;
 using MazeGeneration.TreeModule;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
@@ -54,25 +55,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();
 
-        foreach (var wall in map.WallTopTiles)
-        {
-            var wallEntityId = _factory.Create()
-                .Add(new StaticCollider
-                {
-                    Box = new Box(
-                        0,
-                        new Rectangle(
-                            new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                            new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
-                        )
-                    ),
-                    Behavior = CollisionBehavior.Wall
-                })
-                .Add(new RenderComponent(RenderingType.StaticColliderDebugView))
-                .End();
-            ref var collider = ref _staticColliders.Get(wallEntityId);
-            collider.Box.Id = wallEntityId;
-        }
+        CreateWalls(map, mapComponent);
 
         var doorEntities = new Dictionary<System.Drawing.Point, int>();
         foreach (var door in map.DoorTiles)
@@ -84,22 +67,6 @@ public class InitEnvironmentSystem : IEcsInitSystem
                     Tile = door
                 })
                 .End();
-
-            //_factory.AddTo(doorId, new DynamicCollider
-            //{
-            //    Box = new Box(
-            //        doorId,
-            //        new Rectangle(
-            //            new Vector2(door.X * mapComponent.TileSize.X, door.Y * mapComponent.TileSize.Y),
-            //            new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
-            //        )
-            //    ),
-            //    Behavior = CollisionBehavior.Wall
-            //});
-            //_factory.AddTo(doorId, new RenderComponent()
-            //{
-            //    Type = RenderingType.DynamicColliderDebugView
-            //});
             doorEntities.Add(door, doorId);
         }
 
@@ -143,6 +110,85 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 Behavior = CollisionBehavior.RoomEntranceTrigger
             });
         }
+    }
+
+    private void CreateWalls(Map map, TileMapComponent mapComponent)
+    {
+        foreach (var wall in map.WallTopTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallSideRightTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallSideLeftTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallBottomTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallFullTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallInnerCornerDownLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallInnerCornerDownRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+    }
+
+    private int CreateSingleWall(Rectangle shape)
+    {
+        var wallEntityId = _factory.Create()
+            .Add(new StaticCollider
+            {
+                Box = new Box(
+                    0,
+                    shape
+                ),
+                Behavior = CollisionBehavior.Wall
+            })
+            .Add(new RenderComponent(RenderingType.StaticColliderDebugView))
+            .End();
+        ref var collider = ref _staticColliders.Get(wallEntityId);
+        collider.Box.Id = wallEntityId;
+
+        return wallEntityId;
     }
 
     private void CreateItem()

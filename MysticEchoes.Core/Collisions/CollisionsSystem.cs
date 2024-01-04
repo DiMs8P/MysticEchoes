@@ -76,14 +76,14 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 new Vector2(0, 0),
                 new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
             ),
-            4
+            10
         );
         _dynamicCollidersTree = new QuadTree(
             new Rectangle(
                 new Vector2(0, 0),
                 new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
             ),
-            10
+            20
         );
         foreach (var staticEntity in _staticEntities)
         {
@@ -91,9 +91,9 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             _staticCollidersTree.Add(collider.Box);
         }
 
-        //_factory.Create()
-        //    .Add(new SpaceTreeComponent(){Tree = _staticCollidersTree})
-        //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
+        _factory.Create()
+            .Add(new SpaceTreeComponent() { Tree = _staticCollidersTree })
+            .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
         _factory.Create()
             .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
             .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
