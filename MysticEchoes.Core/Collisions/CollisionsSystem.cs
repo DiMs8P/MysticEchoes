@@ -6,6 +6,7 @@ using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
@@ -34,7 +35,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<MovementComponent> _movements;
     private EcsPool<ItemComponent> _items;
     private EcsPool<ExplosionComponent> _explosions;
+    private EcsPool<EntranceTrigger> _entranceTriggers;
+    private EcsPool<RoomComponent> _rooms;
+    private EcsPool<DoorComponent> _doors;
     private const float CollisionResolvingSensitivity = 1e-4f;
+    private List<int> _entitiesToClear = new List<int>();
 
     private HashSet<int> _deletedEntities = new HashSet<int>();
 
@@ -57,11 +62,13 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _transforms = _world.GetPool<TransformComponent>();
         _movements = _world.GetPool<MovementComponent>();
         _items = _world.GetPool<ItemComponent>();
+        _entranceTriggers = _world.GetPool<EntranceTrigger>();
+        _rooms = _world.GetPool<RoomComponent>();
+        _doors = _world.GetPool<DoorComponent>();
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
-            .Inc<MovementComponent>()
             .End();
-
+        
         ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
 
         _staticCollidersTree = new QuadTree(
@@ -94,13 +101,13 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
     public void Run(IEcsSystems systems)
     {
+        _entitiesToClear.Clear();
         _dynamicCollidersTree.Clear();
         _deletedEntities.Clear();
 
         foreach (var entity in _dynamicCollidersFilter)
         {
             var collider = _dynamicColliders.Get(entity);
-
             _dynamicCollidersTree.Add(collider.Box);
         }
 
@@ -147,6 +154,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                     Box = targetCollider.Box
                 });
             }
+        }
+
+        foreach (var entity in _entitiesToClear)
+        {
+            _world.DelEntity(entity);
         }
     }
 
@@ -195,7 +207,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                         explosionCollider.Behavior = CollisionBehavior.Ignore;
                     }
                 
-                    DeleteEntity(entity.Id);
+                    _entitiesToClear.Add(entity.Id);
                 }
             }
             return;
@@ -240,11 +252,49 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return;
         }
 
+        if (entity.Behavior is CollisionBehavior.RoomEntranceTrigger)
+        {
+            if (target.Behavior == CollisionBehavior.AllyCharacter)
+            {
+                ref var trigger = ref _entranceTriggers.Get(entity.Id);
+                if (trigger.IsActivated)
+                {
+                    return;
+                }
+                trigger.IsActivated = true;
+                _entitiesToClear.Add(entity.Id);
+
+                var room = _rooms.Get(trigger.RoomId);
+                ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
+
+                foreach (var doorId in room.Doors)
+                {
+                    ref var door = ref _doors.Get(doorId);
+
+                    door.IsOpen = false;
+                    _builder.AddTo(doorId, new DynamicCollider
+                    {
+                        Box = new Box(
+                            doorId,
+                            new Rectangle(
+                                new Vector2(door.Tile.X * map.TileSize.X, door.Tile.Y * map.TileSize.Y),
+                                new Vector2(map.TileSize.X, map.TileSize.Y)
+                            )
+                        ),
+                        Behavior = CollisionBehavior.Wall
+                    });
+                    _builder.AddTo(doorId, new RenderComponent()
+                    {
+                        Type = RenderingType.DynamicColliderDebugView
+                    });
+                }
+            }
+            return;
+        }
         if (entity.Behavior is CollisionBehavior.Ignore)
         {
             return;
         }
-
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
     }
 

@@ -142,7 +142,21 @@
   "Coin6": "Coin\\tile006.png",
   "Coin7": "Coin\\tile007.png",
   "Coin8": "Coin\\tile008.png",
- 
-  "Wall": "stoneFloor.jpg",
-  "Floor": "stoneWall.jpg"
+
+  "WallTop": "HorizontalWall.png",
+  "WallSideRight": "WallSideRight.png",
+  "WallSideLeft": "WallSideLeft.png",
+  "WallBottom": "HorizontalWall.png",
+  "WallFull": "WallFull.png",
+  "WallInnerCornerDownLeft": "WallInnerCornerDownLeft.png",
+  "WallInnerCornerDownRight": "WallInnerCornerDownRight.png",
+  "WallDiagonalCornerDownLeft": "WallDiagonalCornerDownLeft.png",
+  "WallDiagonalCornerDownRight": "WallDiagonalCornerDownRight.png",
+  "WallDiagonalCornerUpLeft": "WallDiagonalCornerUpLeft.png",
+  "WallDiagonalCornerUpRight": "WallDiagonalCornerUpRight.png",
+
+  "Floor": "Floor.png",
+  "Door": "Door.jpg",
+  "DoorLeft": "DoorLeft.png",
+  "HorizontalDoor": "HorizontalDoor.png"
 }

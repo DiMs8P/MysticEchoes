@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using MazeGeneration;
-using MysticEchoes.Core.Base.Geometry;
 
 namespace MysticEchoes.Core.MapModule;
 
@@ -14,7 +13,7 @@ public struct TileMapComponent
         Tiles = tiles;
         TileSize = new Vector2(
             2f / tiles.Size.Width,
-            2f / tiles.Size.Width
+            2f / tiles.Size.Height
         );
     }
 }
