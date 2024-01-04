@@ -166,7 +166,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
 
     private int CreateSingleWall(Rectangle shape)
     {
-        var wallEntityId = _factory.Create()
+        var wallEntityId = _builder.Create()
             .Add(new StaticCollider
             {
                 Box = new Box(
