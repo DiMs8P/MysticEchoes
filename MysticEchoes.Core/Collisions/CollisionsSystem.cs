@@ -16,7 +16,7 @@ namespace MysticEchoes.Core.Collisions;
 
 public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 {
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private SystemExecutionContext _context;
 
@@ -87,7 +87,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         //_factory.Create()
         //    .Add(new SpaceTreeComponent(){Tree = _staticCollidersTree})
         //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
-        _factory.Create()
+        _builder.Create()
             .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
             .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
     }
@@ -179,7 +179,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                     {
                         ref ExplosionComponent explosionComponent = ref _explosions.Get(entity.Id);
                     
-                        int explosionId = _prefabManager.CreateEntityFromPrefab(_factory, explosionComponent.ExplosionPrefab);
+                        int explosionId = _prefabManager.CreateEntityFromPrefab(_builder, explosionComponent.ExplosionPrefab);
 
                         ref TransformComponent explosionTransform =  ref _transforms.Get(explosionId);
                         ref TransformComponent bulletTransform =  ref _transforms.Get(entity.Id);

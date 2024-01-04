@@ -1,14 +1,11 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
-using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Items;
-using MysticEchoes.Core.Items.Implementation;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
@@ -20,13 +17,10 @@ public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
     [EcsInject] private Settings _settings;
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private ItemsFactory _itemsFactory;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
-
-    private EcsPool<ItemComponent> _items;
-    private EcsPool<SpriteComponent> _sprites;
 
     [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
@@ -34,9 +28,6 @@ public class InitEnvironmentSystem : IEcsInitSystem
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
-
-        _items = world.GetPool<ItemComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
 
         CreateTiles();
 
@@ -49,14 +40,14 @@ public class InitEnvironmentSystem : IEcsInitSystem
         var map = _mazeGenerator.Generate();
 
         var mapComponent = new TileMapComponent(map);
-        _factory.Create()
+        _builder.Create()
             .Add(mapComponent)
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();
 
         foreach (var wall in map.WallTiles)
         {
-            var wallEntityId = _factory.Create()
+            var wallEntityId = _builder.Create()
                 .Add(new StaticCollider
                 {
                     Box = new Box(
@@ -78,7 +69,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
     
     private void CreateSquare()
     {
-        _factory.Create()
+        _builder.Create()
             .Add(new TransformComponent{
                 Location = new Vector2(0, 0.3f),
                 Rotation = new Vector2(1.0f, 0.0f)
@@ -94,7 +85,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
     
     private void CreateItem()
     {
-        int entityId = _itemsFactory.CreateItemEntity(Item.Money, 100);
+        int entityId = _itemsFactory.CreateItemEntity(0, 100);
         
         ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
         collider.Box = new Box(entityId, new Rectangle(
