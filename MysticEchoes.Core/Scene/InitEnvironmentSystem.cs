@@ -73,7 +73,6 @@ public class InitEnvironmentSystem : IEcsInitSystem
             ref var collider = ref _staticColliders.Get(wallEntityId);
             collider.Box.Id = wallEntityId;
         }
-
     }
     
     private void CreateSquare()

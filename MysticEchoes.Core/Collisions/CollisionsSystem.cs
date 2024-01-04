@@ -184,10 +184,10 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
             if (target.Behavior is CollisionBehavior.Item)
             {
-                /*ref ItemComponent itemComponent = ref _items.Get(target.Id);
+                ref ItemComponent itemComponent = ref _items.Get(target.Id);
                 itemComponent.Item.OnItemTaken(entity.Id, _world);
-                _world.DelEntity(target.Id);*/
-                
+                _world.DelEntity(target.Id);
+
                 return;
             }
             
