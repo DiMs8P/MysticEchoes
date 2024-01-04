@@ -1,6 +1,7 @@
 ﻿using MazeGeneration.TreeModule;
 using System.Drawing;
 using MazeGeneration.Walls;
+using MazeGeneration.Enemies;
 
 namespace MazeGeneration;
 
@@ -25,15 +26,89 @@ public class MapGenerator
         MakeHalls(tree);
         //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
-        
+
         MakeDoors(tree);
         MarkUp(tree, map);
         MakeWalls(map);
         MarkUpDoors(tree, map);
-        //MakeEnemySpawns(tree);
+        MakeEnemySpawns(tree, map);
 
 
         return map;
+    }
+
+    private void MakeEnemySpawns(Tree<RoomNode> tree, Map map)
+    {
+        var rooms = tree.DeepCrawl()
+            .Where(x => x.Room is not null)
+            .ToArray();
+
+        //var roomTiles = rooms.Select(x =>
+        //    {
+        //        return map.FloorTiles
+        //            .Where(floor => x.Room!.Shape.ContainsNotStrict(floor))
+        //            .ToHashSet();
+        //    })
+        //    .ToArray();
+
+        //var maxSize = roomTiles.Max(x => x.Count);
+        //var minSize = roomTiles.Min(x => x.Count);
+        //var divideStep = (maxSize - minSize) / 3;
+
+        //var lowBound = divideStep;
+        //var middleBound = 2 * divideStep;
+        //var topBound = 1d;
+
+        //for (var i = 0; i < rooms.Length; i++)
+        //{
+        //    if (roomTiles[i].Count <= lowBound)
+        //    {
+        //        rooms[i].Room!.Size = RoomSizeGradation.Small;
+        //    }
+        //    else if (roomTiles[i].Count <= middleBound)
+        //    {
+        //        rooms[i].Room!.Size = RoomSizeGradation.Medium;
+        //    }
+        //    else if (roomTiles[i].Count <= topBound)
+        //    {
+        //        rooms[i].Room!.Size = RoomSizeGradation.Big;
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("Непределенный тип комнаты");
+        //    }
+        //}
+
+        var spawnParameter = _config.EnemySpawnsGenerator;
+
+        foreach (var room in rooms)
+        {
+            var enemies = new List<EnemyType>();
+
+            var roomTiles = rooms.Select(x =>
+                {
+                    return map.FloorTiles
+                        .Where(floor => x.Room!.Shape.ContainsNotStrict(floor))
+                        .ToHashSet();
+                })
+                .ToArray();
+            var remainingCost = roomTiles.Length;
+
+            do
+            {
+                var enemy = spawnParameter.NextEnemy(remainingCost);
+                remainingCost -= spawnParameter.GetCost(enemy);
+                enemies.Add(enemy);
+            } while (remainingCost > 0);
+
+            enemies = enemies.OrderByDescending(spawnParameter.GetSize)
+                .ToList();
+            foreach (var enemy in enemies)
+            {
+                
+            }
+        }
+
     }
 
     private void MakeDoors(Tree<RoomNode> tree)
@@ -76,8 +151,8 @@ public class MapGenerator
 
             var direction = GetDirection(start, end);
             var startDoor = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
-            var startDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(startDoor));
-            startDoorNode.Doors.Add(new Point(
+            var startDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(startDoor));
+            startDoorNode.Room!.Doors.Add(new Point(
                 startDoor.X + direction.X,
                 startDoor.Y + direction.Y
             ));
@@ -95,9 +170,9 @@ public class MapGenerator
             // end и start поменяны местами т.к. end это точка, содержащаяся в hall.EndRoom
             direction = GetDirection(end, start);
             var endDoor = GetEdgePoint(direction, hall.EndRoom, end);
-            var endDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(endDoor));
+            var endDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(endDoor));
 
-            endDoorNode.Doors.Add(new Point(
+            endDoorNode.Room!.Doors.Add(new Point(
                 endDoor.X + direction.X,
                 endDoor.Y + direction.Y
             ));
@@ -198,7 +273,10 @@ public class MapGenerator
                     node.Size.Height - _config.MinRoomPadding.Height - roomSize.Height
                 )
             );
-            node.Room = new Rectangle(node.Position + roomPositionShift, roomSize);
+            node.Room = new Room
+            {
+                Shape = new Rectangle(node.Position + roomPositionShift, roomSize)
+            };
         }
     }
 
@@ -273,11 +351,11 @@ public class MapGenerator
 
         var leftRooms = tree.DeepCrawl(node.LeftChild!)
             .Where(x => x.Type is TreeNodeType.Leaf)
-            .Select(x => x.Room!.Value)
+            .Select(x => x.Room!.Shape)
             .ToArray();
         var rightRooms = tree.DeepCrawl(node.RightChild!)
             .Where(x => x.Type is TreeNodeType.Leaf)
-            .Select(x => x.Room!.Value)
+            .Select(x => x.Room!.Shape)
             .ToArray();
 
         var (leftResult, rightResult) = FindClosestCenters(leftRooms, rightRooms);
@@ -392,7 +470,7 @@ public class MapGenerator
         foreach (var node in tree.DeepCrawl()
                      .Where(x => x.Room is not null))
         {
-            var room = node.Room.Value;
+            var room = node.Room!.Shape;
             MarkUpRandomWalkRoom(map, room);
         }
 
@@ -429,9 +507,10 @@ public class MapGenerator
     private void MarkUpDoors(Tree<RoomNode> tree, Map map)
     {
         foreach (var node in tree.DeepCrawl()
-                     .Where(x => x.Doors.Count > 0))
+                     .Where(x => x.Room is not null &&
+                                 x.Room.Doors.Count > 0))
         {
-            foreach (var door in node.Doors)
+            foreach (var door in node.Room!.Doors)
             {
                 map.DoorTiles.Add(door);
             }
@@ -444,7 +523,6 @@ public class MapGenerator
         {
             for (int y = room.Top; y <= room.Bottom; y++)
             {
-                map.FloorTiles.Add(new Point(x, y));
                 map.FloorTiles.Add(new Point(x, y));
             }
         }

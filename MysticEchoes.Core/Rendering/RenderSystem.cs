@@ -14,7 +14,6 @@ using SharpGL;
 using SharpGL.SceneGraph;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 
-
 namespace MysticEchoes.Core.Rendering;
 
 public class RenderSystem : IEcsInitSystem, IEcsRunSystem
@@ -149,18 +148,18 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _staticColliders.Get(entityId);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //var collider = _staticColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
+                //var rect = collider.Box.Shape;
 
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {

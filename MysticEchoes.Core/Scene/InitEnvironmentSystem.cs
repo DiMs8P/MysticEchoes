@@ -63,10 +63,10 @@ public class InitEnvironmentSystem : IEcsInitSystem
         }
 
         foreach (var roomNode in map.BinarySpaceTree.DeepCrawl()
-                     .Where(x => x.Room.HasValue))
+                     .Where(x => x.Room is not null))
         {
-            var room = roomNode.Room!.Value;
-            var doors = roomNode.Doors;
+            var room = roomNode.Room!.Shape;
+            var doors = roomNode.Room.Doors;
             var doorIds = doors.Select(x => doorEntities[x]).ToList();
 
             var roomBound = new Rectangle(

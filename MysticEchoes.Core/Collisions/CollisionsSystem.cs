@@ -91,12 +91,12 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             _staticCollidersTree.Add(collider.Box);
         }
 
-        _builder.Create()
-            .Add(new SpaceTreeComponent() { Tree = _staticCollidersTree })
-            .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
-        _builder.Create()
-            .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
-            .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
+        //_builder.Create()
+        //    .Add(new SpaceTreeComponent() { Tree = _staticCollidersTree })
+        //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
+        //_builder.Create()
+        //    .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
+        //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
     }
 
     public void Run(IEcsSystems systems)
