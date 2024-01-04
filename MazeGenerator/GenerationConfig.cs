@@ -40,7 +40,7 @@ public class GenerationConfig
                 },
                 frequencies: new()
                 {
-                    [EnemyType.Common] = 10,
+                    [EnemyType.Common] = 11,
                     [EnemyType.Elite] = 3,
                     [EnemyType.MiniBoss] = 1,
                 },

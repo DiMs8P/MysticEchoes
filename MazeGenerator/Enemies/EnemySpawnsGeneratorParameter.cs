@@ -28,10 +28,15 @@ public class EnemySpawnsGeneratorParameter
         _sizes = sizes.ToFrozenDictionary();
     }
 
-    public EnemyType NextEnemy(int remainingCost)
+    public bool NextEnemy(int remainingCost, out EnemyType result)
     {
         var availableEnemies = _probabilities
             .Where(kv => GetCost(kv.Key) <= remainingCost);
+        if (!availableEnemies.Any())
+        {
+            result = default;
+            return false;
+        }
         var maxProbability = availableEnemies.Sum(kv => kv.Value);
         var initialRandomNumber = _random.NextLessOrEqual(maxProbability);
 
@@ -40,12 +45,13 @@ public class EnemySpawnsGeneratorParameter
         {
             if (probability >= randomNumber)
             {
-                return enemyType;
+                result = enemyType;
+                return true;
             }
             randomNumber -= probability;
         }
 
-        throw new Exception($"Can't choose enemy with random number {initialRandomNumber:D15}");
+        throw new Exception($"Can't choose enemy with random number {initialRandomNumber:F15}");
     }
 
     public int GetCost(EnemyType type)

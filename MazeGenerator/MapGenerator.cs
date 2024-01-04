@@ -39,76 +39,12 @@ public class MapGenerator
 
     private void MakeEnemySpawns(Tree<RoomNode> tree, Map map)
     {
-        var rooms = tree.DeepCrawl()
-            .Where(x => x.Room is not null)
-            .ToArray();
+        var enemySpawnsGenerator = new EnemySpawnsGenerator(
+            _config.Random, 
+            _config.EnemySpawnsGenerator
+        );
 
-        //var roomTiles = rooms.Select(x =>
-        //    {
-        //        return map.FloorTiles
-        //            .Where(floor => x.Room!.Shape.ContainsNotStrict(floor))
-        //            .ToHashSet();
-        //    })
-        //    .ToArray();
-
-        //var maxSize = roomTiles.Max(x => x.Count);
-        //var minSize = roomTiles.Min(x => x.Count);
-        //var divideStep = (maxSize - minSize) / 3;
-
-        //var lowBound = divideStep;
-        //var middleBound = 2 * divideStep;
-        //var topBound = 1d;
-
-        //for (var i = 0; i < rooms.Length; i++)
-        //{
-        //    if (roomTiles[i].Count <= lowBound)
-        //    {
-        //        rooms[i].Room!.Size = RoomSizeGradation.Small;
-        //    }
-        //    else if (roomTiles[i].Count <= middleBound)
-        //    {
-        //        rooms[i].Room!.Size = RoomSizeGradation.Medium;
-        //    }
-        //    else if (roomTiles[i].Count <= topBound)
-        //    {
-        //        rooms[i].Room!.Size = RoomSizeGradation.Big;
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Непределенный тип комнаты");
-        //    }
-        //}
-
-        var spawnParameter = _config.EnemySpawnsGenerator;
-
-        foreach (var room in rooms)
-        {
-            var enemies = new List<EnemyType>();
-
-            var roomTiles = rooms.Select(x =>
-                {
-                    return map.FloorTiles
-                        .Where(floor => x.Room!.Shape.ContainsNotStrict(floor))
-                        .ToHashSet();
-                })
-                .ToArray();
-            var remainingCost = roomTiles.Length;
-
-            do
-            {
-                var enemy = spawnParameter.NextEnemy(remainingCost);
-                remainingCost -= spawnParameter.GetCost(enemy);
-                enemies.Add(enemy);
-            } while (remainingCost > 0);
-
-            enemies = enemies.OrderByDescending(spawnParameter.GetSize)
-                .ToList();
-            foreach (var enemy in enemies)
-            {
-                
-            }
-        }
-
+        enemySpawnsGenerator.Generate(map, tree);
     }
 
     private void MakeDoors(Tree<RoomNode> tree)

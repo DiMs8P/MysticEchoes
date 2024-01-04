@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using MazeGeneration.TreeModule;
 
 namespace MazeGeneration.Enemies;
@@ -32,7 +33,10 @@ public class EnemySpawnsGenerator
 
             do
             {
-                var enemy = _spawnsGeneratorParameter.NextEnemy(remainingCost);
+                if (!_spawnsGeneratorParameter.NextEnemy(remainingCost, out var enemy))
+                {
+                    break;
+                }
                 remainingCost -= _spawnsGeneratorParameter.GetCost(enemy);
                 enemies.Add(enemy);
             } while (remainingCost > 0);
@@ -51,6 +55,7 @@ public class EnemySpawnsGenerator
                 return int.Max(size.X, size.Y);
             })
             .ToList();
+        var enemiesForRemove = new List<EnemyType>();
 
         foreach (var enemyType in enemies)
         {
@@ -65,7 +70,7 @@ public class EnemySpawnsGenerator
             {
                 availableTiles.Remove(coveredTile);
             }
-            enemies.Remove(enemyType);
+            enemiesForRemove.Add(enemyType);
 
             room.EnemySpawns.Add(new EnemySpawn
             {
