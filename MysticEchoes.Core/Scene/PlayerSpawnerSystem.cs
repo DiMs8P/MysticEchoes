@@ -20,7 +20,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 {
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private AnimationManager _animationManager;
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private ItemsFactory _itemsFactory;
 
     private EcsWorld _world;
@@ -29,7 +29,6 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<SpriteComponent> _sprites;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<DynamicCollider> _colliders;
-    private EcsPool<MovementComponent> _movements;
     
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<OwningByComponent> _ownings;
@@ -45,20 +44,19 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _sprites = _world.GetPool<SpriteComponent>();
         _transforms = _world.GetPool<TransformComponent>();
         _colliders = _world.GetPool<DynamicCollider>();
-        _movements = _world.GetPool<MovementComponent>();
 
         _weapons = _world.GetPool<RangeWeaponComponent>();
         _ownings = _world.GetPool<OwningByComponent>();
 
         _items = _world.GetPool<StartingItems>();
         
-        CreatePlayer(_factory);
+        CreatePlayer(_builder);
     }
 
-    private int CreatePlayer(EntityFactory factory)
+    private int CreatePlayer(EntityBuilder builder)
     {
-        int player = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.Player);
-        int playerWeapon = _prefabManager.CreateEntityFromPrefab(factory, PrefabType.DefaultWeapon);
+        int player = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.Player);
+        int playerWeapon = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.DefaultWeapon);
         
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
@@ -136,7 +134,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         {
             ref StartingItems givenStartItems = ref _items.Get(player);
 
-            foreach (Item item in givenStartItems.Items)
+            foreach (int item in givenStartItems.Items)
             {
                 BaseItem startItem = _itemsFactory.CreateItem(item);
                 startItem.OnItemTaken(player, _world);

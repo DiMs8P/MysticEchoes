@@ -8,13 +8,9 @@ using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Items;
-using MysticEchoes.Core.Items.Implementation;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
-using MysticEchoes.Core.Movement;
-using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
 
@@ -24,43 +20,39 @@ public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
     [EcsInject] private Settings _settings;
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private ItemsFactory _itemsFactory;
     [EcsInject] private PrefabManager _prefabManager;
 
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
-    private EcsPool<ItemComponent> _items;
-    private EcsPool<SpriteComponent> _sprites;
 
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
-        _items = world.GetPool<ItemComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
 
         CreateMap();
-        
-        CreateItem();
+        CreateMoney();
     }
 
     private void CreateMap()
     {
         var map = _mazeGenerator.Generate();
         var mapComponent = new TileMapComponent(map);
-        _factory.Create()
+        _builder.Create()
             .Add(mapComponent)
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();
 
         CreateWalls(map, mapComponent);
 
+
         var doorEntities = new Dictionary<System.Drawing.Point, int>();
         foreach (var door in map.DoorTiles)
         {
-            var doorId = _factory.Create()
+            var doorId = _builder.Create()
                 .Add(new DoorComponent
                 {
                     IsOpen = true,
@@ -81,7 +73,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 new Vector2(room.X * mapComponent.TileSize.X, room.Y * mapComponent.TileSize.Y),
                 new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
             );
-            var roomId = _factory.Create()
+            var roomId = _builder.Create()
                 .Add(new RoomComponent()
                 {
                     Bound = roomBound,
@@ -89,14 +81,14 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 })
                 .End();
 
-            var entranceTrigger = _factory.Create()
+            var entranceTrigger = _builder.Create()
                 .Add(new EntranceTrigger
                 {
                     RoomId = roomId
                 })
                 .Add(new RenderComponent(RenderingType.DynamicColliderDebugView))
                 .End();
-            _factory.AddTo(entranceTrigger, new DynamicCollider
+            _builder.AddTo(entranceTrigger, new DynamicCollider
             {
                 Box = new Box(
                     entranceTrigger,
@@ -191,9 +183,9 @@ public class InitEnvironmentSystem : IEcsInitSystem
         return wallEntityId;
     }
 
-    private void CreateItem()
+    private void CreateMoney()
     {
-        int entityId = _itemsFactory.CreateItemEntity(Item.Money, 100);
+        int entityId = _itemsFactory.CreateItemEntity(0, 100);
 
         ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
         collider.Box = new Box(entityId, new Rectangle(

@@ -18,7 +18,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
     [EcsInject] private PrefabManager _prefabManager;
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
 
     private EcsWorld _world;
     private EcsFilter _weaponOwnersFilter;
@@ -143,7 +143,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         ref TransformComponent weaponLocalTransformComponent = ref _transforms.Get(weaponEntityId);
         ref TransformComponent ownerTransformComponent = ref _transforms.Get(ownerEntityId);
         
-        int magic = _prefabManager.CreateEntityFromPrefab(_factory, muzzleComponent.MagicPrefab);
+        int magic = _prefabManager.CreateEntityFromPrefab(_builder, muzzleComponent.MagicPrefab);
         ref MagicComponent magicComponent = ref _magics.Get(magic);
 
         ApplyInventoryItems(ownerEntityId, magic);
