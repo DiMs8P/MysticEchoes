@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using MazeGeneration.Enemies;
 
 namespace MazeGeneration;
 
@@ -14,6 +15,7 @@ public class GenerationConfig
     public double MaxDivideShift { get; set; }
     public int ThreeDepth { get; set; }
     public RandomWalkParameter RoomRandomWalkParameter { get; set; }
+    public EnemySpawnsGeneratorParameter EnemySpawnsGenerator { get; set; }
 
     public static GenerationConfig Default =>
         new()
@@ -27,7 +29,27 @@ public class GenerationConfig
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
             ThreeDepth = 3,
-            RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false) 
+            RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false),
+            EnemySpawnsGenerator = new EnemySpawnsGeneratorParameter(
+                random: new GenerationRandom(7354543),
+                costs: new()
+                {
+                    [EnemyType.Common] = 10,
+                    [EnemyType.Elite] = 25,
+                    [EnemyType.MiniBoss] = 40,
+                },
+                frequencies: new()
+                {
+                    [EnemyType.Common] = 11,
+                    [EnemyType.Elite] = 3,
+                    [EnemyType.MiniBoss] = 1,
+                },
+                new Dictionary<EnemyType, Point>
+                {
+                    [EnemyType.Common] = new (1, 1),
+                    [EnemyType.Elite] = new(2, 2),
+                    [EnemyType.MiniBoss] = new(3, 3),
+                }),
         };
     // Пересекающиеся дороги
     //MinNodeSize = new (20, 20),

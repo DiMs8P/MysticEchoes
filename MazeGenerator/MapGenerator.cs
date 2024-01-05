@@ -1,6 +1,7 @@
 ﻿using MazeGeneration.TreeModule;
 using System.Drawing;
 using MazeGeneration.Walls;
+using MazeGeneration.Enemies;
 
 namespace MazeGeneration;
 
@@ -20,18 +21,66 @@ public class MapGenerator
 
         var map = new Map(_config.MazeSize, tree);
 
+        // Design
         MakeLeafs(tree);
         MakeRooms(tree);
         MakeHalls(tree);
         //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
-
         MakeDoors(tree);
-        MarkUp(tree, map);
+
+        // Tile-level
+        MarkFloor(tree, map);
         MakeWalls(map);
-        MarkUpDoors(tree, map);
+        MakeDoors(tree, map);
+
+        // High-level
+        MarkupRooms(tree, map);
+        MakePlayerSpawn(tree, map);
+        MakeEnemySpawns(tree, map);
+
 
         return map;
+    }
+
+    private void MakePlayerSpawn(Tree<RoomNode> tree, Map map)
+    {
+        var playerSpawnRoom = tree.DeepCrawl()
+            .First(x => x.Room?.Type is RoomType.PlayerSpawn)
+            .Room!;
+
+        var center = playerSpawnRoom.Shape.GetCenter();
+        map.PlayerSpawn = center;
+    }
+
+    private void MarkupRooms(Tree<RoomNode> tree, Map map)
+    {
+        foreach (var room in tree.DeepCrawl()
+                     .Where(x => x.Room is not null)
+                     .Select(x => x.Room))
+        {
+            var roomTiles = map.FloorTiles
+                .Where(floor => room!.Shape.ContainsNotStrict(floor))
+                .ToHashSet();
+            room!.ValueCost = roomTiles.Count;
+            room.Type = RoomType.Battle;
+        }
+
+        var playerSpawnRoom = tree.DeepCrawl()
+            .Where(x => x.Room is not null)
+            .MinBy(x => x.Room!.ValueCost);
+
+        playerSpawnRoom.Room.Type = RoomType.PlayerSpawn;
+    }
+
+    private void MakeEnemySpawns(Tree<RoomNode> tree, Map map)
+    {
+        var enemySpawnsGenerator = new EnemySpawnsGenerator(
+            _config.Random, 
+            _config.EnemySpawnsGenerator
+        );
+
+        enemySpawnsGenerator.Generate(map, tree);
     }
 
     private void MakeDoors(Tree<RoomNode> tree)
@@ -74,8 +123,8 @@ public class MapGenerator
 
             var direction = GetDirection(start, end);
             var startDoor = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
-            var startDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(startDoor));
-            startDoorNode.Doors.Add(new Point(
+            var startDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(startDoor));
+            startDoorNode.Room!.Doors.Add(new Point(
                 startDoor.X + direction.X,
                 startDoor.Y + direction.Y
             ));
@@ -93,9 +142,9 @@ public class MapGenerator
             // end и start поменяны местами т.к. end это точка, содержащаяся в hall.EndRoom
             direction = GetDirection(end, start);
             var endDoor = GetEdgePoint(direction, hall.EndRoom, end);
-            var endDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(endDoor));
+            var endDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(endDoor));
 
-            endDoorNode.Doors.Add(new Point(
+            endDoorNode.Room!.Doors.Add(new Point(
                 endDoor.X + direction.X,
                 endDoor.Y + direction.Y
             ));
@@ -196,7 +245,10 @@ public class MapGenerator
                     node.Size.Height - _config.MinRoomPadding.Height - roomSize.Height
                 )
             );
-            node.Room = new Rectangle(node.Position + roomPositionShift, roomSize);
+            node.Room = new Room
+            {
+                Shape = new Rectangle(node.Position + roomPositionShift, roomSize)
+            };
         }
     }
 
@@ -271,11 +323,11 @@ public class MapGenerator
 
         var leftRooms = tree.DeepCrawl(node.LeftChild!)
             .Where(x => x.Type is TreeNodeType.Leaf)
-            .Select(x => x.Room!.Value)
+            .Select(x => x.Room!.Shape)
             .ToArray();
         var rightRooms = tree.DeepCrawl(node.RightChild!)
             .Where(x => x.Type is TreeNodeType.Leaf)
-            .Select(x => x.Room!.Value)
+            .Select(x => x.Room!.Shape)
             .ToArray();
 
         var (leftResult, rightResult) = FindClosestCenters(leftRooms, rightRooms);
@@ -385,12 +437,12 @@ public class MapGenerator
         }
     }
 
-    private void MarkUp(Tree<RoomNode> tree, Map map)
+    private void MarkFloor(Tree<RoomNode> tree, Map map)
     {
         foreach (var node in tree.DeepCrawl()
                      .Where(x => x.Room is not null))
         {
-            var room = node.Room.Value;
+            var room = node.Room!.Shape;
             MarkUpRandomWalkRoom(map, room);
         }
 
@@ -424,12 +476,13 @@ public class MapGenerator
         }
     }
 
-    private void MarkUpDoors(Tree<RoomNode> tree, Map map)
+    private void MakeDoors(Tree<RoomNode> tree, Map map)
     {
         foreach (var node in tree.DeepCrawl()
-                     .Where(x => x.Doors.Count > 0))
+                     .Where(x => x.Room is not null &&
+                                 x.Room.Doors.Count > 0))
         {
-            foreach (var door in node.Doors)
+            foreach (var door in node.Room!.Doors)
             {
                 map.DoorTiles.Add(door);
             }
@@ -442,7 +495,6 @@ public class MapGenerator
         {
             for (int y = room.Top; y <= room.Bottom; y++)
             {
-                map.FloorTiles.Add(new Point(x, y));
                 map.FloorTiles.Add(new Point(x, y));
             }
         }

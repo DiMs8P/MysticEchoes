@@ -13,6 +13,7 @@ using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
+using MysticEchoes.Core.MapModule;
 
 namespace MysticEchoes.Core.Scene;
 
@@ -34,6 +35,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<OwningByComponent> _ownings;
     
     private EcsPool<StartingItems> _items;
+    private EcsPool<TileMapComponent> _maps;
+    private int _mapId;
 
     public void Init(IEcsSystems systems)
     {
@@ -49,7 +52,14 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _ownings = _world.GetPool<OwningByComponent>();
 
         _items = _world.GetPool<StartingItems>();
-        
+        _maps = _world.GetPool<TileMapComponent>();
+
+        var mapFilter = _world.Filter<TileMapComponent>()
+            .End();
+        foreach (var mapId in mapFilter)
+        {
+            _mapId = mapId;
+        }
         CreatePlayer(_builder);
     }
 
@@ -57,7 +67,8 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     {
         int player = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.Player);
         int playerWeapon = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.DefaultWeapon);
-        
+
+        SetupPositions(player);
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
@@ -66,6 +77,19 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         SetupPlayerStarterItems(player);
 
         return player;
+    }
+
+    private void SetupPositions(int player)
+    {
+        var map = _maps.Get(_mapId);
+        var spawn = map.Map.PlayerSpawn;
+
+        ref var transform = ref _transforms.Get(player);
+        transform.Location = new Vector2(
+            spawn.X * map.TileSize.X,
+            spawn.Y * map.TileSize.Y
+        );
+
     }
 
     private void SetupCollider(int player)
