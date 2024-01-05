@@ -152,18 +152,18 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                //_gl.Begin(OpenGL.GL_LINE_LOOP);
-                //var collider = _staticColliders.Get(entityId);
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                var collider = _staticColliders.Get(entityId);
 
-                //var rect = collider.Box.Shape;
+                var rect = collider.Box.Shape;
 
-                //_gl.Color(1.0f, 0.3f, 0.0f);
+                _gl.Color(1.0f, 0.3f, 0.0f);
 
-                //_gl.Vertex(rect.Left, rect.Bottom);
-                //_gl.Vertex(rect.Left, rect.Top);
-                //_gl.Vertex(rect.Right, rect.Top);
-                //_gl.Vertex(rect.Right, rect.Bottom);
-                //_gl.End();
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
             }
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {
@@ -240,14 +240,16 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 const float halfSize = 0.2f;
+                var layer = 0f;
+
                 _gl.TexCoord(0.0, 0.0f);
-                _gl.Vertex(-halfSize, +halfSize);
+                _gl.Vertex(-halfSize, +halfSize, layer);
                 _gl.TexCoord(0.0, 1.0f);
-                _gl.Vertex(-halfSize, -halfSize);
+                _gl.Vertex(-halfSize, -halfSize, layer);
                 _gl.TexCoord(1.0, 1.0f);
-                _gl.Vertex(+halfSize, -halfSize);
+                _gl.Vertex(+halfSize, -halfSize, layer);
                 _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(+halfSize, +halfSize);
+                _gl.Vertex(+halfSize, +halfSize, layer); 
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -261,21 +263,21 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PushMatrix();
 
-                var collider = _dynamicColliders.Get(entityId);
-                var rect = collider.Box.Shape;
-                _gl.Translate(rect.LeftBottom);
+                //var collider = _dynamicColliders.Get(entityId);
+                //var rect = collider.Box.Shape;
+                //_gl.Translate(rect.LeftBottom);
 
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
 
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(0, 0);
-                _gl.Vertex(0, rect.Size.Y);
-                _gl.Vertex(rect.Size.X, rect.Size.Y);
-                _gl.Vertex(rect.Size.X, 0);
-                _gl.End();
+                //_gl.Vertex(0, 0);
+                //_gl.Vertex(0, rect.Size.Y);
+                //_gl.Vertex(rect.Size.X, rect.Size.Y);
+                //_gl.Vertex(rect.Size.X, 0);
+                //_gl.End();
 
-                _gl.PopMatrix();
+                //_gl.PopMatrix();
             }
             else if (render.Type is RenderingType.General)
             {

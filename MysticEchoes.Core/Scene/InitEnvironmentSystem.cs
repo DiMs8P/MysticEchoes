@@ -156,11 +156,19 @@ public class InitEnvironmentSystem : IEcsInitSystem
 
     private void CreateWalls(Map map, TileMapComponent mapComponent)
     {
+        const float shift = 0.45f;
+        const float colliderThickness = 1 - 2 * shift;
+
         foreach (var wall in map.WallTopTiles)
         {
+            const float heightShift = 0.4f;
+            const float colliderHeight = 1 - 2 * heightShift;
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * heightShift
+                ),
+                mapComponent.TileSize with { Y = mapComponent.TileSize.Y * colliderHeight }
             );
             CreateSingleWall(shape);
         }
@@ -168,7 +176,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize
             );
             CreateSingleWall(shape);
         }
@@ -176,15 +184,20 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize
             );
             CreateSingleWall(shape);
         }
         foreach (var wall in map.WallBottomTiles)
         {
+            const float heightShift = 0.4f;
+            const float colliderHeight = 1 - 2*heightShift;
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * heightShift
+                ),
+                mapComponent.TileSize with {Y = mapComponent.TileSize.Y * colliderHeight}
             );
             CreateSingleWall(shape);
         }
@@ -192,26 +205,101 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize
             );
             CreateSingleWall(shape);
         }
         foreach (var wall in map.WallInnerCornerDownLeft)
         {
+            
+            //var shape = new Rectangle(
+            //    new Vector2(
+            //        wall.X * mapComponent.TileSize.X,
+            //        wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * shift
+            //    ),
+            //    mapComponent.TileSize with { Y = mapComponent.TileSize.Y * colliderThickness }
+            //);
+            //CreateSingleWall(shape);
+
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * (1f - colliderThickness),
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * colliderThickness,
+                    mapComponent.TileSize.Y * shift
+                )
             );
             CreateSingleWall(shape);
+
         }
         foreach (var wall in map.WallInnerCornerDownRight)
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize
             );
             CreateSingleWall(shape);
         }
+
+        foreach (var wall in map.WallDiagonalCornerDownLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * 2 * shift,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * (shift  + colliderThickness)
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * colliderThickness,
+                    mapComponent.TileSize.Y * (1 - (shift + colliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerDownRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * (shift + colliderThickness)
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * colliderThickness,
+                    mapComponent.TileSize.Y * (1 - (shift + colliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerUpLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * 2 * shift,
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * colliderThickness,
+                    mapComponent.TileSize.Y * (1 - (shift + colliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerUpRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * colliderThickness,
+                    mapComponent.TileSize.Y * (1 - (shift + colliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+
     }
 
     private int CreateSingleWall(Rectangle shape)
