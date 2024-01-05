@@ -160,6 +160,10 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 Tile = position,
                 Shape = shape
             })
+            .Add(new RenderComponent
+            {
+                Type = RenderingType.Door
+            })
             .End();
         return doorId;
     }

@@ -279,10 +279,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                         ),
                         Behavior = CollisionBehavior.Wall
                     });
-                    _builder.AddTo(doorId, new RenderComponent
-                    {
-                        Type = RenderingType.DynamicColliderDebugView
-                    });
                 }
             }
             return;

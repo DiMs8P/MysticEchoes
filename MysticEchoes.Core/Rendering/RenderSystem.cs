@@ -5,6 +5,7 @@ using Leopotam.EcsLite;
 using MazeGeneration;
 using MazeGeneration.Enemies;
 using MazeGeneration.TreeModule;
+using MazeGeneration.TreeModule.Rooms;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
@@ -34,17 +35,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
-    private double t;
+    private EcsPool<DoorComponent> _doors;
 
-    private static readonly Dictionary<CellType, double[]> TileColors = new()
-    {
-        [CellType.Empty] = new[] { 64d / 255, 64d / 255, 64d / 255 },
-        [CellType.FragmentBound] = new[] { 0d, 0d, 0d },
-        [CellType.Hall] = new[] { 0.8d, 0.8d, 0.1d },
-        [CellType.ControlPoint] = new[] { 0.8d, 0.1d, 0.1d },
-        [CellType.Wall] = new[] { 103d / 255, 65d / 255, 72d / 255 },
-        [CellType.Floor] = new[] { 53d / 255, 25d / 255, 48d / 255 }
-    };
+    private double t;
 
     public void Init(IEcsSystems systems)
     {
@@ -60,6 +53,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _dynamicColliders = world.GetPool<DynamicCollider>();
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
+        _doors = world.GetPool<DoorComponent>();
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -87,9 +81,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             {
                 ref TileMapComponent map = ref _tileMaps.Get(entityId);
                 {
-                    var color = TileColors[CellType.Empty];
                     _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-                    _gl.Color(color[0], color[1], color[2]);
+                    _gl.Color(64f / 255, 64f / 255, 64f / 255);
                     _gl.Vertex(0d, 0d);
                     _gl.Vertex(2d, 0d);
                     _gl.Vertex(2d, 2d);
@@ -103,7 +96,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 }
                 foreach (var door in map.Map.DoorTiles)
                 {
-                    PrintTile(door, map, "HorizontalDoor");
                 }
                 foreach (var wall in map.Map.WallTopTiles)
                 {
@@ -152,7 +144,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-
                 //var collider = _staticColliders.Get(entityId);
 
                 //var rect = collider.Box.Shape;
@@ -165,7 +156,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 //_gl.Vertex(rect.Right, rect.Bottom);
                 //_gl.End();
             }
-
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {
                 var collider = _dynamicColliders.Get(entityId);
@@ -364,6 +354,30 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Vertex(rect.Right, rect.Bottom);
                 _gl.End();
             }
+            else if (render.Type is RenderingType.Door)
+            {
+                ref var map = ref _tileMaps.Get(entityId);
+                ref var door = ref _doors.Get(entityId);
+                var tileName = door.IsOpen switch
+                {
+                    true => door.Orientation switch
+                    {
+                        DoorOrientation.Horizontal => "HorizontalDoorOpen",
+                        DoorOrientation.VerticalLeft => "DoorLeftOpen",
+                        DoorOrientation.VerticalRight => "DoorRightOpen",
+                        _ => throw new ArgumentOutOfRangeException()
+                    },
+                    false => door.Orientation switch
+                    {
+                        DoorOrientation.Horizontal => "HorizontalDoorOpen",
+                        DoorOrientation.VerticalLeft => "DoorLeftOpen",
+                        DoorOrientation.VerticalRight => "DoorRightOpen",
+                        _ => throw new ArgumentOutOfRangeException()
+                    }
+                };
+
+                PrintTile(door.Tile, map, tileName);
+            }
             else if (render.Type is not RenderingType.None)
             {
                 throw new NotImplementedException();
@@ -371,6 +385,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DrawCollider(Rectangle rect, double r, double g, double b)
     {
         _gl.Begin(OpenGL.GL_LINE_LOOP);

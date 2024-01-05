@@ -11,5 +11,6 @@ public enum RenderingType
     Character,
     General,
     EnemySpawn,
-    EntranceTrigger
+    EntranceTrigger,
+    Door
 }
