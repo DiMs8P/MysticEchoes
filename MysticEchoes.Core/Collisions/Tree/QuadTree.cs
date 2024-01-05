@@ -9,22 +9,25 @@ public class QuadTree
     public List<QuadTree> SubTrees => _subTrees.Select(x => x.Value).ToList();
 
     private readonly int _capacity;
+    private readonly int _maxDepth;
     private List<Box> _boxes = new();
     private Dictionary<AreaType, QuadTree> _subTrees = new ();
-    private int Depth;
+    private readonly int _depth;
 
-    public QuadTree(Rectangle bound, int capacity)
+    public QuadTree(Rectangle bound, int capacity, int maxDepth = 6)
     {
         Bound = bound;
         _capacity = capacity;
-        Depth = 0;
+        _maxDepth = maxDepth;
+        _depth = 0;
     }
 
-    private QuadTree(Rectangle bound, int capacity, int depth)
+    private QuadTree(Rectangle bound, int capacity, int depth, int maxDepth)
     {
         Bound = bound;
         _capacity = capacity;
-        Depth = depth;
+        _depth = depth;
+        _maxDepth = maxDepth;
     }
 
     public void Add(Box area)
@@ -36,7 +39,7 @@ public class QuadTree
 
         if (!IsDivided)
         {
-            if (_boxes.Count < _capacity)
+            if (_boxes.Count < _capacity || _depth == _maxDepth)
             {
                 _boxes.Add(area);
                 return;
@@ -99,7 +102,7 @@ public class QuadTree
     public int MaxDepthQuery()
     {
         if (!IsDivided)
-            return Depth;
+            return _depth;
 
         var result = _subTrees.Values.Aggregate(-1, (current, subTree) => 
             int.Max(current, subTree.MaxDepthQuery())
@@ -113,28 +116,32 @@ public class QuadTree
         _subTrees.Add(AreaType.LeftBottom, new QuadTree(
             new Rectangle(Bound.LeftBottom, Bound.Size / 2),
             _capacity,
-            Depth + 1
+            _depth + 1,
+            _maxDepth
         ));
         _subTrees.Add(AreaType.LeftTop, new QuadTree(
             new Rectangle(
                 Bound.LeftBottom + (Bound.Size / 2) with { X = 0 }, 
                 Bound.Size / 2),
             _capacity,
-            Depth + 1
+            _depth + 1,
+            _maxDepth
         ));
         _subTrees.Add(AreaType.RightBottom, new QuadTree(
             new Rectangle(
                 Bound.LeftBottom + (Bound.Size / 2) with { Y = 0 },
                 Bound.Size / 2),
             _capacity,
-            Depth + 1
+            _depth + 1,
+            _maxDepth
         ));
         _subTrees.Add(AreaType.RightTop, new QuadTree(
             new Rectangle(
                 Bound.LeftBottom + Bound.Size / 2,
                 Bound.Size / 2),
             _capacity,
-            Depth + 1
+            _depth + 1,
+            _maxDepth
         ));
 
         foreach (var area in _boxes)
@@ -149,7 +156,7 @@ public class QuadTree
 
     public override string ToString()
     {
-        var height = MaxDepthQuery() - Depth;
+        var height = MaxDepthQuery() - _depth;
         return height != 0 
             ? $"Height={height}|{Bound}" 
             : $"Boxes={_boxes.Count}|{Bound}";
