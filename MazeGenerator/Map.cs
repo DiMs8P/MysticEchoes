@@ -12,6 +12,10 @@ public class Map
     public Size Size { get; }
     public HashSet<Point> FloorTiles { get; } = new();
     public HashSet<Point> DoorTiles { get; set; } = new();
+    public HashSet<Point> HorizontalDoors { get; set; } = new();
+    public HashSet<Point> VerticalDoorLeft { get; set; } = new();
+    public HashSet<Point> VerticalDoorRight { get; set; } = new();
+
     public HashSet<Point> WallTopTiles { get; } = new();
     public HashSet<Point> WallSideRightTiles { get; } = new();
     public HashSet<Point> WallSideLeftTiles { get; } = new();

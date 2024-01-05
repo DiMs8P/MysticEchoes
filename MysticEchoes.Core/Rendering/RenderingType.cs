@@ -10,5 +10,6 @@ public enum RenderingType
     DebugUnitView,
     Character,
     General,
-    EnemySpawn
+    EnemySpawn,
+    EntranceTrigger
 }

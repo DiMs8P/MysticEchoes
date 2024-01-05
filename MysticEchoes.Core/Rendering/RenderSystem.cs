@@ -152,33 +152,33 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _staticColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
-
-                _gl.Color(1.0f, 0.3f, 0.0f);
-
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
-            }
-            else if (render.Type is RenderingType.DynamicColliderDebugView)
-            {
-                //_gl.Begin(OpenGL.GL_LINE_LOOP);
-                //var collider = _dynamicColliders.Get(entityId);
+                //var collider = _staticColliders.Get(entityId);
 
                 //var rect = collider.Box.Shape;
-
-                //_gl.Color(0.1f, 0.4f, 1.0f);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
                 //_gl.Vertex(rect.Left, rect.Bottom);
                 //_gl.Vertex(rect.Left, rect.Top);
                 //_gl.Vertex(rect.Right, rect.Top);
                 //_gl.Vertex(rect.Right, rect.Bottom);
                 //_gl.End();
+            }
+
+            else if (render.Type is RenderingType.DynamicColliderDebugView)
+            {
+                var collider = _dynamicColliders.Get(entityId);
+                var rect = collider.Box.Shape;
+
+                DrawCollider(rect, 1.0f, 0.7f, 0.1f);
+            }
+            else if (render.Type is RenderingType.EntranceTrigger)
+            {
+                var collider = _dynamicColliders.Get(entityId);
+                var rect = collider.Box.Shape;
+
+                DrawCollider(rect, 0.1f, 0.3f, 1.0f);
             }
             else if (render.Type is RenderingType.ColliderSpaceTreeView)
             {
@@ -249,7 +249,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.TexCoord(1.0, 1.0f);
                 _gl.Vertex(+halfSize, -halfSize, layer);
                 _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(+halfSize, +halfSize, layer); 
+                _gl.Vertex(+halfSize, +halfSize, layer);
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -263,21 +263,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PushMatrix();
 
-                //var collider = _dynamicColliders.Get(entityId);
-                //var rect = collider.Box.Shape;
-                //_gl.Translate(rect.LeftBottom);
-
-                //_gl.Begin(OpenGL.GL_LINE_LOOP);
-
-                //_gl.Color(1.0f, 0.3f, 0.0f);
-
-                //_gl.Vertex(0, 0);
-                //_gl.Vertex(0, rect.Size.Y);
-                //_gl.Vertex(rect.Size.X, rect.Size.Y);
-                //_gl.Vertex(rect.Size.X, 0);
-                //_gl.End();
-
-                //_gl.PopMatrix();
+                var collider = _dynamicColliders.Get(entityId);
+                DrawCollider(collider.Box.Shape, 1.0f, 0.3f, 0.0f);
             }
             else if (render.Type is RenderingType.General)
             {
@@ -384,6 +371,19 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         }
     }
 
+    private void DrawCollider(Rectangle rect, double r, double g, double b)
+    {
+        _gl.Begin(OpenGL.GL_LINE_LOOP);
+        _gl.Color(r, g, b);
+
+
+        _gl.Vertex(rect.Left, rect.Bottom);
+        _gl.Vertex(rect.Left, rect.Top);
+        _gl.Vertex(rect.Right, rect.Top);
+        _gl.Vertex(rect.Right, rect.Bottom);
+        _gl.End();
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void PrintTile(Point position, TileMapComponent map, string texture)
     {
@@ -403,7 +403,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _gl.TexCoord(0.0 + p, 0.0f + p);
         _gl.Vertex(rect.Left, rect.Top);
-        _gl.TexCoord(0.0+ p, 1.0f - p);
+        _gl.TexCoord(0.0 + p, 1.0f - p);
         _gl.Vertex(rect.Left, rect.Bottom);
         _gl.TexCoord(1.0 - p, 1.0f - p);
         _gl.Vertex(rect.Right, rect.Bottom);

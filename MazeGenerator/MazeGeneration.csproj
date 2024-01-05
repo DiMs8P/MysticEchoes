@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Walls\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
 </Project>
