@@ -97,55 +97,55 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.End();
                 }
 
-                foreach (var floor in map.Tiles.FloorTiles)
+                foreach (var floor in map.Map.FloorTiles)
                 {
                     PrintTile(floor, map, "Floor");
                 }
-                foreach (var door in map.Tiles.DoorTiles)
+                foreach (var door in map.Map.DoorTiles)
                 {
                     PrintTile(door, map, "HorizontalDoor");
                 }
-                foreach (var wall in map.Tiles.WallTopTiles)
+                foreach (var wall in map.Map.WallTopTiles)
                 {
                     PrintTile(wall, map, "WallTop");
                 }
-                foreach (var wall in map.Tiles.WallSideRightTiles)
+                foreach (var wall in map.Map.WallSideRightTiles)
                 {
                     PrintTile(wall, map, "WallSideRight");
                 }
-                foreach (var wall in map.Tiles.WallSideLeftTiles)
+                foreach (var wall in map.Map.WallSideLeftTiles)
                 {
                     PrintTile(wall, map, "WallSideLeft");
                 }
-                foreach (var wall in map.Tiles.WallBottomTiles)
+                foreach (var wall in map.Map.WallBottomTiles)
                 {
                     PrintTile(wall, map, "WallBottom");
                 }
-                foreach (var wall in map.Tiles.WallFullTiles)
+                foreach (var wall in map.Map.WallFullTiles)
                 {
                     PrintTile(wall, map, "WallFull");
                 }
-                foreach (var wall in map.Tiles.WallInnerCornerDownLeft)
+                foreach (var wall in map.Map.WallInnerCornerDownLeft)
                 {
                     PrintTile(wall, map, "WallInnerCornerDownLeft");
                 }
-                foreach (var wall in map.Tiles.WallInnerCornerDownRight)
+                foreach (var wall in map.Map.WallInnerCornerDownRight)
                 {
                     PrintTile(wall, map, "WallInnerCornerDownRight");
                 }
-                foreach (var wall in map.Tiles.WallDiagonalCornerDownLeft)
+                foreach (var wall in map.Map.WallDiagonalCornerDownLeft)
                 {
                     PrintTile(wall, map, "WallDiagonalCornerDownLeft");
                 }
-                foreach (var wall in map.Tiles.WallDiagonalCornerDownRight)
+                foreach (var wall in map.Map.WallDiagonalCornerDownRight)
                 {
                     PrintTile(wall, map, "WallDiagonalCornerDownRight");
                 }
-                foreach (var wall in map.Tiles.WallDiagonalCornerUpLeft)
+                foreach (var wall in map.Map.WallDiagonalCornerUpLeft)
                 {
                     PrintTile(wall, map, "WallDiagonalCornerUpLeft");
                 }
-                foreach (var wall in map.Tiles.WallDiagonalCornerUpRight)
+                foreach (var wall in map.Map.WallDiagonalCornerUpRight)
                 {
                     PrintTile(wall, map, "WallDiagonalCornerUpRight");
                 }
@@ -167,18 +167,18 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _dynamicColliders.Get(entityId);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //var collider = _dynamicColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
+                //var rect = collider.Box.Shape;
 
-                _gl.Color(0.1f, 0.4f, 1.0f);
+                //_gl.Color(0.1f, 0.4f, 1.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.ColliderSpaceTreeView)
             {

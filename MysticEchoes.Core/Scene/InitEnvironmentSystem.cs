@@ -13,6 +13,7 @@ using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
+using Point = System.Drawing.Point;
 
 namespace MysticEchoes.Core.Scene;
 
@@ -49,18 +50,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         CreateWalls(map, mapComponent);
 
 
-        var doorEntities = new Dictionary<System.Drawing.Point, int>();
-        foreach (var door in map.DoorTiles)
-        {
-            var doorId = _builder.Create()
-                .Add(new DoorComponent
-                {
-                    IsOpen = true,
-                    Tile = door
-                })
-                .End();
-            doorEntities.Add(door, doorId);
-        }
+        var doorEntities = CreateDoors(map);
 
         foreach (var roomNode in map.BinarySpaceTree.DeepCrawl()
                      .Where(x => x.Room is not null))
@@ -86,26 +76,48 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 .End();
 
             var entranceTrigger = _builder.Create()
-                .Add(new EntranceTrigger
-                {
-                    RoomId = roomId
-                })
                 .Add(new RenderComponent(RenderingType.DynamicColliderDebugView))
                 .End();
-            _builder.AddTo(entranceTrigger, new DynamicCollider
+
+            if (roomNode.Room.Type is not RoomType.PlayerSpawn)
             {
-                Box = new Box(
-                    entranceTrigger,
-                    new Rectangle(
-                        new Vector2((room.Left + 1) * mapComponent.TileSize.X,
-                            (room.Top + 1) * mapComponent.TileSize.Y),
-                        new Vector2((room.Width - 1) * mapComponent.TileSize.X,
-                            (room.Height - 1) * mapComponent.TileSize.Y)
-                    )
-                ),
-                Behavior = CollisionBehavior.RoomEntranceTrigger
-            });
+                _builder.AddTo(entranceTrigger, new DynamicCollider
+                {
+                    Box = new Box(
+                        entranceTrigger,
+                        new Rectangle(
+                            new Vector2((room.Left + 1) * mapComponent.TileSize.X,
+                                (room.Top + 1) * mapComponent.TileSize.Y),
+                            new Vector2((room.Width - 1) * mapComponent.TileSize.X,
+                                (room.Height - 1) * mapComponent.TileSize.Y)
+                        )
+                    ),
+                    Behavior = CollisionBehavior.RoomEntranceTrigger
+                });
+                _builder.AddTo(entranceTrigger, new EntranceTrigger
+                {
+                    RoomId = roomId
+                });
+            }
         }
+    }
+
+    private Dictionary<Point, int> CreateDoors(Map map)
+    {
+        var doorEntities = new Dictionary<System.Drawing.Point, int>();
+        foreach (var door in map.DoorTiles)
+        {
+            var doorId = _builder.Create()
+                .Add(new DoorComponent
+                {
+                    IsOpen = true,
+                    Tile = door
+                })
+                .End();
+            doorEntities.Add(door, doorId);
+        }
+
+        return doorEntities;
     }
 
     private List<int> CreateEnemySpawn(RoomNode roomNode, TileMapComponent mapComponent)

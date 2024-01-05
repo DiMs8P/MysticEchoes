@@ -74,14 +74,14 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _staticCollidersTree = new QuadTree(
             new Rectangle(
                 new Vector2(0, 0),
-                new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
+                new Vector2(map.Map.Size.Width * map.TileSize.X, map.Map.Size.Height * map.TileSize.Y)
             ),
             10
         );
         _dynamicCollidersTree = new QuadTree(
             new Rectangle(
                 new Vector2(0, 0),
-                new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
+                new Vector2(map.Map.Size.Width * map.TileSize.X, map.Map.Size.Height * map.TileSize.Y)
             ),
             20
         );

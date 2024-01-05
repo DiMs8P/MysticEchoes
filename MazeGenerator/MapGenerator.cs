@@ -21,20 +21,56 @@ public class MapGenerator
 
         var map = new Map(_config.MazeSize, tree);
 
+        // Design
         MakeLeafs(tree);
         MakeRooms(tree);
         MakeHalls(tree);
         //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
-
         MakeDoors(tree);
-        MarkUp(tree, map);
+
+        // Tile-level
+        MarkFloor(tree, map);
         MakeWalls(map);
-        MarkUpDoors(tree, map);
+        MakeDoors(tree, map);
+
+        // High-level
+        MarkupRooms(tree, map);
+        MakePlayerSpawn(tree, map);
         MakeEnemySpawns(tree, map);
 
 
         return map;
+    }
+
+    private void MakePlayerSpawn(Tree<RoomNode> tree, Map map)
+    {
+        var playerSpawnRoom = tree.DeepCrawl()
+            .First(x => x.Room?.Type is RoomType.PlayerSpawn)
+            .Room!;
+
+        var center = playerSpawnRoom.Shape.GetCenter();
+        map.PlayerSpawn = center;
+    }
+
+    private void MarkupRooms(Tree<RoomNode> tree, Map map)
+    {
+        foreach (var room in tree.DeepCrawl()
+                     .Where(x => x.Room is not null)
+                     .Select(x => x.Room))
+        {
+            var roomTiles = map.FloorTiles
+                .Where(floor => room!.Shape.ContainsNotStrict(floor))
+                .ToHashSet();
+            room!.ValueCost = roomTiles.Count;
+            room.Type = RoomType.Battle;
+        }
+
+        var playerSpawnRoom = tree.DeepCrawl()
+            .Where(x => x.Room is not null)
+            .MinBy(x => x.Room!.ValueCost);
+
+        playerSpawnRoom.Room.Type = RoomType.PlayerSpawn;
     }
 
     private void MakeEnemySpawns(Tree<RoomNode> tree, Map map)
@@ -401,7 +437,7 @@ public class MapGenerator
         }
     }
 
-    private void MarkUp(Tree<RoomNode> tree, Map map)
+    private void MarkFloor(Tree<RoomNode> tree, Map map)
     {
         foreach (var node in tree.DeepCrawl()
                      .Where(x => x.Room is not null))
@@ -440,7 +476,7 @@ public class MapGenerator
         }
     }
 
-    private void MarkUpDoors(Tree<RoomNode> tree, Map map)
+    private void MakeDoors(Tree<RoomNode> tree, Map map)
     {
         foreach (var node in tree.DeepCrawl()
                      .Where(x => x.Room is not null &&

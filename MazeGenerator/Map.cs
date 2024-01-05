@@ -23,7 +23,7 @@ public class Map
     public HashSet<Point> WallDiagonalCornerUpRight { get; } = new();
     public HashSet<Point> WallDiagonalCornerUpLeft { get; } = new();
 
-
+    public Point PlayerSpawn { get; set; }
 
     public Tree<RoomNode> BinarySpaceTree { get; }
 

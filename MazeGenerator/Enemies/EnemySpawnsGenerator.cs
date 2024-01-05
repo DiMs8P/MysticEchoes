@@ -17,12 +17,12 @@ public class EnemySpawnsGenerator
 
     public void Generate(Map map, Tree<RoomNode> roomsTree)
     {
-        var rooms = roomsTree.DeepCrawl()
-            .Where(x => x.Room is not null)
+        var battleRooms = roomsTree.DeepCrawl()
+            .Where(x => x.Room?.Type is RoomType.Battle)
             .Select(x => x.Room)
             .ToArray();
 
-        foreach (var room in rooms)
+        foreach (var room in battleRooms)
         {
             var enemies = new List<EnemyType>();
 
