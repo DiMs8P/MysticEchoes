@@ -94,9 +94,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 {
                     PrintTile(floor, map, "Floor");
                 }
-                foreach (var door in map.Map.DoorTiles)
-                {
-                }
                 foreach (var wall in map.Map.WallTopTiles)
                 {
                     PrintTile(wall, map, "WallTop");
@@ -358,7 +355,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             {
                 ref var map = ref _tileMaps.Get(entityId);
                 ref var door = ref _doors.Get(entityId);
-                var tileName = door.IsOpen switch
+
+                #region textureSelection
+                var texture = door.IsOpen switch
                 {
                     true => door.Orientation switch
                     {
@@ -375,8 +374,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                         _ => throw new ArgumentOutOfRangeException()
                     }
                 };
+                #endregion
 
-                PrintTile(door.Tile, map, tileName);
+                PrintTile(door.Tile, map, texture);
             }
             else if (render.Type is not RenderingType.None)
             {
