@@ -36,6 +36,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<DynamicCollider> _dynamicColliders;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
     private EcsPool<DoorComponent> _doors;
+    private int _mapId;
 
     private double t;
 
@@ -54,6 +55,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
         _doors = world.GetPool<DoorComponent>();
+
+        _mapId = world.Filter<TileMapComponent>().End().GetRawEntities()[0];
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -353,7 +356,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.Door)
             {
-                ref var map = ref _tileMaps.Get(entityId);
+                ref var map = ref _tileMaps.Get(_mapId);
                 ref var door = ref _doors.Get(entityId);
 
                 #region textureSelection
@@ -368,15 +371,31 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     },
                     false => door.Orientation switch
                     {
-                        DoorOrientation.Horizontal => "HorizontalDoorOpen",
-                        DoorOrientation.VerticalLeft => "DoorLeftOpen",
-                        DoorOrientation.VerticalRight => "DoorRightOpen",
+                        DoorOrientation.Horizontal => "HorizontalDoor",
+                        DoorOrientation.VerticalLeft => "DoorLeft",
+                        DoorOrientation.VerticalRight => "DoorRight",
                         _ => throw new ArgumentOutOfRangeException()
                     }
                 };
                 #endregion
 
-                PrintTile(door.Tile, map, texture);
+                var tile = door.Tile;
+                if (door.Orientation is not DoorOrientation.Horizontal)
+                {
+                    tile = door.Tile with {Y = door.Tile.Y + 1};
+                    if (door.Orientation is DoorOrientation.VerticalLeft &&
+                        !door.IsOpen)
+                    {
+                        PrintTile(door.Tile, map, "DoorLeftContinuation");
+                    }
+                    else if (door.Orientation is DoorOrientation.VerticalRight &&
+                             !door.IsOpen)
+                    {
+                        //PrintTile(door.Tile, map, "DoorLeftContinuation");
+                    }
+
+                }
+                PrintTile(tile, map, texture);
             }
             else if (render.Type is not RenderingType.None)
             {

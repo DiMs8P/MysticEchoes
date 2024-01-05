@@ -157,6 +157,11 @@
 
   "Floor": "Floor.png",
   "Door": "Door.jpg",
+  "HorizontalDoorOpen": "HorizontalDoorOpen.png",
+  "DoorLeftOpen": "DoorLeftOpen.png",
+  "DoorRightOpen": "DoorRightOpen.png",
+  "HorizontalDoor": "HorizontalDoor.png",
   "DoorLeft": "DoorLeft.png",
-  "HorizontalDoor": "HorizontalDoor.png"
+  "DoorLeftContinuation": "DoorLeftContinuation.png",
+  "DoorRight": "DoorRight.png"
 }
