@@ -30,12 +30,9 @@ public class Attack : Node
 
     public override NodeState Evaluate()
     {
-        ref TransformComponent playerTransform = ref _transforms.Get(_playerEntityId);
-        ref TransformComponent ownerTransform = ref _transforms.Get(_ownerEntityId);
-
         ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(_ownerEntityId);
         rangeWeaponComponent.IsShooting = true;
 
-        return NodeState.Running;
+        return NodeState.Success;
     }
 }
