@@ -7,8 +7,6 @@ public class Selector : Node
     
     public override NodeState Evaluate()
     {
-        NodeState state = NodeState.None;
-
         foreach (Node node in Children)
         {
             switch (node.Evaluate())
@@ -16,17 +14,17 @@ public class Selector : Node
                 case NodeState.Failure:
                     continue;
                 case NodeState.Success:
-                    state = NodeState.Success;
-                    return state;
+                    State = NodeState.Success;
+                    return State;
                 case NodeState.Running:
-                    state = NodeState.Running;
-                    return state;
+                    State = NodeState.Running;
+                    return State;
                 default:
                     continue;
             }
         }
 
-        state = NodeState.Failure;
-        return state;
+        State = NodeState.Failure;
+        return State;
     }
 }

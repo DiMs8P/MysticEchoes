@@ -10,15 +10,18 @@ namespace MysticEchoes.Core.AI.Tasks;
 public class MoveTo : EcsNode
 {
     protected int _target;
+    protected float _accuracy;
 
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<UnitControlComponent> _controls;
     
-    public MoveTo(EcsWorld world, int ownerEntityId, int target) : base(world, ownerEntityId)
+    public MoveTo(EcsWorld world, int ownerEntityId, int target, float accuracy) : base(world, ownerEntityId)
     {
         _transforms = World.GetPool<TransformComponent>();
         _controls = World.GetPool<UnitControlComponent>();
+        
         _target = target;
+        _accuracy = accuracy;
     }
 
     public override NodeState Evaluate()
@@ -27,8 +30,12 @@ public class MoveTo : EcsNode
         ref TransformComponent targetTransform = ref _transforms.Get(_target);
 
         Vector2 targetVector = targetTransform.Location - ownerTransform.Location;
-        if (targetVector.Length() < 0.0001)
+        if (targetVector.Length() < _accuracy)
         {
+            ref UnitControlComponent controlComponent = ref _controls.Get(SelfEntityId);
+            controlComponent.LookAt = targetTransform.Location;
+            controlComponent.MoveDirection = Vector2.Zero;
+            
             return NodeState.Success;
         }
         else

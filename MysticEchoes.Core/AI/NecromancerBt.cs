@@ -20,7 +20,7 @@ public class NecromancerBt : EcsBt
     }
     protected override Node SetupTree()
     {
-        Node root = new MoveTo(_world, _ownerEntityId, _playerId);
+        Node root = new MoveTo(_world, _ownerEntityId, _playerId, 0.01f);
 
         return root;
     }

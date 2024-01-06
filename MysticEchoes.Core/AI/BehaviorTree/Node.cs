@@ -20,8 +20,6 @@ public class Node
         {
             Attach(child);
         }
-        
-        Parent = null;
     }
 
     private void Attach(Node node)
