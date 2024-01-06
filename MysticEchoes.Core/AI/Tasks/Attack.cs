@@ -11,17 +11,10 @@ public class Attack : EcsNode
 {
     private readonly EcsPool<TransformComponent> _transforms;
     private readonly EcsPool<RangeWeaponComponent> _weapons;
-    private readonly int _playerEntityId;
-    public Attack(EcsWorld world, int ownerEntityId) : base(world, ownerEntityId)
+    
+    public Attack(EcsWorld world, int selfEntityId) : base(world, selfEntityId)
     {
         _transforms = World.GetPool<TransformComponent>();
-
-        EcsFilter playerFilter = world.Filter<PlayerMarker>().End();
-
-        foreach (var playerEntityId in playerFilter)
-        {
-            _playerEntityId = playerEntityId;
-        }
     }
 
     public override NodeState Evaluate()

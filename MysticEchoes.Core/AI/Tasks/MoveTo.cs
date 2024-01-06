@@ -15,7 +15,7 @@ public class MoveTo : EcsNode
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<UnitControlComponent> _controls;
     
-    public MoveTo(EcsWorld world, int ownerEntityId, int target, float accuracy) : base(world, ownerEntityId)
+    public MoveTo(EcsWorld world, int selfEntityId, int target, float accuracy) : base(world, selfEntityId)
     {
         _transforms = World.GetPool<TransformComponent>();
         _controls = World.GetPool<UnitControlComponent>();
