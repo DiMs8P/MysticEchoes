@@ -6,9 +6,16 @@ namespace MazeGeneration;
 
 public class Map
 {
+    public const float Shift = 0.40f;
+    public const float ColliderThickness = 1 - 2 * Shift;
+
     public Size Size { get; }
     public HashSet<Point> FloorTiles { get; } = new();
     public HashSet<Point> DoorTiles { get; set; } = new();
+    public HashSet<Point> HorizontalDoors { get; set; } = new();
+    public HashSet<Point> VerticalDoorLeft { get; set; } = new();
+    public HashSet<Point> VerticalDoorRight { get; set; } = new();
+
     public HashSet<Point> WallTopTiles { get; } = new();
     public HashSet<Point> WallSideRightTiles { get; } = new();
     public HashSet<Point> WallSideLeftTiles { get; } = new();
@@ -43,7 +50,7 @@ public class Map
         {
             tileCollection = WallInnerCornerDownLeft;
         }
-        else if(WallTypesHelper.WallInnerCornerDownRight.Contains(type))
+        else if (WallTypesHelper.WallInnerCornerDownRight.Contains(type))
         {
             tileCollection = WallInnerCornerDownRight;
         }
@@ -72,10 +79,16 @@ public class Map
             tileCollection = WallBottomTiles;
         }
 
-        if (tileCollection is not null)
-        {
-            tileCollection.Add(position);
-        }
+        if (tileCollection is null) return;
+
+
+        WallTopTiles.Remove(position);
+        WallSideRightTiles.Remove(position);
+        WallSideLeftTiles.Remove(position);
+        WallBottomTiles.Remove(position);
+        WallFullTiles.Remove(position);
+
+        tileCollection.Add(position);
     }
 
     internal void AddSingleBasicWall(Point position, string neighborsBinary)
@@ -87,7 +100,7 @@ public class Map
         if (WallTypesHelper.WallTop.Contains(type))
         {
             tileCollection = WallTopTiles;
-        } 
+        }
         else if (WallTypesHelper.WallSideRight.Contains(type))
         {
             tileCollection = WallSideRightTiles;

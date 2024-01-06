@@ -281,7 +281,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 _entitiesToClear.Add(entity.Id);
 
                 var room = _rooms.Get(trigger.RoomId);
-                ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
 
                 foreach (var doorId in room.Doors)
                 {
@@ -292,16 +291,9 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                     {
                         Box = new Box(
                             doorId,
-                            new Rectangle(
-                                new Vector2(door.Tile.X * map.TileSize.X, door.Tile.Y * map.TileSize.Y),
-                                new Vector2(map.TileSize.X, map.TileSize.Y)
-                            )
+                            door.Shape
                         ),
                         Behavior = CollisionBehavior.Wall
-                    });
-                    _builder.AddTo(doorId, new RenderComponent()
-                    {
-                        Type = RenderingType.DynamicColliderDebugView
                     });
                 }
             }
