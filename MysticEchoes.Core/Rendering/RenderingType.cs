@@ -4,9 +4,11 @@ public enum RenderingType
 {
     None,
     TileMap,
-    ColliderDebugView,
+    StaticColliderDebugView,
+    DynamicColliderDebugView,
     ColliderSpaceTreeView,
     DebugUnitView,
     Character,
-    General
+    General,
+    EnemySpawn
 }

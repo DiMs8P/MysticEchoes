@@ -4,7 +4,9 @@ using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
@@ -15,7 +17,7 @@ namespace MysticEchoes.Core.Collisions;
 
 public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 {
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private SystemExecutionContext _context;
 
@@ -33,7 +35,13 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<MovementComponent> _movements;
     private EcsPool<ItemComponent> _items;
     private EcsPool<ExplosionComponent> _explosions;
+    private EcsPool<EntranceTrigger> _entranceTriggers;
+    private EcsPool<RoomComponent> _rooms;
+    private EcsPool<DoorComponent> _doors;
     private const float CollisionResolvingSensitivity = 1e-4f;
+    private List<int> _entitiesToClear = new List<int>();
+
+    private HashSet<int> _deletedEntities = new HashSet<int>();
 
     public void Init(IEcsSystems systems)
     {
@@ -54,26 +62,28 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _transforms = _world.GetPool<TransformComponent>();
         _movements = _world.GetPool<MovementComponent>();
         _items = _world.GetPool<ItemComponent>();
+        _entranceTriggers = _world.GetPool<EntranceTrigger>();
+        _rooms = _world.GetPool<RoomComponent>();
+        _doors = _world.GetPool<DoorComponent>();
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
-            .Inc<MovementComponent>()
             .End();
-
+        
         ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
 
         _staticCollidersTree = new QuadTree(
             new Rectangle(
                 new Vector2(0, 0),
-                new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
+                new Vector2(map.Map.Size.Width * map.TileSize.X, map.Map.Size.Height * map.TileSize.Y)
             ),
-            4
+            10
         );
         _dynamicCollidersTree = new QuadTree(
             new Rectangle(
                 new Vector2(0, 0),
-                new Vector2(map.Tiles.Size.Width * map.TileSize.X, map.Tiles.Size.Height * map.TileSize.Y)
+                new Vector2(map.Map.Size.Width * map.TileSize.X, map.Map.Size.Height * map.TileSize.Y)
             ),
-            10
+            20
         );
         foreach (var staticEntity in _staticEntities)
         {
@@ -81,22 +91,23 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             _staticCollidersTree.Add(collider.Box);
         }
 
-        //_factory.Create()
-        //    .Add(new SpaceTreeComponent(){Tree = _staticCollidersTree})
+        //_builder.Create()
+        //    .Add(new SpaceTreeComponent() { Tree = _staticCollidersTree })
         //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
-        _factory.Create()
-            .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
-            .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
+        //_builder.Create()
+        //    .Add(new SpaceTreeComponent() { Tree = _dynamicCollidersTree })
+        //    .Add(new RenderComponent(RenderingType.ColliderSpaceTreeView));
     }
 
     public void Run(IEcsSystems systems)
     {
+        _entitiesToClear.Clear();
         _dynamicCollidersTree.Clear();
+        _deletedEntities.Clear();
 
         foreach (var entity in _dynamicCollidersFilter)
         {
             var collider = _dynamicColliders.Get(entity);
-
             _dynamicCollidersTree.Add(collider.Box);
         }
 
@@ -144,6 +155,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 });
             }
         }
+
+        foreach (var entity in _entitiesToClear)
+        {
+            _world.DelEntity(entity);
+        }
     }
 
     private void HandleCollisions(CollisionHandlingEntityInfo entity, CollisionHandlingEntityInfo target)
@@ -169,7 +185,30 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             if (target.Behavior is CollisionBehavior.Wall)
             {
+                if (!_deletedEntities.Contains(entity.Id))
+                {
+                    if (_explosions.Has(entity.Id))
+                    {
+                        ref ExplosionComponent explosionComponent = ref _explosions.Get(entity.Id);
+                    
+                        int explosionId = _prefabManager.CreateEntityFromPrefab(_builder, explosionComponent.ExplosionPrefab);
 
+                        ref TransformComponent explosionTransform =  ref _transforms.Get(explosionId);
+                        ref TransformComponent bulletTransform =  ref _transforms.Get(entity.Id);
+
+                        explosionTransform.Location = bulletTransform.Location;
+                        
+                        ref var explosionCollider = ref _dynamicColliders.Get(explosionId);
+                        Vector2 boxSize = new Vector2(0.265f, 0.35f) * explosionTransform.Scale;
+                        explosionCollider.Box = new Box(explosionId, new Rectangle(
+                            explosionTransform.Location - boxSize / 2, 
+                            boxSize
+                        ));
+                        explosionCollider.Behavior = CollisionBehavior.Ignore;
+                    }
+                
+                    _entitiesToClear.Add(entity.Id);
+                }
             }
             return;
         }
@@ -184,10 +223,14 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
             if (target.Behavior is CollisionBehavior.Item)
             {
-                ref ItemComponent itemComponent = ref _items.Get(target.Id);
-                itemComponent.Item.OnItemTaken(entity.Id, _world);
-                _world.DelEntity(target.Id);
-
+                if (!_deletedEntities.Contains(target.Id))
+                {
+                    ref ItemComponent itemComponent = ref _items.Get(target.Id);
+                    itemComponent.Item.OnItemTaken(entity.Id, _world);
+                    
+                    DeleteEntity(target.Id);
+                }
+                
                 return;
             }
             
@@ -209,6 +252,49 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return;
         }
 
+        if (entity.Behavior is CollisionBehavior.RoomEntranceTrigger)
+        {
+            if (target.Behavior == CollisionBehavior.AllyCharacter)
+            {
+                ref var trigger = ref _entranceTriggers.Get(entity.Id);
+                if (trigger.IsActivated)
+                {
+                    return;
+                }
+                trigger.IsActivated = true;
+                _entitiesToClear.Add(entity.Id);
+
+                var room = _rooms.Get(trigger.RoomId);
+                ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
+
+                foreach (var doorId in room.Doors)
+                {
+                    ref var door = ref _doors.Get(doorId);
+
+                    door.IsOpen = false;
+                    _builder.AddTo(doorId, new DynamicCollider
+                    {
+                        Box = new Box(
+                            doorId,
+                            new Rectangle(
+                                new Vector2(door.Tile.X * map.TileSize.X, door.Tile.Y * map.TileSize.Y),
+                                new Vector2(map.TileSize.X, map.TileSize.Y)
+                            )
+                        ),
+                        Behavior = CollisionBehavior.Wall
+                    });
+                    _builder.AddTo(doorId, new RenderComponent()
+                    {
+                        Type = RenderingType.DynamicColliderDebugView
+                    });
+                }
+            }
+            return;
+        }
+        if (entity.Behavior is CollisionBehavior.Ignore)
+        {
+            return;
+        }
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
     }
 
@@ -280,6 +366,16 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return -1f * Vector2.UnitY;
         }
         return Vector2.Zero;
+    }
+    
+    private void DeleteEntity(int entityId)
+    {
+        var collider = _dynamicColliders.Get(entityId);
+        var box = collider.Box;
+        _dynamicCollidersTree.Remove(box);
+        
+        _world.DelEntity(entityId);
+        _deletedEntities.Add(entityId);
     }
 }
 

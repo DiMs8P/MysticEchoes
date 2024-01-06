@@ -12,7 +12,7 @@ public class RoomNode : ITreeNode<RoomNode>
         ? TreeNodeType.Leaf
         : TreeNodeType.Node;
     public int Depth { get; set; }
-    public Rectangle? Room { get; set; }
+    public Room? Room { get; set; }
     public Hall? Hall { get; set; }
 
     public RoomNode(Point position, Size size)

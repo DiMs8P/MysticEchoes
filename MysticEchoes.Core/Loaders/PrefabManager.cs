@@ -42,21 +42,21 @@ public class PrefabManager
         return initializedPrefabs;
     }
 
-    public int CreateEntityFromPrefab(EntityFactory factory, PrefabType prefabId)
+    public int CreateEntityFromPrefab(EntityBuilder builder, PrefabType prefabId)
     {
         if (!_initializedPrefabs.TryGetValue(prefabId, out List<KeyValuePair<Type, object>> loadedPrefab))
         {
             throw new ArgumentException($"Prefab with '{prefabId}' is not found.");
         }
             
-        factory.Create();
+        builder.Create();
 
         foreach (KeyValuePair<Type, object> component in loadedPrefab)
         {
-            AddComponentToFactory(factory, component.Key, component.Value);
+            AddComponentToFactory(builder, component.Key, component.Value);
         }
             
-        return factory.End();
+        return builder.End();
     }
 
     private Type GetComponentTypeFromName(string typeName)
@@ -128,9 +128,9 @@ public class PrefabManager
         return value;
     }
 
-    private void AddComponentToFactory(EntityFactory factory, Type type, object component)
+    private void AddComponentToFactory(EntityBuilder builder, Type type, object component)
     {
-        MethodInfo addMethod = factory.GetType().GetMethod("Add").MakeGenericMethod(type);
-        addMethod.Invoke(factory, new[] { component });
+        MethodInfo addMethod = builder.GetType().GetMethod("Add").MakeGenericMethod(type);
+        addMethod.Invoke(builder, new[] { component });
     }
 }

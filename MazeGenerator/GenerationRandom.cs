@@ -4,6 +4,14 @@ namespace MazeGeneration;
 
 public class GenerationRandom : Random
 {
+    private List<Point> CardinalDirections = new()
+    {
+        new(1, 0),
+        new(-1, 0),
+        new(0, 1),
+        new(0, -1),
+    };
+
     public GenerationRandom(int seed)
         : base(seed)
     {
@@ -25,6 +33,11 @@ public class GenerationRandom : Random
         return Next(int.Min(a, b), int.Max(a, b));
     }
 
+    public double NextLessOrEqual(double b)
+    {
+        return b * NextDouble();
+    }
+
     public double GetDivideProportion(double maxShift)
     {
         return 0.5 - maxShift + NextDouble() * maxShift * 2;
@@ -36,5 +49,10 @@ public class GenerationRandom : Random
             NextBetween(rect.Left, rect.Right),
             NextBetween(rect.Bottom, rect.Top)
         );
+    }
+
+    public Point NextCardinalDirection()
+    {
+        return CardinalDirections[Next(0, CardinalDirections.Count)];
     }
 }

@@ -1,18 +1,19 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MazeGeneration;
+using MazeGeneration.TreeModule;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Items;
-using MysticEchoes.Core.Items.Implementation;
 using MysticEchoes.Core.Loaders;
-using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.MapModule;
-using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
+using Point = System.Drawing.Point;
 
 namespace MysticEchoes.Core.Scene;
 
@@ -20,85 +21,226 @@ public class InitEnvironmentSystem : IEcsInitSystem
 {
     [EcsInject] private IMazeGenerator _mazeGenerator;
     [EcsInject] private Settings _settings;
-    [EcsInject] private EntityFactory _factory;
+    [EcsInject] private EntityBuilder _builder;
     [EcsInject] private ItemsFactory _itemsFactory;
+    [EcsInject] private PrefabManager _prefabManager;
+
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
 
-    private EcsPool<ItemComponent> _items;
-    private EcsPool<SpriteComponent> _sprites;
-
-    [EcsInject] private PrefabManager _prefabManager;
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
 
-        _items = world.GetPool<ItemComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
-
-        CreateTiles();
-
-        //CreateSquare();
-        CreateItem();
+        CreateMap();
+        CreateMoney();
     }
 
-    private void CreateTiles()
+    private void CreateMap()
     {
         var map = _mazeGenerator.Generate();
-
         var mapComponent = new TileMapComponent(map);
-        _factory.Create()
+        _builder.Create()
             .Add(mapComponent)
             .Add(new RenderComponent(RenderingType.TileMap))
             .End();
 
-        foreach (var wall in map.WallTiles)
+        CreateWalls(map, mapComponent);
+
+
+        var doorEntities = CreateDoors(map);
+
+        foreach (var roomNode in map.BinarySpaceTree.DeepCrawl()
+                     .Where(x => x.Room is not null))
         {
-            var wallEntityId = _factory.Create()
-                .Add(new StaticCollider
+            var room = roomNode.Room!.Shape;
+            var doors = roomNode.Room.Doors;
+
+            var roomBound = new Rectangle(
+                new Vector2(room.X * mapComponent.TileSize.X, room.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            var doorIds = doors.Select(x => doorEntities[x]).ToList();
+            var enemySpawnIds = CreateEnemySpawn(roomNode, mapComponent);
+
+
+            var roomId = _builder.Create()
+                .Add(new RoomComponent
+                {
+                    Doors = doorIds,
+                    Bound = roomBound,
+                    EnemySpawns = enemySpawnIds
+                })
+                .End();
+
+            var entranceTrigger = _builder.Create()
+                .Add(new RenderComponent(RenderingType.DynamicColliderDebugView))
+                .End();
+
+            if (roomNode.Room.Type is not RoomType.PlayerSpawn)
+            {
+                _builder.AddTo(entranceTrigger, new DynamicCollider
                 {
                     Box = new Box(
-                        0,
+                        entranceTrigger,
                         new Rectangle(
-                            new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                            new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                            new Vector2((room.Left + 1) * mapComponent.TileSize.X,
+                                (room.Top + 1) * mapComponent.TileSize.Y),
+                            new Vector2((room.Width - 1) * mapComponent.TileSize.X,
+                                (room.Height - 1) * mapComponent.TileSize.Y)
                         )
                     ),
-                    Behavior = CollisionBehavior.Wall
-                })
-                .Add(new RenderComponent(RenderingType.ColliderDebugView))
-                .End();
-            ref var collider = ref _staticColliders.Get(wallEntityId);
-            collider.Box.Id = wallEntityId;
+                    Behavior = CollisionBehavior.RoomEntranceTrigger
+                });
+                _builder.AddTo(entranceTrigger, new EntranceTrigger
+                {
+                    RoomId = roomId
+                });
+            }
         }
     }
-    
-    private void CreateSquare()
+
+    private Dictionary<Point, int> CreateDoors(Map map)
     {
-        _factory.Create()
-            .Add(new TransformComponent{
-                Location = new Vector2(0, 0.3f),
-                Rotation = new Vector2(1.0f, 0.0f)
-            })
-            .Add(new MovementComponent()
-            {
-                Speed = 1.0f,
-                Velocity = new Vector2(0.5f, 0.5f)
-            })
-            .Add(new RenderComponent(RenderingType.DebugUnitView))
-            .End();
+        var doorEntities = new Dictionary<System.Drawing.Point, int>();
+        foreach (var door in map.DoorTiles)
+        {
+            var doorId = _builder.Create()
+                .Add(new DoorComponent
+                {
+                    IsOpen = true,
+                    Tile = door
+                })
+                .End();
+            doorEntities.Add(door, doorId);
+        }
+
+        return doorEntities;
     }
-    
-    private void CreateItem()
+
+    private List<int> CreateEnemySpawn(RoomNode roomNode, TileMapComponent mapComponent)
     {
-        int entityId = _itemsFactory.CreateItemEntity(Item.Money, 100);
-        
+        var enemySpawnIds = new List<int>();
+        foreach (var spawn in roomNode.Room.EnemySpawns)
+        {
+            var spawnId = _builder.Create()
+                .End();
+            enemySpawnIds.Add(spawnId);
+            _builder.AddTo(spawnId, new DynamicCollider
+                {
+                    Box = new Box(
+                        spawnId,
+                        new Rectangle(
+                            new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
+                                spawn.Area.Top * mapComponent.TileSize.Y),
+                            new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
+                                spawn.Area.Height * mapComponent.TileSize.Y)
+                        )
+                    ),
+                    Behavior = CollisionBehavior.Ignore
+                })
+                .AddTo(spawnId, new RenderComponent
+                {
+                    Type = RenderingType.EnemySpawn
+                })
+                .AddTo(spawnId, new EnemySpawnComponent
+                {
+                    Data = spawn
+                });
+        }
+
+        return enemySpawnIds;
+    }
+
+    private void CreateWalls(Map map, TileMapComponent mapComponent)
+    {
+        foreach (var wall in map.WallTopTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallSideRightTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallSideLeftTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallBottomTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallFullTiles)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallInnerCornerDownLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallInnerCornerDownRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
+                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+            );
+            CreateSingleWall(shape);
+        }
+    }
+
+    private int CreateSingleWall(Rectangle shape)
+    {
+        var wallEntityId = _builder.Create()
+            .Add(new StaticCollider
+            {
+                Box = new Box(
+                    0,
+                    shape
+                ),
+                Behavior = CollisionBehavior.Wall
+            })
+            .Add(new RenderComponent(RenderingType.StaticColliderDebugView))
+            .End();
+        ref var collider = ref _staticColliders.Get(wallEntityId);
+        collider.Box.Id = wallEntityId;
+
+        return wallEntityId;
+    }
+
+    private void CreateMoney()
+    {
+        int entityId = _itemsFactory.CreateItemEntity(0, 100);
+
         ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
         collider.Box = new Box(entityId, new Rectangle(
             Vector2.Zero,
-            Vector2.One * 0.4f * 0.1f  / 2
+            Vector2.One * 0.4f * 0.1f / 2
         ));
         collider.Behavior = CollisionBehavior.Item;
     }
