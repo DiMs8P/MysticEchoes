@@ -3,17 +3,18 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Leopotam.EcsLite;
 using MazeGeneration;
+using MazeGeneration.Enemies;
 using MazeGeneration.TreeModule;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
 using SharpGL.SceneGraph;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
-
 
 namespace MysticEchoes.Core.Rendering;
 
@@ -32,6 +33,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
+    private EcsPool<EnemySpawnComponent> _enemySpawns;
     private double t;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
@@ -57,6 +59,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
+        _enemySpawns = world.GetPool<EnemySpawnComponent>();
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -94,57 +97,57 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.End();
                 }
 
-                foreach (var floor in map.Tiles.FloorTiles)
+                foreach (var floor in map.Map.FloorTiles)
                 {
                     PrintTile(floor, map, "Floor");
                 }
-                foreach (var door in map.Tiles.DoorTiles)
+                foreach (var door in map.Map.DoorTiles)
                 {
                     PrintTile(door, map, "HorizontalDoor");
                 }
-                foreach (var wall in map.Tiles.WallTopTiles)
+                foreach (var wall in map.Map.WallTopTiles)
                 {
                     PrintTile(wall, map, "WallTop");
                 }
-                foreach (var door in map.Tiles.WallSideRightTiles)
+                foreach (var wall in map.Map.WallSideRightTiles)
                 {
-                    PrintTile(door, map, "WallSideRight");
+                    PrintTile(wall, map, "WallSideRight");
                 }
-                foreach (var door in map.Tiles.WallSideLeftTiles)
+                foreach (var wall in map.Map.WallSideLeftTiles)
                 {
-                    PrintTile(door, map, "WallSideLeft");
+                    PrintTile(wall, map, "WallSideLeft");
                 }
-                foreach (var door in map.Tiles.WallBottomTiles)
+                foreach (var wall in map.Map.WallBottomTiles)
                 {
-                    PrintTile(door, map, "WallBottom");
+                    PrintTile(wall, map, "WallBottom");
                 }
-                foreach (var door in map.Tiles.WallFullTiles)
+                foreach (var wall in map.Map.WallFullTiles)
                 {
-                    PrintTile(door, map, "WallFull");
+                    PrintTile(wall, map, "WallFull");
                 }
-                foreach (var door in map.Tiles.WallInnerCornerDownLeft)
+                foreach (var wall in map.Map.WallInnerCornerDownLeft)
                 {
-                    PrintTile(door, map, "WallInnerCornerDownLeft");
+                    PrintTile(wall, map, "WallInnerCornerDownLeft");
                 }
-                foreach (var door in map.Tiles.WallInnerCornerDownRight)
+                foreach (var wall in map.Map.WallInnerCornerDownRight)
                 {
-                    PrintTile(door, map, "WallInnerCornerDownRight");
+                    PrintTile(wall, map, "WallInnerCornerDownRight");
                 }
-                foreach (var door in map.Tiles.WallDiagonalCornerDownLeft)
+                foreach (var wall in map.Map.WallDiagonalCornerDownLeft)
                 {
-                    PrintTile(door, map, "WallDiagonalCornerDownLeft");
+                    PrintTile(wall, map, "WallDiagonalCornerDownLeft");
                 }
-                foreach (var door in map.Tiles.WallDiagonalCornerDownRight)
+                foreach (var wall in map.Map.WallDiagonalCornerDownRight)
                 {
-                    PrintTile(door, map, "WallDiagonalCornerDownRight");
+                    PrintTile(wall, map, "WallDiagonalCornerDownRight");
                 }
-                foreach (var door in map.Tiles.WallDiagonalCornerUpLeft)
+                foreach (var wall in map.Map.WallDiagonalCornerUpLeft)
                 {
-                    PrintTile(door, map, "WallDiagonalCornerUpLeft");
+                    PrintTile(wall, map, "WallDiagonalCornerUpLeft");
                 }
-                foreach (var door in map.Tiles.WallDiagonalCornerUpRight)
+                foreach (var wall in map.Map.WallDiagonalCornerUpRight)
                 {
-                    PrintTile(door, map, "WallDiagonalCornerUpRight");
+                    PrintTile(wall, map, "WallDiagonalCornerUpRight");
                 }
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
@@ -328,6 +331,49 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PopMatrix();
 
+            }
+            else if (render.Type is RenderingType.EnemySpawn)
+            {
+                void ChooseSpawnColor(EnemySpawnComponent enemySpawnComponent, float alpha = 1f)
+                {
+                    if (enemySpawnComponent.Data.Type is EnemyType.Common)
+                    {
+                        _gl.Color(0.0f, 1.0f, 0.0f, alpha);
+                    }
+                    else if (enemySpawnComponent.Data.Type is EnemyType.Elite)
+                    {
+                        _gl.Color(1.0f, 1.0f, 0.0f, alpha);
+                    }
+                    else if (enemySpawnComponent.Data.Type is EnemyType.MiniBoss)
+                    {
+                        _gl.Color(1.0f, 0.0f, 0.0f, alpha);
+                    }
+                }
+
+                var collider = _dynamicColliders.Get(entityId);
+                var spawn = _enemySpawns.Get(entityId);
+
+                var rect = collider.Box.Shape;
+
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+
+                ChooseSpawnColor(spawn);
+
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
+
+                _gl.Begin(OpenGL.GL_QUADS);
+
+                ChooseSpawnColor(spawn, 0.2f);
+
+                _gl.Vertex(rect.Left, rect.Bottom);
+                _gl.Vertex(rect.Left, rect.Top);
+                _gl.Vertex(rect.Right, rect.Top);
+                _gl.Vertex(rect.Right, rect.Bottom);
+                _gl.End();
             }
             else if (render.Type is not RenderingType.None)
             {

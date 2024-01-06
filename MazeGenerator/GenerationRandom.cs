@@ -33,6 +33,11 @@ public class GenerationRandom : Random
         return Next(int.Min(a, b), int.Max(a, b));
     }
 
+    public double NextLessOrEqual(double b)
+    {
+        return b * NextDouble();
+    }
+
     public double GetDivideProportion(double maxShift)
     {
         return 0.5 - maxShift + NextDouble() * maxShift * 2;
