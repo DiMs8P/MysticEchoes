@@ -497,44 +497,210 @@
       "CurrentFrameDuration": 0.05
     }
   ],
+  "PlayerStayLeft": [
+    {
+      "Sprite": "PlayerStayLeft0",
+      "CurrentFrameDuration": 3
+    },
+    {
+      "Sprite": "PlayerStayLeft1",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerStayLeft2",
+      "CurrentFrameDuration": 0.05
+    }
+  ],
+  "PlayerStayRight": [
+    {
+      "Sprite": "PlayerStayRight0",
+      "CurrentFrameDuration": 3
+    },
+    {
+      "Sprite": "PlayerStayRight1",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerStayRight2",
+      "CurrentFrameDuration": 0.05
+    }
+  ],
+  "PlayerStayTop": [
+    {
+      "Sprite": "PlayerStayTop0",
+      "CurrentFrameDuration": 1
+    },
+    {
+      "Sprite": "PlayerStayTop1",
+      "CurrentFrameDuration": 0.1
+    }
+  ],
   "PlayerMovingLeft": [
     {
       "Sprite": "PlayerMovingLeft0",
-      "CurrentFrameDuration": 0.2
+      "CurrentFrameDuration": 0.1
     },
     {
       "Sprite": "PlayerMovingLeft1",
-      "CurrentFrameDuration": 0.2
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft2",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft3",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft4",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft5",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft6",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft7",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft8",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingLeft9",
+      "CurrentFrameDuration": 0.1
     }
   ],
   "PlayerMovingRight": [
     {
       "Sprite": "PlayerMovingRight0",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
     },
     {
       "Sprite": "PlayerMovingRight1",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight2",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight3",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight4",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight5",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight6",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight7",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight8",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingRight9",
+      "CurrentFrameDuration": 0.1
     }
   ],
   "PlayerMovingTop": [
     {
       "Sprite": "PlayerMovingTop0",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
     },
     {
       "Sprite": "PlayerMovingTop1",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop2",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop3",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop4",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop5",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop6",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop7",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop8",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingTop9",
+      "CurrentFrameDuration": 0.1
     }
   ],
   "PlayerMovingDown": [
     {
       "Sprite": "PlayerMovingDown0",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
     },
     {
       "Sprite": "PlayerMovingDown1",
-      "CurrentFrameDuration": 1.0
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown2",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown3",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown4",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown5",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown6",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown7",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown8",
+      "CurrentFrameDuration": 0.1
+    },
+    {
+      "Sprite": "PlayerMovingDown9",
+      "CurrentFrameDuration": 0.1
     }
   ],
   "Coin": [

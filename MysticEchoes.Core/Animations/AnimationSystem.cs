@@ -10,18 +10,19 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private SystemExecutionContext _systemExecutionContext;
     [EcsInject] private AnimationManager _animationManager;
 
+    private EcsWorld _world;
     private EcsFilter _animationFilter;
-    
+
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<SpriteComponent> _sprites;
     public void Init(IEcsSystems systems)
     {
-        EcsWorld world = systems.GetWorld();
+        _world = systems.GetWorld();
 
-        _animationFilter = world.Filter<AnimationComponent>().Inc<SpriteComponent>().End();
-        
-        _animations = world.GetPool<AnimationComponent>();
-        _sprites = world.GetPool<SpriteComponent>();
+        _animationFilter = _world.Filter<AnimationComponent>().Inc<SpriteComponent>().End();
+
+        _animations = _world.GetPool<AnimationComponent>();
+        _sprites = _world.GetPool<SpriteComponent>();
     }
 
     public void Run(IEcsSystems systems)
@@ -36,17 +37,32 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
             }
 
             AnimationFrame[] animationFrames = _animationManager.GetAnimationFrames(animationComponent.AnimationId);
+            var j = animationFrames.Count();
+            if (animationComponent.CurrentFrameIndex >= animationFrames.Count())
+            {
+                animationComponent.CurrentFrameIndex = 0;
+            }
             if (animationComponent.CurrentFrameElapsedTime > animationFrames[animationComponent.CurrentFrameIndex].CurrentFrameDuration)
             {
                 if (++animationComponent.CurrentFrameIndex >= animationFrames.Length)
                 {
                     animationComponent.CurrentFrameIndex = 0;
                 }
-                
+
                 animationComponent.CurrentFrameElapsedTime = 0;
-                
+
+                AnimationFrame currentFrame = animationFrames[animationComponent.CurrentFrameIndex];
+
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
-                spriteComponent.Sprite = animationFrames[animationComponent.CurrentFrameIndex].Sprite;
+                spriteComponent.Sprite = currentFrame.Sprite;
+
+                if (currentFrame.AnimNotifies is not null)
+                {
+                    foreach (var animNotify in currentFrame.AnimNotifies)
+                    {
+                        animNotify.Notify(entityId, _world);
+                    }
+                }
             }
 
             animationComponent.CurrentFrameElapsedTime += _systemExecutionContext.DeltaTime;

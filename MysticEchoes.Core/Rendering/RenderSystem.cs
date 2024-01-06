@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Leopotam.EcsLite;
 using MazeGeneration;
+using MazeGeneration.TreeModule;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
@@ -23,13 +25,14 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
     private EcsPool<SpriteComponent> _sprites;
-    
+
     private EcsPool<SpaceTreeComponent> _spaceTrees;
 
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
+    private double t;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
     {
@@ -69,6 +72,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
         _gl.LoadIdentity();
         _gl.Ortho(0, 2, 0, 2, -1, 1);
+        //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
+        //_gl.Translate(-(1-0.29f), -1.4, 0f);
+        //t += 0.001;
 
         foreach (var entityId in _rendersFilter)
         {
@@ -90,81 +96,94 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 foreach (var floor in map.Tiles.FloorTiles)
                 {
-                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Floor"));
-
-                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-
-                    var rect = new Rectangle(
-                        new Vector2((floor.X * map.TileSize.X), floor.Y * map.TileSize.Y),
-                        map.TileSize
-                    );
-
-                    _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-                    _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
-                    _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
-                    _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
-                    _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
-                    _gl.End();
-
-                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+                    PrintTile(floor, map, "Floor");
                 }
-                foreach (var floor in map.Tiles.WallTiles)
+                foreach (var door in map.Tiles.DoorTiles)
                 {
-                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("Wall"));
-
-                    _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-
-                    var rect = new Rectangle(
-                        new Vector2(floor.X * map.TileSize.X, floor.Y * map.TileSize.Y),
-                        map.TileSize
-                    );
-
-                    _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-                    _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y);
-                    _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X, rect.LeftBottom.Y + rect.Size.Y);
-                    _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y + rect.Size.Y);
-                    _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(rect.LeftBottom.X + rect.Size.X, rect.LeftBottom.Y);
-                    _gl.End();
-
-                    _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-                    _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+                    PrintTile(door, map, "HorizontalDoor");
+                }
+                foreach (var wall in map.Tiles.WallTopTiles)
+                {
+                    PrintTile(wall, map, "WallTop");
+                }
+                foreach (var door in map.Tiles.WallSideRightTiles)
+                {
+                    PrintTile(door, map, "WallSideRight");
+                }
+                foreach (var door in map.Tiles.WallSideLeftTiles)
+                {
+                    PrintTile(door, map, "WallSideLeft");
+                }
+                foreach (var door in map.Tiles.WallBottomTiles)
+                {
+                    PrintTile(door, map, "WallBottom");
+                }
+                foreach (var door in map.Tiles.WallFullTiles)
+                {
+                    PrintTile(door, map, "WallFull");
+                }
+                foreach (var door in map.Tiles.WallInnerCornerDownLeft)
+                {
+                    PrintTile(door, map, "WallInnerCornerDownLeft");
+                }
+                foreach (var door in map.Tiles.WallInnerCornerDownRight)
+                {
+                    PrintTile(door, map, "WallInnerCornerDownRight");
+                }
+                foreach (var door in map.Tiles.WallDiagonalCornerDownLeft)
+                {
+                    PrintTile(door, map, "WallDiagonalCornerDownLeft");
+                }
+                foreach (var door in map.Tiles.WallDiagonalCornerDownRight)
+                {
+                    PrintTile(door, map, "WallDiagonalCornerDownRight");
+                }
+                foreach (var door in map.Tiles.WallDiagonalCornerUpLeft)
+                {
+                    PrintTile(door, map, "WallDiagonalCornerUpLeft");
+                }
+                foreach (var door in map.Tiles.WallDiagonalCornerUpRight)
+                {
+                    PrintTile(door, map, "WallDiagonalCornerUpRight");
                 }
             }
-            else if (render.Type is RenderingType.ColliderDebugView)
+            else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                var collider = _staticColliders.Get(entityId);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //var collider = _staticColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
+                //var rect = collider.Box.Shape;
 
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
+            }
+            else if (render.Type is RenderingType.DynamicColliderDebugView)
+            {
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //var collider = _dynamicColliders.Get(entityId);
+
+                //var rect = collider.Box.Shape;
+
+                //_gl.Color(0.1f, 0.4f, 1.0f);
+
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.ColliderSpaceTreeView)
             {
                 var tree = _spaceTrees.Get(entityId).Tree;
-                
+
                 var stack = new Stack<QuadTree>();
                 stack.Push(tree);
-                
+
                 while (stack.Count > 0)
                 {
                     tree = stack.Pop();
@@ -217,7 +236,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                const float halfSize = 0.2f;
+                const float halfSize = 0.6f;
                 _gl.TexCoord(0.0, 0.0f);
                 _gl.Vertex(-halfSize, +halfSize);
                 _gl.TexCoord(0.0, 1.0f);
@@ -258,12 +277,12 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             else if (render.Type is RenderingType.General)
             {
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
-                
+
                 _gl.PushMatrix();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
                 _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(spriteComponent.Sprite));
-                
+
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
                 _gl.Translate(transform.Location);
@@ -315,5 +334,36 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 throw new NotImplementedException();
             }
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void PrintTile(Point position, TileMapComponent map, string texture)
+    {
+        _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+        _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(texture));
+
+        _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+
+        var rect = new Rectangle(
+            new Vector2(position.X * map.TileSize.X, position.Y * map.TileSize.Y),
+            map.TileSize
+        );
+
+        _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        const float p = 9e-2f;
+
+        _gl.TexCoord(0.0 + p, 0.0f + p);
+        _gl.Vertex(rect.Left, rect.Top);
+        _gl.TexCoord(0.0+ p, 1.0f - p);
+        _gl.Vertex(rect.Left, rect.Bottom);
+        _gl.TexCoord(1.0 - p, 1.0f - p);
+        _gl.Vertex(rect.Right, rect.Bottom);
+        _gl.TexCoord(1.0 - p, 0.0f + p);
+        _gl.Vertex(rect.Right, rect.Top);
+        _gl.End();
+
+        _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+        _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
     }
 }

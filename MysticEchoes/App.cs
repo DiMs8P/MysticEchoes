@@ -68,7 +68,7 @@ public class App : Application
             _inputManager.SetMousePosition(_mainWindow.mousePosition);
             // TODO think about it
             _mainWindow.Dispatcher.Invoke(_inputManager.Update);
-            _game.Update();
+            _mainWindow.Dispatcher.Invoke(_game.Update);
             try
             {
                 _mainWindow.Dispatcher.Invoke(_mainWindow.GlControl.DoRender);

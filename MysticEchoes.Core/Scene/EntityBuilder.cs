@@ -2,22 +2,22 @@
 
 namespace MysticEchoes.Core.Scene;
 
-public class EntityFactory
+public class EntityBuilder
 {
     private int _currentEntity = -1;
     private readonly EcsWorld _world;
 
-    public EntityFactory(EcsWorld world)
+    public EntityBuilder(EcsWorld world)
     {
         _world = world;
     }
 
-    public EntityFactory Create() {
+    public EntityBuilder Create() {
         _currentEntity = _world.NewEntity();
         return this;
     }
     
-    public EntityFactory Add<T>(T component) where T : struct {
+    public EntityBuilder Add<T>(T component) where T : struct {
         if (_currentEntity == -1)
         {
             throw new System.Exception("No current entity. You must call Create() before adding components.");
@@ -38,7 +38,7 @@ public class EntityFactory
         return result;
     }
     
-    public EntityFactory AddTo<T>(int entityId, T component) where T : struct {
+    public EntityBuilder AddTo<T>(int entityId, T component) where T : struct {
         var poolWithTemplateComponent = _world.GetPool<T>();
 
         if (poolWithTemplateComponent.Has(entityId))

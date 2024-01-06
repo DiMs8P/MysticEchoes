@@ -1,12 +1,12 @@
 ﻿using MazeGeneration.TreeModule;
 using System.Drawing;
+using MazeGeneration.Walls;
 
 namespace MazeGeneration;
 
 public class MapGenerator
 {
     private readonly GenerationConfig _config;
-    private static readonly Point[] Directions = { new(1, 0), new(0, 1), new(-1, 0), new(0, -1) };
 
     public MapGenerator(GenerationConfig config)
     {
@@ -23,14 +23,83 @@ public class MapGenerator
         MakeLeafs(tree);
         MakeRooms(tree);
         MakeHalls(tree);
-        NormalizeHalls(tree);
+        //NormalizeHalls(tree);
         RemoveExtraControlPoints(tree);
 
+        MakeDoors(tree);
         MarkUp(tree, map);
-
         MakeWalls(map);
+        MarkUpDoors(tree, map);
 
         return map;
+    }
+
+    private void MakeDoors(Tree<RoomNode> tree)
+    {
+        Point GetEdgePoint(Point direction, Rectangle room, Point innerPoint)
+        {
+            if (direction.Y == 0)
+            {
+                var edgeX = direction.X > 0
+                    ? room.Right
+                    : room.Left;
+
+                return innerPoint with { X = edgeX };
+            }
+            var edgeY = direction.Y > 0
+                ? room.Y + room.Height
+                : room.Y;
+
+            return innerPoint with { Y = edgeY };
+        }
+
+        var roomNodes = tree.DeepCrawl()
+            .Where(x => x.Room is not null)
+            .ToList();
+
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Hall is not null)
+                )
+        {
+            var hall = node.Hall!;
+            var i = 0;
+            Point start;
+            Point end;
+            do
+            {
+                start = hall.ControlPoints[i];
+                end = hall.ControlPoints[i + 1];
+                i++;
+            } while (hall.StartRoom.ContainsNotStrict(end));
+
+            var direction = GetDirection(start, end);
+            var startDoor = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
+            var startDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(startDoor));
+            startDoorNode.Doors.Add(new Point(
+                startDoor.X + direction.X,
+                startDoor.Y + direction.Y
+            ));
+
+            i = hall.ControlPoints.Count - 1;
+            do
+            {
+                start = hall.ControlPoints[i - 1];
+                end = hall.ControlPoints[i];
+
+                i--;
+            } while (hall.EndRoom.ContainsNotStrict(start));
+            i++;
+
+            // end и start поменяны местами т.к. end это точка, содержащаяся в hall.EndRoom
+            direction = GetDirection(end, start);
+            var endDoor = GetEdgePoint(direction, hall.EndRoom, end);
+            var endDoorNode = roomNodes.First(x => x.Room.Value.ContainsNotStrict(endDoor));
+
+            endDoorNode.Doors.Add(new Point(
+                endDoor.X + direction.X,
+                endDoor.Y + direction.Y
+            ));
+        }
     }
 
     private void MakeLeafs(Tree<RoomNode> tree)
@@ -322,14 +391,7 @@ public class MapGenerator
                      .Where(x => x.Room is not null))
         {
             var room = node.Room.Value;
-            for (var x = room.Left; x <= room.Right; x++)
-            {
-                for (int y = room.Top; y <= room.Bottom; y++)
-                {
-                    map.FloorTiles.Add(new Point(x, y));
-                    map.FloorTiles.Add(new Point(x, y));
-                }
-            }
+            MarkUpRandomWalkRoom(map, room);
         }
 
         foreach (var node in tree.DeepCrawl()
@@ -362,16 +424,85 @@ public class MapGenerator
         }
     }
 
+    private void MarkUpDoors(Tree<RoomNode> tree, Map map)
+    {
+        foreach (var node in tree.DeepCrawl()
+                     .Where(x => x.Doors.Count > 0))
+        {
+            foreach (var door in node.Doors)
+            {
+                map.DoorTiles.Add(door);
+            }
+        }
+    }
+
+    private static void MarkUpSimpleRoom(Map map, Rectangle room)
+    {
+        for (var x = room.Left; x <= room.Right; x++)
+        {
+            for (int y = room.Top; y <= room.Bottom; y++)
+            {
+                map.FloorTiles.Add(new Point(x, y));
+                map.FloorTiles.Add(new Point(x, y));
+            }
+        }
+    }
+
+    private void MarkUpRandomWalkRoom(Map map, Rectangle room)
+    {
+        HashSet<Point> SimpleRandomWalk(Point start, int walkLength)
+        {
+            var path = new HashSet<Point> { start };
+            var previousPosition = start;
+
+            for (int i = 0; i < walkLength; i++)
+            {
+                var direction = _config.Random.NextCardinalDirection();
+                if (direction.X != 0 && direction.Y != 0)
+                {
+                    Console.WriteLine(123);
+                }
+                var newPosition = new Point(
+                    previousPosition.X + direction.X,
+                    previousPosition.Y + direction.Y
+                );
+                path.Add(newPosition);
+                previousPosition = newPosition;
+            }
+
+            return path;
+        }
+
+        var parameter = _config.RoomRandomWalkParameter;
+
+        var floor = new HashSet<Point>();
+        var center = room.GetCenter();
+
+        var currentPosition = center;
+        for (int i = 0; i < parameter.Iterations; i++)
+        {
+            var path = SimpleRandomWalk(currentPosition, parameter.WalkLength);
+
+            floor.UnionWith(path);
+            if (parameter.StartRandomlyEachIteration)
+            {
+                currentPosition = floor.ElementAt(_config.Random.Next(0, floor.Count));
+            }
+        }
+
+        foreach (var point in floor)
+        {
+            if (room.ContainsNotStrict(point))
+            {
+                map.FloorTiles.Add(point);
+            }
+        }
+    }
+
     private void MakeWalls(Map map)
     {
-        foreach (var neighborPosition in map.FloorTiles
-                     .SelectMany(
-                         _ => Directions,
-                         (floor, direction) => new Point(floor.X + direction.X, floor.Y + direction.Y))
-                     .Where(neighborPosition => !map.FloorTiles.Contains(neighborPosition)))
-        {
-            map.WallTiles.Add(neighborPosition);
-        }
+        var wallGenerator = new WallGenerator();
+        wallGenerator.CreateWalls(map);
     }
 
     private Point GetDirection(Point start, Point end)

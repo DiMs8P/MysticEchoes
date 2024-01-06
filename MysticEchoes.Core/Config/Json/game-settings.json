@@ -4,19 +4,19 @@
   },
   "ItemsSettings": {
     "Items": {
-      "Money": {
+      "0": {
         "Name": "Money",
         "Description": "",
         "Quality": "Common",
         "AnimationId": "Coin",
         "SpriteId": "Coin0"
       },
-      "Laser": {
+      "1": {
         "Name": "Laser",
         "Description": "",
         "Quality": "Rare"
       },
-      "CricketsHead": {
+      "2": {
         "Name": "CricketsHead",
         "Description": "",
         "Quality": "Epic",

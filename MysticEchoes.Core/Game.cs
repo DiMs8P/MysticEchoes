@@ -37,7 +37,7 @@ public class Game
     private readonly IMazeGenerator _mazeGenerator;
     private readonly SystemExecutionContext _systemExecutionContext;
 
-    private readonly EntityFactory _entityFactory;
+    private readonly EntityBuilder _entityBuilder;
     private readonly ItemsFactory _itemsFactory;
     private readonly Stopwatch _updateTimer;
 
@@ -59,8 +59,8 @@ public class Game
         _systemExecutionContext = systemExecutionContext;
             
         _world = new EcsWorld();
-        _entityFactory = new EntityFactory(_world);
-        _itemsFactory = new ItemsFactory(_world, _entityFactory, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
+        _entityBuilder = new EntityBuilder(_world);
+        _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         
         _updateTimer = new Stopwatch();
         
@@ -68,7 +68,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityFactory, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);
@@ -76,14 +76,13 @@ public class Game
             .Add(new PlayerControlSystem())
             .Add(new UnitsMovementSystem())
             .Add(new PlayerShootingSystem())
-            .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
 
         _shootingSystems = new EcsSystems(_world);
         _shootingSystems
             .Add(new WeaponShootingSystem())
-            .Inject(_systemExecutionContext, _entityFactory, _prefabManager)
+            .Inject(_systemExecutionContext, _entityBuilder, _prefabManager)
             .Init();
 
         _gameplaySystems = new EcsSystems(_world);
@@ -96,12 +95,13 @@ public class Game
         _collisionSystems = new EcsSystems(_world);
         _collisionSystems
             .Add(new CollisionsSystem())
-            .Inject(_entityFactory, _systemExecutionContext, _prefabManager)
+            .Inject(_entityBuilder, _systemExecutionContext, _prefabManager)
             .Init();
 
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationSystem())
+            .Add(new PlayerAnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
             .Init();
         
