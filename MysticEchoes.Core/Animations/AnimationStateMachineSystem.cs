@@ -21,12 +21,7 @@ public class AnimationStateMachineSystem : IEcsInitSystem, IEcsRunSystem
         foreach (var entityId in _animationFilter)
         {
             ref CharacterAnimationComponent stateMachineComponent = ref _stateMachines.Get(entityId);
-            
-            CharacterState newState = stateMachineComponent.AnimationStateMachine.Update();
-            if (newState == stateMachineComponent.CurrentState)
-            {
-                continue;
-            }
+            stateMachineComponent.AnimationStateMachine.Update();
         }
     }
 }

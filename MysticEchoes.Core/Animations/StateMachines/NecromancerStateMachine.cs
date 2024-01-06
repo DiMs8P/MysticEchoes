@@ -8,8 +8,13 @@ public class NecromancerStateMachine : BaseStateMachine
     {
     }
 
-    public override CharacterState Update()
+    public override void Update()
     {
-        return CharacterState.Idle;
+        return;
+    }
+
+    public override CharacterState GetCurrentState()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -13,5 +13,6 @@ public abstract class BaseStateMachine
         OwnerEntityId = ownerEntityId;
     }
 
-    public abstract CharacterState Update();
+    public abstract void Update();
+    public abstract CharacterState GetCurrentState();
 }
