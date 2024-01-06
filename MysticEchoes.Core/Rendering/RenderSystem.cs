@@ -391,7 +391,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     else if (door.Orientation is DoorOrientation.VerticalRight &&
                              !door.IsOpen)
                     {
-                        //PrintTile(door.Tile, map, "DoorLeftContinuation");
+                        PrintTile(door.Tile, map, "DoorRightContinuation");
                     }
 
                 }

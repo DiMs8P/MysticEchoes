@@ -163,5 +163,6 @@
   "HorizontalDoor": "HorizontalDoor.png",
   "DoorLeft": "DoorLeft.png",
   "DoorLeftContinuation": "DoorLeftContinuation.png",
-  "DoorRight": "DoorRight.png"
+  "DoorRight": "DoorRight.png",
+  "DoorRightContinuation": "DoorRightContinuation.png"
 }
