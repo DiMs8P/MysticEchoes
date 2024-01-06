@@ -8,6 +8,7 @@ public class CharacterStateMachine : BaseStateMachine
     {
     }
 
+    // TODO описать всё кроме стояния на месте
     public override CharacterState Update()
     {
         return CharacterState.Idle;

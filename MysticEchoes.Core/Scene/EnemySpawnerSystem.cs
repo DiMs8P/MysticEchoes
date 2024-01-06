@@ -22,10 +22,7 @@ public class EnemySpawnerSystem : IEcsInitSystem
     {
         EnemyInitializationInfo enemyInitializationInfo = new EnemyInitializationInfo();
         enemyInitializationInfo.EnemyId = 0;
-        enemyInitializationInfo.Transform = new TransformComponent()
-        {
-            Location = new Vector2(0.1f, 0.1f)
-        };
+        enemyInitializationInfo.Location = new Vector2(1.0f, 1.0f);
         
         _enemyFactory.CreateEnemy(enemyInitializationInfo);
     }

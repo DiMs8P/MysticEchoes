@@ -269,18 +269,28 @@
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Rotation": "0 1",
-          "Scale": "0.10 0.10"
+          "Scale": "0.5 0.5"
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {
+          "AnimationId": "NecromancerIdle"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
+        "Parameters": {
+          "Animations": {
+            "Idle": "NecromancerIdle",
+            "MovingLeft": "NecromancerRun"
+          }
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
-          "Sprite": "PlayerIdle0"
+          "Sprite": "NecromancerIdle0"
         }
       },
       {
