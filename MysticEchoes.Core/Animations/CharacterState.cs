@@ -4,9 +4,14 @@ public enum CharacterState
 {
     None,
     Idle,
+    StayRight,
+    StayLeft,
+    StayTop,
     MovingRight,
     MovingLeft,
     MovingTop,
     MovingDown,
-    Shooting
+    Shooting,
+    Hit,
+    Death
 }

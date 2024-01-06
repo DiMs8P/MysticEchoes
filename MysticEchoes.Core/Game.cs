@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.AI;
+using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -39,6 +42,8 @@ public class Game
 
     private readonly EntityBuilder _entityBuilder;
     private readonly ItemsFactory _itemsFactory;
+    private readonly EnemyFactory _enemyFactory;
+    
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
@@ -61,6 +66,7 @@ public class Game
         _world = new EcsWorld();
         _entityBuilder = new EntityBuilder(_world);
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
+        _enemyFactory = new EnemyFactory(_world, _entityBuilder, _itemsFactory, _prefabManager);
         
         _updateTimer = new Stopwatch();
         
@@ -68,7 +74,8 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Add(new EnemySpawnerSystem())
+            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _enemyFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);
@@ -76,7 +83,6 @@ public class Game
             .Add(new PlayerControlSystem())
             .Add(new UnitsMovementSystem())
             .Add(new PlayerShootingSystem())
-            .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
 
@@ -90,6 +96,7 @@ public class Game
         _gameplaySystems
             .Add(new TransformSystem())
             .Add(new CollidersMovementSystem())
+            .Add(new AiSystem())
             .Inject(_systemExecutionContext)
             .Init();
 
@@ -101,6 +108,7 @@ public class Game
 
         _animationSystems = new EcsSystems(_world);
         _animationSystems
+            .Add(new AnimationStateMachineSystem())
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
             .Init();
@@ -108,6 +116,7 @@ public class Game
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
             .Add(new LifeTimeCleanupSystem())
+            .Add(new HealthSystem())
             .Inject(_systemExecutionContext)
             .Init();
     }

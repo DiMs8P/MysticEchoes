@@ -23,10 +23,20 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100,
+          "Immortal": true
+        }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
         "Parameters": {
           "Animations": {
             "Idle": "PlayerIdle",
+            "StayLeft": "PlayerStayLeft",
+            "StayRight": "PlayerStayRight",
+            "StayTop": "PlayerStayTop",
             "MovingLeft": "PlayerMovingLeft",
             "MovingRight": "PlayerMovingRight",
             "MovingTop": "PlayerMovingTop",
@@ -88,8 +98,9 @@
       {
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
+
           "TimeBetweenShots": 1,
-          "ShootingType": "BurstFire",
+          "ShootingType": "SingleShot",
           "MagicPrefab": "Bullet"
         }
       },
@@ -124,7 +135,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.2
+          "Speed": 0.4
         }
       },
       {
@@ -249,6 +260,78 @@
       {
         "TypeName": "MysticEchoes.Core.Items.ItemComponent",
         "Parameters": {}
+      }
+    ]
+  },
+  "Necromancer": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {
+          "Speed": 0.05
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Rotation": "0 1",
+          "Scale": "0.5 0.5"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+          "AnimationId": "NecromancerRun"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
+        "Parameters": {
+          "Animations": {
+            "Idle": "NecromancerIdle",
+            "MovingRight": "NecromancerRun",
+            "Shooting": "NecromancerAttack1"
+          }
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "NecromancerIdle0",
+          "LocalOffset": "0 0.05"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Character"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Control.UnitControlComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.RangeWeaponComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
       }
     ]
   }

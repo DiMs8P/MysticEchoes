@@ -8,5 +8,6 @@ public enum PrefabType
     Bullet,
     BaseItem,
     DefaultWeapon,
-    SimpleExplosion
+    SimpleExplosion,
+    Necromancer
 }

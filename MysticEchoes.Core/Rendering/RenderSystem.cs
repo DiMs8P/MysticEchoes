@@ -224,7 +224,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location);
+                _gl.Translate(transform.Location + spriteComponent.LocalOffset);
                 _gl.Scale(transform.Scale);
 
                 _gl.Begin(OpenGL.GL_QUADS);
@@ -233,15 +233,30 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 const float halfSize = 0.2f;
                 var layer = 0f;
+                
+                if (spriteComponent.ReflectByY)
+                {
+                    _gl.TexCoord(1.0, 0.0f); 
+                    _gl.Vertex(-halfSize, +halfSize, layer);
+                    _gl.TexCoord(1.0, 1.0f);
+                    _gl.Vertex(-halfSize, -halfSize, layer);
+                    _gl.TexCoord(0.0, 1.0f);
+                    _gl.Vertex(+halfSize, -halfSize, layer);
+                    _gl.TexCoord(0.0, 0.0f);
+                    _gl.Vertex(+halfSize, +halfSize, layer);
+                }
+                else
+                {
+                    _gl.TexCoord(0.0, 0.0f);
+                    _gl.Vertex(-halfSize, +halfSize, layer);
+                    _gl.TexCoord(0.0, 1.0f);
+                    _gl.Vertex(-halfSize, -halfSize, layer);
+                    _gl.TexCoord(1.0, 1.0f);
+                    _gl.Vertex(+halfSize, -halfSize, layer);
+                    _gl.TexCoord(1.0, 0.0f);
+                    _gl.Vertex(+halfSize, +halfSize, layer);
+                }
 
-                _gl.TexCoord(0.0, 0.0f);
-                _gl.Vertex(-halfSize, +halfSize, layer);
-                _gl.TexCoord(0.0, 1.0f);
-                _gl.Vertex(-halfSize, -halfSize, layer);
-                _gl.TexCoord(1.0, 1.0f);
-                _gl.Vertex(+halfSize, -halfSize, layer);
-                _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(+halfSize, +halfSize, layer);
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -269,7 +284,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location);
+                _gl.Translate(transform.Location + spriteComponent.LocalOffset);
                 _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX());
                 _gl.Scale(transform.Scale);
 
@@ -450,4 +465,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
         _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
     }
+    
+    
 }

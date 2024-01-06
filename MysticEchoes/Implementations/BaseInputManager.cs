@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Numerics;
+using System.Windows.Input;
 using MysticEchoes.Core.Config.Input;
 
 namespace MysticEchoes.Implementations;
@@ -8,6 +9,7 @@ public class BaseInputManager : IInputManager
     private int _horizontal = 0;
     private int _vertical = 0;
     private bool _shooting = false;
+    private Vector2 _mousePosition;
 
     public int GetHorizontal()
     {
@@ -22,6 +24,16 @@ public class BaseInputManager : IInputManager
     public bool IsShooting()
     {
         return _shooting;
+    }
+
+    public Vector2 GetMousePosition()
+    {
+        return _mousePosition;
+    }
+    
+    public void SetMousePosition(Vector2 vector2)
+    {
+        _mousePosition = vector2;
     }
 
     public void Update()

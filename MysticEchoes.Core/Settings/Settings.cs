@@ -7,4 +7,5 @@ public class Settings
     public PlayerSettings PlayerSettings { get; set; }
     public WeaponsSettings WeaponsSettings { get; set; }
     public ItemsSettings ItemsSettings { get; set; }
+    public EnemySettings EnemySettings { get; set; }
 }
