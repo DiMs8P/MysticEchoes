@@ -14,6 +14,7 @@
                            Resized="GlControl_OnResized"
                            DrawFPS="True"
                            RenderContextType="FBO"
+                           MouseMove="GlControl_MouseMove"
                            />
     </Grid>
 </Window>

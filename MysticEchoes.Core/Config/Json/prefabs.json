@@ -88,6 +88,7 @@
       {
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
+
           "TimeBetweenShots": 1,
           "ShootingType": "BurstFire",
           "MagicPrefab": "Bullet"
@@ -124,7 +125,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.2
+          "Speed": 0.4
         }
       },
       {

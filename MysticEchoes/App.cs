@@ -64,7 +64,8 @@ public class App : Application
         lock (gameLock)
         {
             _readyToRender = false;
-
+            
+            _inputManager.SetMousePosition(_mainWindow.MousePosition);
             // TODO think about it
             _mainWindow.Dispatcher.Invoke(_inputManager.Update);
             _mainWindow.Dispatcher.Invoke(_game.Update);
