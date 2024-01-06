@@ -7,7 +7,7 @@ using MysticEchoes.Core.Movement;
 
 namespace MysticEchoes.Core.AI.Tasks;
 
-public class MoveTo : EcsNode
+public class TaskMoveTo : EcsNode
 {
     protected int _target;
     protected float _accuracy;
@@ -15,7 +15,7 @@ public class MoveTo : EcsNode
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<UnitControlComponent> _controls;
     
-    public MoveTo(EcsWorld world, int selfEntityId, int target, float accuracy) : base(world, selfEntityId)
+    public TaskMoveTo(EcsWorld world, int selfEntityId, int target, float accuracy) : base(world, selfEntityId)
     {
         _transforms = World.GetPool<TransformComponent>();
         _controls = World.GetPool<UnitControlComponent>();
@@ -30,21 +30,14 @@ public class MoveTo : EcsNode
         ref TransformComponent targetTransform = ref _transforms.Get(_target);
 
         Vector2 targetVector = targetTransform.Location - ownerTransform.Location;
-        if (targetVector.Length() < _accuracy)
-        {
-            ref UnitControlComponent controlComponent = ref _controls.Get(SelfEntityId);
-            controlComponent.LookAt = targetTransform.Location;
-            controlComponent.MoveDirection = Vector2.Zero;
-            
-            return NodeState.Success;
-        }
-        else
+        if (targetVector.Length() > _accuracy)
         {
             ref UnitControlComponent controlComponent = ref _controls.Get(SelfEntityId);
             controlComponent.LookAt = targetTransform.Location;
             controlComponent.MoveDirection = targetTransform.Location - ownerTransform.Location;
-
-            return NodeState.Running;
         }
+
+        State = NodeState.Running;
+        return NodeState.Running;
     }
 }

@@ -8,7 +8,7 @@ public class EcsNode : Node
     protected EcsWorld World;
     protected int SelfEntityId;
 
-    protected EcsNode(EcsWorld world, int selfEntityId)
+    public EcsNode(EcsWorld world, int selfEntityId)
     {
         World = world;
         SelfEntityId = selfEntityId;

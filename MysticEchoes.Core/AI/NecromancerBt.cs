@@ -1,6 +1,8 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.AI.BehaviorTree;
+using MysticEchoes.Core.AI.Decorators;
 using MysticEchoes.Core.AI.Ecs;
+using MysticEchoes.Core.AI.Services;
 using MysticEchoes.Core.AI.Tasks;
 using MysticEchoes.Core.Player;
 
@@ -22,8 +24,16 @@ public class NecromancerBt : EcsBt
     {
         Node root = new Sequence(new List<Node>
         {
-            new MoveTo(_world, _ownerEntityId, _playerId, 0.01f),
-            new Attack(_world, _ownerEntityId)
+            new SetHasAim(_world, _ownerEntityId, _playerId, 0.001f),
+            new Attack(_world, _ownerEntityId),
+            new Selector(new List<Node>
+            {
+                new Sequence(new List<Node>
+                {
+                    new CheckEnemyInRange(_world, _ownerEntityId, _playerId, 0.001f),
+                    new TaskMoveTo(_world, _ownerEntityId, _playerId, 0.001f),
+                }),
+            }) 
         });
         
         return root;

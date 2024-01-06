@@ -90,7 +90,7 @@
         "Parameters": {
 
           "TimeBetweenShots": 1,
-          "ShootingType": "BurstFire",
+          "ShootingType": "SingleShot",
           "MagicPrefab": "Bullet"
         }
       },

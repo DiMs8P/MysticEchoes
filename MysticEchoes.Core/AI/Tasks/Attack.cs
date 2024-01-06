@@ -20,8 +20,16 @@ public class Attack : EcsNode
 
     public override NodeState Evaluate()
     {
-        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
-        rangeWeaponComponent.IsShooting = true;
+        if ((bool)GetData("HasAim"))
+        {
+            ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
+            rangeWeaponComponent.IsShooting = true;
+        }
+        else
+        {
+            ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
+            rangeWeaponComponent.IsShooting = false;
+        }
 
         return NodeState.Success;
     }
