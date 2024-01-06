@@ -6,7 +6,7 @@ namespace MazeGeneration;
 
 public class Map
 {
-    public const float Shift = 0.45f;
+    public const float Shift = 0.40f;
     public const float ColliderThickness = 1 - 2 * Shift;
 
     public Size Size { get; }

@@ -206,14 +206,12 @@ public class InitEnvironmentSystem : IEcsInitSystem
     {
         foreach (var wall in map.WallTopTiles)
         {
-            const float heightShift = 0.4f;
-            const float colliderHeight = 1 - 2 * heightShift;
             var shape = new Rectangle(
                 new Vector2(
                     wall.X * mapComponent.TileSize.X,
-                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * heightShift
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
                 ),
-                mapComponent.TileSize with { Y = mapComponent.TileSize.Y * colliderHeight }
+                mapComponent.TileSize with { Y = mapComponent.TileSize.Y * Map.ColliderThickness }
             );
             CreateSingleWall(shape);
         }

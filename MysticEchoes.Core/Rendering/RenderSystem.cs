@@ -39,6 +39,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private int _mapId;
 
     private double t;
+    private float highLayer = 0.5f;
+    private float debugLayer = 1.0f;
 
     public void Init(IEcsSystems systems)
     {
@@ -71,7 +73,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
         _gl.LoadIdentity();
-        _gl.Ortho(0, 2, 0, 2, -1, 1);
+        _gl.Ortho(0, 2, 0, 2, -1, 2);
         //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
         //_gl.Translate(-(1-0.29f), -1.4, 0f);
         //t += 0.001;
@@ -111,7 +113,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 }
                 foreach (var wall in map.Map.WallBottomTiles)
                 {
-                    PrintTile(wall, map, "WallBottom");
+                    PrintTile(wall, map, "WallBottom", highLayer);
                 }
                 foreach (var wall in map.Map.WallFullTiles)
                 {
@@ -119,11 +121,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 }
                 foreach (var wall in map.Map.WallInnerCornerDownLeft)
                 {
-                    PrintTile(wall, map, "WallInnerCornerDownLeft");
+                    PrintTile(wall, map, "WallInnerCornerDownLeft", highLayer);
                 }
                 foreach (var wall in map.Map.WallInnerCornerDownRight)
                 {
-                    PrintTile(wall, map, "WallInnerCornerDownRight");
+                    PrintTile(wall, map, "WallInnerCornerDownRight", highLayer);
                 }
                 foreach (var wall in map.Map.WallDiagonalCornerDownLeft)
                 {
@@ -144,17 +146,17 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                //var collider = _staticColliders.Get(entityId);
+                var collider = _staticColliders.Get(entityId);
 
-                //var rect = collider.Box.Shape;
-                //_gl.Begin(OpenGL.GL_LINE_LOOP);
-                //_gl.Color(1.0f, 0.3f, 0.0f);
+                var rect = collider.Box.Shape;
+                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                _gl.Color(1.0f, 0.3f, 0.0f);
 
-                //_gl.Vertex(rect.Left, rect.Bottom);
-                //_gl.Vertex(rect.Left, rect.Top);
-                //_gl.Vertex(rect.Right, rect.Top);
-                //_gl.Vertex(rect.Right, rect.Bottom);
-                //_gl.End();
+                _gl.Vertex(rect.Left, rect.Bottom, debugLayer);
+                _gl.Vertex(rect.Left, rect.Top, debugLayer);
+                _gl.Vertex(rect.Right, rect.Top, debugLayer);
+                _gl.Vertex(rect.Right, rect.Bottom, debugLayer);
+                _gl.End();
             }
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {
@@ -411,15 +413,15 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.Color(r, g, b);
 
 
-        _gl.Vertex(rect.Left, rect.Bottom);
-        _gl.Vertex(rect.Left, rect.Top);
-        _gl.Vertex(rect.Right, rect.Top);
-        _gl.Vertex(rect.Right, rect.Bottom);
+        _gl.Vertex(rect.Left, rect.Bottom, debugLayer);
+        _gl.Vertex(rect.Left, rect.Top, debugLayer);
+        _gl.Vertex(rect.Right, rect.Top, debugLayer);
+        _gl.Vertex(rect.Right, rect.Bottom, debugLayer);
         _gl.End();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void PrintTile(Point position, TileMapComponent map, string texture)
+    private void PrintTile(Point position, TileMapComponent map, string texture, float layer = 0f)
     {
         _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
         _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(texture));
@@ -436,13 +438,13 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         const float p = 9e-2f;
 
         _gl.TexCoord(0.0 + p, 0.0f + p);
-        _gl.Vertex(rect.Left, rect.Top);
+        _gl.Vertex(rect.Left, rect.Top, layer);
         _gl.TexCoord(0.0 + p, 1.0f - p);
-        _gl.Vertex(rect.Left, rect.Bottom);
+        _gl.Vertex(rect.Left, rect.Bottom, layer);
         _gl.TexCoord(1.0 - p, 1.0f - p);
-        _gl.Vertex(rect.Right, rect.Bottom);
+        _gl.Vertex(rect.Right, rect.Bottom, layer);
         _gl.TexCoord(1.0 - p, 0.0f + p);
-        _gl.Vertex(rect.Right, rect.Top);
+        _gl.Vertex(rect.Right, rect.Top, layer);
         _gl.End();
 
         _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
