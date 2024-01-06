@@ -6,6 +6,7 @@ public struct AnimationComponent
     public float CurrentFrameElapsedTime { get; set; }
     public uint CurrentFrameIndex { get; set; }
     public bool IsActive { get; set; }
+    public bool ReflectByY { get; set; }
 
     public AnimationComponent()
     {
@@ -15,5 +16,6 @@ public struct AnimationComponent
         CurrentFrameIndex = 0;
 
         IsActive = true;
+        ReflectByY = false;
     }
 }

@@ -50,7 +50,7 @@ public class BaseEnemyFactory : IEnemyFactory
         dynamicCollider.Behavior = CollisionBehavior.EnemyCharacter;
         
         ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemy);
-        enemyAnimations.AnimationStateMachine = new CharacterStateMachine(createdEnemy, World);
+        enemyAnimations.AnimationStateMachine = new NecromancerStateMachine(createdEnemy, World);
         
         return createdEnemy;
     }

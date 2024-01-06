@@ -290,7 +290,8 @@
       {
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
-          "Sprite": "NecromancerIdle0"
+          "Sprite": "NecromancerIdle0",
+          "LocalOffset": "0 0.05"
         }
       },
       {

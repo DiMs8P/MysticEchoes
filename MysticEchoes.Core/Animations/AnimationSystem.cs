@@ -49,6 +49,7 @@ public class AnimationSystem : IEcsInitSystem, IEcsRunSystem
                 AnimationFrame currentFrame = animationFrames[animationComponent.CurrentFrameIndex];
                 
                 ref SpriteComponent spriteComponent = ref _sprites.Get(entityId);
+                spriteComponent.ReflectByY = animationComponent.ReflectByY;
                 spriteComponent.Sprite = currentFrame.Sprite;
                 
                 if (currentFrame.AnimNotifies is not null)

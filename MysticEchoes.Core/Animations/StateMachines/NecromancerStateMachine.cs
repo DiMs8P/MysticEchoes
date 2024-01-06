@@ -2,9 +2,9 @@
 
 namespace MysticEchoes.Core.Animations.StateMachines;
 
-public class PlayerStateMachine : BaseStateMachine
+public class NecromancerStateMachine : BaseStateMachine
 {
-    public PlayerStateMachine(int ownerEntityId, EcsWorld world) : base(ownerEntityId, world)
+    public NecromancerStateMachine(int ownerEntityId, EcsWorld world) : base(ownerEntityId, world)
     {
     }
 
