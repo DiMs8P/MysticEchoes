@@ -6,13 +6,21 @@ namespace MysticEchoes.Core.AI.Factories;
 
 public class BaseEnemyFactory : IEnemyFactory
 {
-    public BaseEnemyFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager, EnemyInfo enemyInfo)
+    protected EcsWorld World;
+    protected EntityBuilder Builder;
+    protected PrefabManager PrefabManager;
+    
+    public BaseEnemyFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager)
     {
-        
+        World = world;
+        Builder = builder;
+        PrefabManager = prefabManager;
     }
 
-    public virtual int Create()
+    public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        throw new NotImplementedException();
+        int createdEnemy = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInfo.Prefab);
+
+        return createdEnemy;
     }
 }

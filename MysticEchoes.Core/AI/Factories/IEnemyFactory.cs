@@ -2,5 +2,5 @@
 
 public interface IEnemyFactory
 {
-    public int Create();
+    public int Create(EnemyInitializationInfo enemyInitializationInfo);
 }

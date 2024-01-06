@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
@@ -39,6 +40,8 @@ public class Game
 
     private readonly EntityBuilder _entityBuilder;
     private readonly ItemsFactory _itemsFactory;
+    private readonly EnemyFactory _enemyFactory;
+    
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
@@ -61,6 +64,7 @@ public class Game
         _world = new EcsWorld();
         _entityBuilder = new EntityBuilder(_world);
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
+        _enemyFactory = new EnemyFactory(_world, _entityBuilder, _prefabManager);
         
         _updateTimer = new Stopwatch();
         

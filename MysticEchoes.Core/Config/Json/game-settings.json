@@ -29,5 +29,15 @@
       "Epic": 5,
       "Legendary": 1
     }
+  },
+  "EnemySettings": {
+    "Enemies": {
+      "0": {
+        "Name": "Necromancer",
+        "Description": "",
+        "Quality": "Common",
+        "Prefab": "Necromancer"
+      }
+    }
   }
 }

@@ -6,12 +6,13 @@ namespace MysticEchoes.Core.AI.Factories;
 
 public class NecromancerFactory : BaseEnemyFactory
 {
-    public NecromancerFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager, EnemyInfo enemyInfo) : base(world, builder, prefabManager, enemyInfo)
+    public NecromancerFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager) : base(world, builder,
+        prefabManager)
     {
     }
 
-    public override int Create()
+    public override int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        return base.Create();
+        return base.Create(enemyInitializationInfo);
     }
 }

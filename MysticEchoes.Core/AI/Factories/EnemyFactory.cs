@@ -9,18 +9,18 @@ public class EnemyFactory
 {
     private Dictionary<int, IEnemyFactory> _factories = new Dictionary<int, IEnemyFactory>();
 
-    public EnemyFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager, EnemySettings enemySettings)
+    public EnemyFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager)
     {
-        _factories.Add(0, new NecromancerFactory(world, builder, prefabManager, enemySettings.Enemies[0]));
+        _factories.Add(0, new NecromancerFactory(world, builder, prefabManager));
     }
 
-    public int CreateEnemy(int enemyId)
+    public int CreateEnemy(EnemyInitializationInfo enemyInitializationInfo)
     {
-        if (_factories.TryGetValue(enemyId, out IEnemyFactory enemyFactory))
+        if (_factories.TryGetValue(enemyInitializationInfo.EnemyId, out IEnemyFactory enemyFactory))
         {
-            return enemyFactory.Create();
+            return enemyFactory.Create(enemyInitializationInfo);
         }
         
-        throw new ArgumentException($"Invalid enemy Id: {enemyId}");
+        throw new ArgumentException($"Invalid enemy Id: {enemyInitializationInfo.EnemyId}");
     }
 }

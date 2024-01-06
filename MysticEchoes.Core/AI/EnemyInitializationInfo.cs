@@ -1,11 +1,10 @@
 ﻿using MysticEchoes.Core.Loaders.Prefabs;
+using MysticEchoes.Core.Movement;
 
 namespace MysticEchoes.Core.AI;
 
-public class EnemyInfo
+public class EnemyInitializationInfo
 {
-    public string Name;
-    public string Description;
-    public EnemyQuality Quality;
+    public int EnemyId;
     public PrefabType Prefab;
 }
