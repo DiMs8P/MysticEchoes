@@ -27,6 +27,9 @@
         "Parameters": {
           "Animations": {
             "Idle": "PlayerIdle",
+            "StayLeft": "PlayerStayLeft",
+            "StayRight": "PlayerStayRight",
+            "StayTop": "PlayerStayTop",
             "MovingLeft": "PlayerMovingLeft",
             "MovingRight": "PlayerMovingRight",
             "MovingTop": "PlayerMovingTop",
@@ -275,7 +278,7 @@
       {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {
-          "AnimationId": "NecromancerIdle"
+          "AnimationId": "NecromancerRun"
         }
       },
       {
@@ -283,7 +286,8 @@
         "Parameters": {
           "Animations": {
             "Idle": "NecromancerIdle",
-            "MovingLeft": "NecromancerRun"
+            "MovingRight": "NecromancerRun",
+            "Shooting": "NecromancerAttack1"
           }
         }
       },
