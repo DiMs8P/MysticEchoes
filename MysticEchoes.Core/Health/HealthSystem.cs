@@ -22,9 +22,9 @@ public class HealthSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref HealthComponent entityHealth = ref _health.Get(healthId);
 
-            if (entityHealth.Health <= 0.0f)
+            if (entityHealth is { Health: <= 0.0f, Immortal: false })
             {
-                /*_world.DelEntity(healthId);*/
+                _world.DelEntity(healthId);
             }
         }
     }
