@@ -300,6 +300,10 @@
       {
         "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
         "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
       }
     ]
   }

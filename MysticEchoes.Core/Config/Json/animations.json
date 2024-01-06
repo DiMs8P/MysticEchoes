@@ -574,5 +574,312 @@
       "Sprite": "Coin8",
       "CurrentFrameDuration": 0.5
     }
+  ],
+
+  "NecromancerIdle": [
+    {
+      "Sprite": "NecromancerIdle0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerIdle7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerRun": [
+    {
+      "Sprite": "NecromancerRun0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerRun7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerAttack1": [
+    {
+      "Sprite": "NecromancerAttack10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack15",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack16",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack17",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack18",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack19",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack110",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack111",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack112",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerAttack2": [
+    {
+      "Sprite": "NecromancerAttack20",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack21",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack22",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack23",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack24",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack25",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack26",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack27",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack28",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack29",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack210",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack211",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack212",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerAttack3": [
+    {
+      "Sprite": "NecromancerAttack30",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack31",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack32",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack33",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack34",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack35",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack36",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack37",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack38",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack39",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack310",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack311",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack312",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack313",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack314",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack315",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerAttack316",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerHit": [
+    {
+      "Sprite": "NecromancerHit0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerHit1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerHit2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerHit3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerHit4",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NecromancerDeath": [
+    {
+      "Sprite": "NecromancerDeath0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NecromancerDeath8",
+      "CurrentFrameDuration": 0.016666
+    }
   ]
 }
