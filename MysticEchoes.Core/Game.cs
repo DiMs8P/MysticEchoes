@@ -6,6 +6,7 @@ using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
@@ -115,6 +116,7 @@ public class Game
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
             .Add(new LifeTimeCleanupSystem())
+            .Add(new HealthSystem())
             .Inject(_systemExecutionContext)
             .Init();
     }

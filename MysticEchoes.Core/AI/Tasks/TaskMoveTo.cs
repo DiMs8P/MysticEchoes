@@ -35,9 +35,16 @@ public class TaskMoveTo : EcsNode
             ref UnitControlComponent controlComponent = ref _controls.Get(SelfEntityId);
             controlComponent.LookAt = targetTransform.Location;
             controlComponent.MoveDirection = targetTransform.Location - ownerTransform.Location;
+            State = NodeState.Running;
+        }
+        else
+        {
+            ref UnitControlComponent controlComponent = ref _controls.Get(SelfEntityId);
+            controlComponent.LookAt = targetTransform.Location;
+            controlComponent.MoveDirection = Vector2.Zero;
+            State = NodeState.Success;
         }
 
-        State = NodeState.Running;
-        return NodeState.Running;
+        return State;
     }
 }
