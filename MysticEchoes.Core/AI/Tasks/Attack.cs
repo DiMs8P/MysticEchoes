@@ -1,24 +1,20 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.AI.BehaviorTree;
+using MysticEchoes.Core.AI.Ecs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.AI.Tasks;
 
-public class Attack : Node
+public class Attack : EcsNode
 {
-    private readonly EcsWorld _world;
-
     private readonly EcsPool<TransformComponent> _transforms;
     private readonly EcsPool<RangeWeaponComponent> _weapons;
     private readonly int _playerEntityId;
-    private readonly int _ownerEntityId;
-    public Attack(EcsWorld world, int ownerEntityId)
+    public Attack(EcsWorld world, int ownerEntityId) : base(world, ownerEntityId)
     {
-        _world = world;
-        _ownerEntityId = ownerEntityId;
-        _transforms = _world.GetPool<TransformComponent>();
+        _transforms = World.GetPool<TransformComponent>();
 
         EcsFilter playerFilter = world.Filter<PlayerMarker>().End();
 
@@ -30,7 +26,7 @@ public class Attack : Node
 
     public override NodeState Evaluate()
     {
-        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(_ownerEntityId);
+        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
         rangeWeaponComponent.IsShooting = true;
 
         return NodeState.Success;

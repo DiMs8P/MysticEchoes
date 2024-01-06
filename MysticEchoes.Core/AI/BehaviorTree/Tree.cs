@@ -4,12 +4,12 @@ public abstract class Tree
 {
     private Node _root = null;
 
-    protected void Start()
+    public void Start()
     {
         _root = SetupTree();
     }
 
-    private void Update()
+    public void Update()
     {
         if (_root is not null)
         {

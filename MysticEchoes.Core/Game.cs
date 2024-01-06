@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.AI;
 using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
@@ -94,6 +95,7 @@ public class Game
         _gameplaySystems
             .Add(new TransformSystem())
             .Add(new CollidersMovementSystem())
+            .Add(new AiSystem())
             .Inject(_systemExecutionContext)
             .Init();
 

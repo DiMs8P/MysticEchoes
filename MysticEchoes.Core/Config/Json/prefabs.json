@@ -258,7 +258,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.3
+          "Speed": 0.15
         }
       },
       {

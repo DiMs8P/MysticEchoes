@@ -1,7 +1,7 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.AI.BehaviorTree;
 
-namespace MysticEchoes.Core.AI;
+namespace MysticEchoes.Core.AI.Ecs;
 
 public abstract class EcsBt : Tree
 {
