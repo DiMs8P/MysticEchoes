@@ -1,12 +1,14 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Configuration;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
@@ -30,6 +32,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<SpriteComponent> _sprites;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<DynamicCollider> _colliders;
+    private EcsPool<HealthComponent> _health;
     
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<OwningByComponent> _ownings;
@@ -47,6 +50,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _sprites = _world.GetPool<SpriteComponent>();
         _transforms = _world.GetPool<TransformComponent>();
         _colliders = _world.GetPool<DynamicCollider>();
+        _health = _world.GetPool<HealthComponent>();
 
         _weapons = _world.GetPool<RangeWeaponComponent>();
         _ownings = _world.GetPool<OwningByComponent>();
@@ -72,6 +76,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
+        SetupPlayerHealth(player);
 
         SetupPlayerWeapon(player, playerWeapon);
         SetupPlayerStarterItems(player);
@@ -110,6 +115,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_characterAnimations.Has(playerId))
         {
             ref CharacterAnimationComponent playerAnimationComponent = ref _characterAnimations.Get(playerId);
+            playerAnimationComponent.AnimationStateMachine = new PlayerStateMachine(playerId, _world);
             playerAnimationComponent.CurrentState = CharacterState.Idle;
 
             if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.CurrentState, out var animation) && _animations.Has(playerId))
@@ -141,6 +147,12 @@ public class PlayerSpawnerSystem : IEcsInitSystem
                                             "have initial sprite to render");
             }
         }
+    }
+    
+    private void SetupPlayerHealth(int player)
+    {
+        ref HealthComponent playerHealth = ref _health.Get(player);
+        playerHealth.Health = playerHealth.MaxHealth;
     }
     
     private void SetupPlayerWeapon(int player, int playerWeapon)

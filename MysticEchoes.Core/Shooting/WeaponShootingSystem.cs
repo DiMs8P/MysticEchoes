@@ -9,6 +9,7 @@ using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Scene;
 using SevenBoldPencil.EasyDi;
 
@@ -30,6 +31,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<InventoryComponent> _inventories;
     private EcsPool<OwningByComponent> _ownings;
     private EcsPool<DynamicCollider> _colliders;
+    private EcsPool<PlayerMarker> _player;
     
     private EcsPool<BurstFireComponent> _bursts;
     private EcsPool<ChargeFireComponent> _charges;
@@ -51,6 +53,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         _muzzles = _world.GetPool<MuzzleComponent>();
         _magics = _world.GetPool<MagicComponent>();
         _inventories = _world.GetPool<InventoryComponent>();
+        _player = _world.GetPool<PlayerMarker>();
 
         _bursts = _world.GetPool<BurstFireComponent>();
         _charges = _world.GetPool<ChargeFireComponent>();
@@ -155,7 +158,8 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             InitializeProjectile(magic,
                 ownerTransformComponent.Location + weaponLocalTransformComponent.Location,
                 ownerTransformComponent.Rotation + weaponLocalTransformComponent.Rotation,
-                projectileComponent.Size);
+                projectileComponent.Size,
+                _player.Has(ownerEntityId));
         }
 
         if (magicComponent.Type is MagicType.Hitscan)
@@ -184,7 +188,7 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
         }
     }
 
-    private void InitializeProjectile(int magicId, Vector2 projectileLocation, Vector2 projectileRotation, float size)
+    private void InitializeProjectile(int magicId, Vector2 projectileLocation, Vector2 projectileRotation, float size, bool playerProjectile)
     {
         ref TransformComponent projectileTransformComponent = ref _transforms.Get(magicId);
         projectileTransformComponent.Location = projectileLocation;
@@ -198,6 +202,6 @@ public class WeaponShootingSystem : IEcsInitSystem, IEcsRunSystem
             Vector2.Zero,
             Vector2.One * size * projectileTransformComponent.Scale  / 2
             ));
-        collider.Behavior = CollisionBehavior.AllyBullet;
+        collider.Behavior = playerProjectile ? CollisionBehavior.AllyBullet : CollisionBehavior.EnemyBullet;
     }
 }

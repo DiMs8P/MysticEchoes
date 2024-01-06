@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
@@ -38,6 +39,10 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<EntranceTrigger> _entranceTriggers;
     private EcsPool<RoomComponent> _rooms;
     private EcsPool<DoorComponent> _doors;
+    
+    private EcsPool<DamageComponent> _damages;
+    private EcsPool<HealthComponent> _health;
+    
     private const float CollisionResolvingSensitivity = 1e-4f;
     private List<int> _entitiesToClear = new List<int>();
 
@@ -65,6 +70,9 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _entranceTriggers = _world.GetPool<EntranceTrigger>();
         _rooms = _world.GetPool<RoomComponent>();
         _doors = _world.GetPool<DoorComponent>();
+
+        _damages = _world.GetPool<DamageComponent>();
+        _health = _world.GetPool<HealthComponent>();
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
             .End();
@@ -209,6 +217,14 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 
                     _entitiesToClear.Add(entity.Id);
                 }
+            }
+
+            if (target.Behavior is CollisionBehavior.AllyCharacter)
+            {
+                ref DamageComponent damageComponent = ref _damages.Get(entity.Id);
+                ref HealthComponent healthComponent = ref _health.Get(target.Id);
+
+                healthComponent.Health -= damageComponent.Damage;
             }
             return;
         }
