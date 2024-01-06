@@ -24,13 +24,13 @@ public class Attack : EcsNode
         {
             ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
             rangeWeaponComponent.IsShooting = true;
+            return NodeState.Success;
         }
         else
         {
             ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(SelfEntityId);
             rangeWeaponComponent.IsShooting = false;
+            return NodeState.Failure;
         }
-
-        return NodeState.Success;
     }
 }

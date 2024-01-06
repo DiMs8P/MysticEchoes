@@ -22,18 +22,12 @@ public class NecromancerBt : EcsBt
     }
     protected override Node SetupTree()
     {
+        
         Node root = new Sequence(new List<Node>
         {
-            new SetHasAim(_world, _ownerEntityId, _playerId, 0.001f),
+            new TaskMoveTo(_world, _ownerEntityId, _playerId, 0.1f),
+            new SetHasAim(_world, _ownerEntityId, _playerId, 0.11f),
             new Attack(_world, _ownerEntityId),
-            new Selector(new List<Node>
-            {
-                new Sequence(new List<Node>
-                {
-                    new CheckEnemyInRange(_world, _ownerEntityId, _playerId, 0.001f),
-                    new TaskMoveTo(_world, _ownerEntityId, _playerId, 0.001f),
-                }),
-            }) 
         });
         
         return root;
