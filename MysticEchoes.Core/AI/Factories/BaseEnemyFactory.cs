@@ -5,6 +5,7 @@ using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
@@ -21,8 +22,9 @@ public class BaseEnemyFactory : IEnemyFactory
     protected ItemsFactory ItemsFactory;
     protected PrefabManager PrefabManager;
 
-    protected EcsPool<TransformComponent> _transforms;
+    protected EcsPool<HealthComponent> _health;
     protected EcsPool<DynamicCollider> _colliders;
+    protected EcsPool<TransformComponent> _transforms;
     protected EcsPool<CharacterAnimationComponent> _animations;
     
     protected EcsPool<RangeWeaponComponent> _weapons;
@@ -36,8 +38,9 @@ public class BaseEnemyFactory : IEnemyFactory
         ItemsFactory = itemsFactory;
         PrefabManager = prefabManager;
 
-        _transforms = world.GetPool<TransformComponent>();
+        _health = world.GetPool<HealthComponent>();
         _colliders = world.GetPool<DynamicCollider>();
+        _transforms = world.GetPool<TransformComponent>();
         _animations = world.GetPool<CharacterAnimationComponent>();
 
         _weapons = world.GetPool<RangeWeaponComponent>();
@@ -72,6 +75,9 @@ public class BaseEnemyFactory : IEnemyFactory
         
         ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
         enemyAnimations.AnimationStateMachine = new NecromancerStateMachine(createdEnemyId, World);
+        
+        ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
+        enemyHealth.Health = enemyHealth.MaxHealth;
     }
     
     protected virtual void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo)

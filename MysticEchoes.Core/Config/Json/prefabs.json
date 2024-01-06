@@ -23,6 +23,12 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100
+        }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
         "Parameters": {
           "Animations": {
@@ -259,6 +265,12 @@
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
           "Speed": 0.05
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100
         }
       },
       {

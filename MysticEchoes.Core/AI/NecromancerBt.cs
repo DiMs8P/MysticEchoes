@@ -22,7 +22,6 @@ public class NecromancerBt : EcsBt
     }
     protected override Node SetupTree()
     {
-        
         Node root = new Sequence(new List<Node>
         {
             new TaskMoveTo(_world, _ownerEntityId, _playerId, 0.1f),
