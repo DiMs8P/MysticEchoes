@@ -239,7 +239,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                const float halfSize = 0.8f;
+                const float halfSize = 0.2f;
                 
                 if (spriteComponent.ReflectByY)
                 {
