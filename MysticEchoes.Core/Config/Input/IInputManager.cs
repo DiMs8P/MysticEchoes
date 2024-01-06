@@ -8,6 +8,4 @@ public interface IInputManager
     int GetVertical();
     bool IsShooting();
     Vector2 GetMousePosition();
-    void SetMousePosition(Vector2 position);
-
 }

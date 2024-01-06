@@ -13,7 +13,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
-    public Vector2 mousePosition;
+    public Vector2 MousePosition;
 
     private void GlControl_OnOpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
     {
@@ -31,11 +31,12 @@ public partial class MainWindow : Window
 
     }
 
+    // TODO most likely breaks when adding a camera
     private void GlControl_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
         Point mousePositionP = e.GetPosition(GlControl);
-        mousePosition = new Vector2((float)mousePositionP.X, (float)mousePositionP.Y);
-        mousePosition.X = 2.0f * mousePosition.X / (float)ActualWidth;
-        mousePosition.Y = 2.0f * ((float)((System.Windows.FrameworkElement)sender).ActualHeight - mousePosition.Y) / (float)((System.Windows.FrameworkElement)sender).ActualHeight;
+        MousePosition = new Vector2((float)mousePositionP.X, (float)mousePositionP.Y);
+        MousePosition.X = 2.0f * MousePosition.X / (float)ActualWidth;
+        MousePosition.Y = 2.0f * ((float)((System.Windows.FrameworkElement)sender).ActualHeight - MousePosition.Y) / (float)((System.Windows.FrameworkElement)sender).ActualHeight;
     }
 }

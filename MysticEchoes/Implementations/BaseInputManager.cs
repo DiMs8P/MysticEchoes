@@ -30,7 +30,7 @@ public class BaseInputManager : IInputManager
     {
         return _mousePosition;
     }
-
+    
     public void SetMousePosition(Vector2 vector2)
     {
         _mousePosition = vector2;
