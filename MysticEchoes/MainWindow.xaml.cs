@@ -1,4 +1,5 @@
 ﻿using SharpGL.WPF;
+using System.Numerics;
 using System.Windows;
 
 namespace MysticEchoes;
@@ -12,6 +13,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
+    public Vector2 mousePosition;
 
     private void GlControl_OnOpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
     {
@@ -27,5 +29,13 @@ public partial class MainWindow : Window
     {
 
 
+    }
+
+    private void GlControl_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        Point mousePositionP = e.GetPosition(GlControl);
+        mousePosition = new Vector2((float)mousePositionP.X, (float)mousePositionP.Y);
+        mousePosition.X = 2.0f * mousePosition.X / (float)ActualWidth;
+        mousePosition.Y = 2.0f * ((float)((System.Windows.FrameworkElement)sender).ActualHeight - mousePosition.Y) / (float)((System.Windows.FrameworkElement)sender).ActualHeight;
     }
 }

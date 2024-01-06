@@ -36,7 +36,7 @@ public class PlayerControlSystem : IEcsInitSystem, IEcsRunSystem
             playerControl.MoveDirection = 
                 Vector2.UnitX * _inputManager.GetHorizontal() +
                 Vector2.UnitY * _inputManager.GetVertical();
-            playerControl.LookAt = playerControl.MoveDirection;
+            playerControl.LookAt = _inputManager.GetMousePosition();
         }
     }
 }

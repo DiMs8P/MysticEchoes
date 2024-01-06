@@ -65,6 +65,7 @@ public class App : Application
         {
             _readyToRender = false;
 
+            _inputManager.SetMousePosition(_mainWindow.mousePosition);
             // TODO think about it
             _mainWindow.Dispatcher.Invoke(_inputManager.Update);
             _mainWindow.Dispatcher.Invoke(_game.Update);
