@@ -65,7 +65,7 @@ public class Game
         _world = new EcsWorld();
         _entityBuilder = new EntityBuilder(_world);
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
-        _enemyFactory = new EnemyFactory(_world, _entityBuilder, _prefabManager);
+        _enemyFactory = new EnemyFactory(_world, _entityBuilder, _itemsFactory, _prefabManager);
         
         _updateTimer = new Stopwatch();
         

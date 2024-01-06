@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
@@ -13,7 +14,7 @@ namespace MysticEchoes.Core.AI.Factories;
 public class NecromancerFactory : BaseEnemyFactory
 {
     protected EcsPool<AiComponent> _ai;
-    public NecromancerFactory(EcsWorld world, EntityBuilder builder, PrefabManager prefabManager) : base(world, builder,
+    public NecromancerFactory(EcsWorld world, EntityBuilder builder, ItemsFactory itemsFactory, PrefabManager prefabManager) : base(world, builder, itemsFactory,
         prefabManager)
     {
         _ai = world.GetPool<AiComponent>();
@@ -21,7 +22,8 @@ public class NecromancerFactory : BaseEnemyFactory
 
     public override int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        enemyInitializationInfo.Prefab = PrefabType.Necromancer;
+        enemyInitializationInfo.EnemyPrefab = PrefabType.Necromancer;
+        enemyInitializationInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
         int createdEntity = base.Create(enemyInitializationInfo);
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);

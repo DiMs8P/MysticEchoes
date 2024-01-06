@@ -6,6 +6,7 @@ namespace MysticEchoes.Core.AI;
 public class EnemyInitializationInfo
 {
     public int EnemyId;
-    public PrefabType Prefab;
+    public PrefabType EnemyPrefab;
+    public PrefabType EnemyWeaponPrefab;
     public Vector2 Location;
 }

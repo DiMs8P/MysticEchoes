@@ -15,6 +15,7 @@ public class Attack : EcsNode
     public Attack(EcsWorld world, int selfEntityId) : base(world, selfEntityId)
     {
         _transforms = World.GetPool<TransformComponent>();
+        _weapons = World.GetPool<RangeWeaponComponent>();
     }
 
     public override NodeState Evaluate()
