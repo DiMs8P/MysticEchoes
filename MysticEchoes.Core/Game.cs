@@ -81,7 +81,6 @@ public class Game
             .Add(new PlayerControlSystem())
             .Add(new UnitsMovementSystem())
             .Add(new PlayerShootingSystem())
-            .Add(new PlayerAnimationSystem())
             .Inject(inputManager, _systemExecutionContext)
             .Init();
 
@@ -106,6 +105,7 @@ public class Game
 
         _animationSystems = new EcsSystems(_world);
         _animationSystems
+            .Add(new AnimationStateMachineSystem())
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
             .Init();

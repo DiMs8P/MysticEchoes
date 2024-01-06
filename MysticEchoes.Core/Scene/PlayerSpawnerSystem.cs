@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Base.Geometry;
@@ -110,6 +111,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         if (_characterAnimations.Has(playerId))
         {
             ref CharacterAnimationComponent playerAnimationComponent = ref _characterAnimations.Get(playerId);
+            playerAnimationComponent.AnimationStateMachine = new CharacterStateMachine(playerId, _world);
             playerAnimationComponent.CurrentState = CharacterState.Idle;
 
             if (playerAnimationComponent.Animations.TryGetValue(playerAnimationComponent.CurrentState, out var animation) && _animations.Has(playerId))
