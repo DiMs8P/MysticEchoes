@@ -1,5 +1,6 @@
 ﻿using Leopotam.EcsLite;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Rendering;
 
 namespace MysticEchoes.Core.Animations.StateMachines;
 
@@ -32,7 +33,6 @@ public class PlayerStateMachine : BaseStateMachine
             {
                 characterAnimationComponent.CurrentState = currentState;
                 animationComponent.CurrentFrameIndex = 0;
-                animationComponent.CurrentFrameElapsedTime = 100;
             }
         }
     }

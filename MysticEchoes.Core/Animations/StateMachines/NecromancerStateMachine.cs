@@ -36,7 +36,6 @@ public class NecromancerStateMachine : BaseStateMachine
             {
                 characterAnimationComponent.CurrentState = currentState;
                 animationComponent.CurrentFrameIndex = 0;
-                animationComponent.CurrentFrameElapsedTime = 100;
             }
         }
     }
