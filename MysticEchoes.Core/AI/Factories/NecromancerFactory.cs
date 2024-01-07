@@ -22,9 +22,10 @@ public class NecromancerFactory : BaseEnemyFactory
 
     public override int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        enemyInitializationInfo.EnemyPrefab = PrefabType.Necromancer;
-        enemyInitializationInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
-        int createdEntity = base.Create(enemyInitializationInfo);
+        EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo();
+        initializationInternalInfo.EnemyPrefab = PrefabType.Necromancer;
+        initializationInternalInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
+        int createdEntity = base.CreateInternal(enemyInitializationInfo, initializationInternalInfo);
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);
         aiComponent.BehaviorTree = new NecromancerBt(World, createdEntity);

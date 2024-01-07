@@ -9,6 +9,7 @@ using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
+using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
@@ -23,6 +24,7 @@ public class BaseEnemyFactory : IEnemyFactory
     protected PrefabManager PrefabManager;
 
     protected EcsPool<HealthComponent> _health;
+    protected EcsPool<EnemyComponent> _enemies;
     protected EcsPool<DynamicCollider> _colliders;
     protected EcsPool<TransformComponent> _transforms;
     protected EcsPool<CharacterAnimationComponent> _animations;
@@ -39,6 +41,7 @@ public class BaseEnemyFactory : IEnemyFactory
         PrefabManager = prefabManager;
 
         _health = world.GetPool<HealthComponent>();
+        _enemies = world.GetPool<EnemyComponent>();
         _colliders = world.GetPool<DynamicCollider>();
         _transforms = world.GetPool<TransformComponent>();
         _animations = world.GetPool<CharacterAnimationComponent>();
@@ -50,11 +53,21 @@ public class BaseEnemyFactory : IEnemyFactory
 
     public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        int createdEnemy = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInfo.EnemyPrefab);
-        InitializeEnemy(createdEnemy, enemyInitializationInfo);
-        InitializeEnemyWeapon(createdEnemy, enemyInitializationInfo);
-        InitializeEnemyInventoryItems(createdEnemy);
+        EnemyInitializationInternalInfo enemyInitializationInternalInfo = new EnemyInitializationInternalInfo();
+        enemyInitializationInternalInfo.EnemyWeaponPrefab = PrefabType.None;
+        enemyInitializationInternalInfo.EnemyPrefab = PrefabType.None;
+        int createdEnemy = CreateInternal(enemyInitializationInfo, enemyInitializationInternalInfo);
         
+        return createdEnemy;
+    }
+
+    protected virtual int CreateInternal(EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    {
+        int createdEnemy = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyPrefab);
+        InitializeEnemy(createdEnemy, enemyInitializationInfo);
+        InitializeEnemyWeapon(createdEnemy, enemyInitializationInternalInfo);
+        InitializeEnemyInventoryItems(createdEnemy);
+
         return createdEnemy;
     }
 
@@ -78,11 +91,15 @@ public class BaseEnemyFactory : IEnemyFactory
         
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
         enemyHealth.Health = enemyHealth.MaxHealth;
+
+        ref EnemyComponent enemyComponent = ref _enemies.Get(createdEnemyId);
+        enemyComponent.EnemyId = enemyInitializationInfo.EnemyId;
+        enemyComponent.RoomId = enemyInitializationInfo.RoomId;
     }
     
-    protected virtual void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo)
+    protected virtual void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {
-        int playerWeapon = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInfo.EnemyWeaponPrefab);
+        int playerWeapon = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyWeaponPrefab);
         
         ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(createdEnemyId);
         rangeWeaponComponent.MuzzleIds.Add(playerWeapon);

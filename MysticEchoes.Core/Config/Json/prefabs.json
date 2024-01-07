@@ -336,6 +336,10 @@
       {
         "TypeName": "MysticEchoes.Core.AI.AiComponent",
         "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
+        "Parameters": { }
       }
     ]
   }
