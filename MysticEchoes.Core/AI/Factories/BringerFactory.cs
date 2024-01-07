@@ -30,6 +30,7 @@ public class BringerFactory : BaseEnemyFactory
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);
         aiComponent.BehaviorTree = new NecromancerBt(World, createdEntity);
+        aiComponent.BehaviorTree.Start();
         
         ref TransformComponent transformComponent = ref _transforms.Get(createdEntity);
         

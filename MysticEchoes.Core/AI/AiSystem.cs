@@ -13,12 +13,6 @@ public class AiSystem : IEcsInitSystem, IEcsRunSystem
 
         _aiFilter = world.Filter<AiComponent>().End();
         _ais = world.GetPool<AiComponent>();
-        
-        foreach (var enemyId in _aiFilter)
-        {
-            ref AiComponent aiComponent = ref _ais.Get(enemyId);
-            aiComponent.BehaviorTree.Start();
-        }
     }
 
     public void Run(IEcsSystems systems)

@@ -30,13 +30,14 @@ public class NightBorneFactory : BaseEnemyFactory
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);
         aiComponent.BehaviorTree = new NecromancerBt(World, createdEntity);
+        aiComponent.BehaviorTree.Start();
         
         ref TransformComponent transformComponent = ref _transforms.Get(createdEntity);
         
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(
             Vector2.Zero, 
-            new Vector2(0.05f, 0.1f) * transformComponent.Scale
+            new Vector2(0.10f, 0.15f) * transformComponent.Scale
         ));
         
         ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEntity);
