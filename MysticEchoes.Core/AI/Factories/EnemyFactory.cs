@@ -1,5 +1,4 @@
 ﻿using Leopotam.EcsLite;
-using MysticEchoes.Core.Configuration;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Scene;

@@ -78,7 +78,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _enemyFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);

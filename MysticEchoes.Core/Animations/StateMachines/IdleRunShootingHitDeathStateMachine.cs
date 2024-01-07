@@ -4,14 +4,14 @@ using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.Animations.StateMachines;
 
-public class NecromancerStateMachine : BaseStateMachine
+public class IdleRunShootingHitDeathStateMachine : BaseStateMachine
 {
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<MovementComponent> _movements;
     private EcsPool<AnimationComponent> _animations;
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<CharacterAnimationComponent> _characterAnimations;
-    public NecromancerStateMachine(int ownerEntityId, EcsWorld world) : base(ownerEntityId, world)
+    public IdleRunShootingHitDeathStateMachine(int ownerEntityId, EcsWorld world) : base(ownerEntityId, world)
     {
         _animations = world.GetPool<AnimationComponent>();
         _characterAnimations = world.GetPool<CharacterAnimationComponent>();
