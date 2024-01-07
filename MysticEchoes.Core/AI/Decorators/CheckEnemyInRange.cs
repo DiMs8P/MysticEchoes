@@ -9,29 +9,33 @@ namespace MysticEchoes.Core.AI.Decorators;
 public class CheckEnemyInRange : EcsNode
 {
     private EcsPool<TransformComponent> _transforms;
-    
-    protected int _target;
-    protected float _accuracy;
-    public CheckEnemyInRange(EcsWorld world, int selfEntityId, int target, float accuracy) : base(world, selfEntityId)
+
+    private string _targetKey;
+    private float _accuracy;
+    public CheckEnemyInRange(Blackboard blackboard, string targetKey, float accuracy) : base(blackboard)
     {
         _transforms = World.GetPool<TransformComponent>();
         
-        _target = target;
+        _targetKey = targetKey;
         _accuracy = accuracy;
     }
 
     public override NodeState Evaluate()
     {
-        ref TransformComponent ownerTransform = ref _transforms.Get(SelfEntityId);
-        ref TransformComponent targetTransform = ref _transforms.Get(_target);
-
-        Vector2 targetVector = targetTransform.Location - ownerTransform.Location;
-        if (targetVector.Length() > _accuracy)
+        int targetId = Blackboard.GetValueAsInt(_targetKey);
+        if (targetId != -1)
         {
-            State = NodeState.Success;
-            return State;
-        }
+            ref TransformComponent ownerTransform = ref _transforms.Get(SelfEntityId);
+            ref TransformComponent targetTransform = ref _transforms.Get(targetId);
 
+            Vector2 targetVector = targetTransform.Location - ownerTransform.Location;
+            if (targetVector.Length() > _accuracy)
+            {
+                State = NodeState.Success;
+                return State;
+            }
+        }
+        
         State = NodeState.Failure;
         return State;
     }

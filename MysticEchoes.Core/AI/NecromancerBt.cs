@@ -19,14 +19,15 @@ public class NecromancerBt : EcsBt
         {
             _playerId = playerId;
         }
+        Blackboard.SetValueAsInt("Player", _playerId);
     }
     protected override Node SetupTree()
     {
         Node root = new Sequence(new List<Node>
         {
-            new TaskMoveTo(_world, _ownerEntityId, _playerId, 0.1f),
-            new SetHasAim(_world, _ownerEntityId, _playerId, 0.11f),
-            new Attack(_world, _ownerEntityId),
+            new TaskMoveTo(Blackboard, "Player", 0.1f),
+            new SetHasAim(Blackboard, "Player",0.11f),
+            new Attack(Blackboard),
         });
         
         return root;
