@@ -26,6 +26,9 @@ public class BringerFactory : BaseEnemyFactory
         EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo();
         initializationInternalInfo.EnemyPrefab = PrefabType.BringerOfDeath;
         initializationInternalInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
+        initializationInternalInfo.EnemyBehaviorTree = typeof(NecromancerBt);
+        initializationInternalInfo.EnemyStateMachine = typeof(BringerOfDeathStateMachine);
+        
         int createdEntity = base.CreateInternal(enemyInitializationInfo, initializationInternalInfo);
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);
@@ -33,7 +36,6 @@ public class BringerFactory : BaseEnemyFactory
         aiComponent.BehaviorTree.Start();
         
         ref TransformComponent transformComponent = ref _transforms.Get(createdEntity);
-        
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(
             Vector2.Zero, 

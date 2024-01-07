@@ -1,9 +1,13 @@
 ﻿using Leopotam.EcsLite;
+using MysticEchoes.Core.Events;
+using SevenBoldPencil.EasyDi;
 
 namespace MysticEchoes.Core.Animations;
 
 public class AnimationStateMachineSystem : IEcsInitSystem, IEcsRunSystem
 {
+    [EcsInject] private GameplayEventListener _gameplayEventListener;
+    
     private EcsWorld _world;
     private EcsFilter _animationFilter;
     
