@@ -11,6 +11,7 @@ public enum CharacterState
     MovingLeft,
     MovingTop,
     MovingDown,
+    Run,
     Shooting,
     Hit,
     Death
