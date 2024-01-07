@@ -303,7 +303,7 @@
         "Parameters": {
           "Animations": {
             "Idle": "NecromancerIdle",
-            "MovingRight": "NecromancerRun",
+            "Run": "NecromancerRun",
             "Shooting": "NecromancerAttack1"
           }
         }

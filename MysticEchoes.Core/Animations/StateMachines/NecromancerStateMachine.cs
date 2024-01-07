@@ -47,7 +47,7 @@ public class NecromancerStateMachine : BaseStateMachine
 
         CharacterState state = weapon.IsShooting
             ? CharacterState.Shooting
-            : !movement.Velocity.IsNearlyZero() ? CharacterState.MovingRight : CharacterState.Idle;
+            : !movement.Velocity.IsNearlyZero() ? CharacterState.Run : CharacterState.Idle;
 
         return state;
     }
