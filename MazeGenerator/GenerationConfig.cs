@@ -17,21 +17,21 @@ public class GenerationConfig
     public RandomWalkParameter RoomRandomWalkParameter { get; set; }
     public EnemySpawnsGeneratorParameter EnemySpawnsGenerator { get; set; }
 
-    public static GenerationConfig Default =>
+    public static GenerationConfig GetDefault(int seed = 7354543) =>
         new()
         {
             MinNodeSize = new(14, 10),
             MinRoomSize = new(4, 4),
             MinRoomPadding = new(2, 2),
             MazeSize = new(70, 50),
-            Random = new GenerationRandom(7354543),
+            Random = new GenerationRandom(seed),
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
             ThreeDepth = 3,
             RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false),
             EnemySpawnsGenerator = new EnemySpawnsGeneratorParameter(
-                random: new GenerationRandom(7354543),
+                random: new GenerationRandom(seed),
                 costs: new()
                 {
                     [EnemyType.Common] = 10,

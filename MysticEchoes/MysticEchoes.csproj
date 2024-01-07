@@ -17,4 +17,9 @@
       <ProjectReference Include="..\MysticEchoes.Core\MysticEchoes.Core.csproj" />
     </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
-﻿using System.Numerics;
+﻿using System.IO;
+using System.Numerics;
 using System.Windows.Media.Animation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MysticEchoes.Core;
@@ -13,19 +15,20 @@ public class Program
     [STAThread]
     public static void Main()
     {
-        // создаем хост приложения
         var host = Host.CreateDefaultBuilder()
-            // внедряем сервисы
             .ConfigureServices(services =>
             {
                 services.AddSingleton<App>();
                 services.AddSingleton<MainWindow>();
                 services.AddGame();
             })
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            })
             .Build();
-        // получаем сервис - объект класса App
+
         var app = host.Services.GetService<App>();
-        // запускаем приложения
         try
         {
             app?.Run();

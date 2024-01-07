@@ -4,7 +4,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var generator = new MapGenerator(GenerationConfig.Default);
+        var generator = new MapGenerator(GenerationConfig.GetDefault());
 
         var result = generator.Generate();
     }
