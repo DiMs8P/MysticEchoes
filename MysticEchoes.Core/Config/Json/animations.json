@@ -741,7 +741,6 @@
       "CurrentFrameDuration": 0.5
     }
   ],
-
   "NecromancerIdle": [
     {
       "Sprite": "NecromancerIdle0",
@@ -1045,6 +1044,234 @@
     },
     {
       "Sprite": "NecromancerDeath8",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerIdle": [
+    {
+      "Sprite": "BringerIdle0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerRun": [
+    {
+      "Sprite": "BringerRun0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerCast": [
+    {
+      "Sprite": "BringerCast0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast8",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerHit": [
+    {
+      "Sprite": "BringerHit0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerHit1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerHit2",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerDeath": [
+    {
+      "Sprite": "BringerDeath0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath9",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerSpell": [
+    {
+      "Sprite": "BringerSpell0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell15",
       "CurrentFrameDuration": 0.016666
     }
   ]
