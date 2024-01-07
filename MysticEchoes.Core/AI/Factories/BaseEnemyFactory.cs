@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.AI.Ecs;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Base.Geometry;
@@ -23,6 +24,7 @@ public class BaseEnemyFactory : IEnemyFactory
     protected ItemsFactory ItemsFactory;
     protected PrefabManager PrefabManager;
 
+    protected EcsPool<AiComponent> _ai;
     protected EcsPool<HealthComponent> _health;
     protected EcsPool<EnemyComponent> _enemies;
     protected EcsPool<DynamicCollider> _colliders;
@@ -40,6 +42,7 @@ public class BaseEnemyFactory : IEnemyFactory
         ItemsFactory = itemsFactory;
         PrefabManager = prefabManager;
 
+        _ai = world.GetPool<AiComponent>();
         _health = world.GetPool<HealthComponent>();
         _enemies = world.GetPool<EnemyComponent>();
         _colliders = world.GetPool<DynamicCollider>();
@@ -64,14 +67,14 @@ public class BaseEnemyFactory : IEnemyFactory
     protected virtual int CreateInternal(EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {
         int createdEnemy = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyPrefab);
-        InitializeEnemy(createdEnemy, enemyInitializationInfo);
+        InitializeEnemy(createdEnemy, enemyInitializationInfo, enemyInitializationInternalInfo);
         InitializeEnemyWeapon(createdEnemy, enemyInitializationInternalInfo);
         InitializeEnemyInventoryItems(createdEnemy);
 
         return createdEnemy;
     }
 
-    protected virtual void InitializeEnemy(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo)
+    protected virtual void InitializeEnemy(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {
         ref TransformComponent transformComponent = ref _transforms.Get(createdEnemyId);
         transformComponent.Location = enemyInitializationInfo.Location;
@@ -88,10 +91,17 @@ public class BaseEnemyFactory : IEnemyFactory
         
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
         enemyHealth.Health = enemyHealth.MaxHealth;
+        
+        ref AiComponent aiComponent = ref _ai.Get(createdEnemyId);
+        aiComponent.BehaviorTree = (EcsBt)Activator.CreateInstance(enemyInitializationInternalInfo.EnemyBehaviorTree, World, createdEnemyId);
+        aiComponent.BehaviorTree?.Start();
 
         ref EnemyComponent enemyComponent = ref _enemies.Get(createdEnemyId);
         enemyComponent.EnemyId = enemyInitializationInfo.EnemyId;
         enemyComponent.RoomId = enemyInitializationInfo.RoomId;
+        
+        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
+        enemyAnimations.AnimationStateMachine = (BaseStateMachine)Activator.CreateInstance(enemyInitializationInternalInfo.EnemyStateMachine, createdEnemyId, World);
     }
     
     protected virtual void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
