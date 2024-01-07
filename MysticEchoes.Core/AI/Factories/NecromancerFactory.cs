@@ -29,7 +29,7 @@ public class NecromancerFactory : BaseEnemyFactory
         initializationInternalInfo.EnemyStateMachine = typeof(IdleRunShootingHitDeathStateMachine);
         
         int createdEntity = base.CreateInternal(enemyInitializationInfo, initializationInternalInfo);
-        
+
         ref TransformComponent transformComponent = ref _transforms.Get(createdEntity);
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(

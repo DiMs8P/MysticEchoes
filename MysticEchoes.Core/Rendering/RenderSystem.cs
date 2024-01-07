@@ -340,24 +340,23 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             {
                 void ChooseSpawnColor(EnemySpawnComponent enemySpawnComponent, float alpha = 1f)
                 {
-                    if (enemySpawnComponent.Data.Type is EnemyType.Common)
+                    if (enemySpawnComponent.Type is EnemyType.Common)
                     {
                         _gl.Color(0.0f, 1.0f, 0.0f, alpha);
                     }
-                    else if (enemySpawnComponent.Data.Type is EnemyType.Elite)
+                    else if (enemySpawnComponent.Type is EnemyType.Elite)
                     {
                         _gl.Color(1.0f, 1.0f, 0.0f, alpha);
                     }
-                    else if (enemySpawnComponent.Data.Type is EnemyType.MiniBoss)
+                    else if (enemySpawnComponent.Type is EnemyType.MiniBoss)
                     {
                         _gl.Color(1.0f, 0.0f, 0.0f, alpha);
                     }
                 }
-
-                var collider = _dynamicColliders.Get(entityId);
+                
                 var spawn = _enemySpawns.Get(entityId);
 
-                var rect = collider.Box.Shape;
+                var rect = spawn.Area;
 
                 _gl.Begin(OpenGL.GL_LINE_LOOP);
 
