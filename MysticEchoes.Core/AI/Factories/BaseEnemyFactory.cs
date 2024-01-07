@@ -2,7 +2,6 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.AI.Ecs;
 using MysticEchoes.Core.Animations;
-using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
@@ -67,14 +66,16 @@ public class BaseEnemyFactory : IEnemyFactory
     protected virtual int CreateInternal(EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {
         int createdEnemy = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyPrefab);
-        InitializeEnemy(createdEnemy, enemyInitializationInfo, enemyInitializationInternalInfo);
+        InitializeEnemy(createdEnemy, enemyInitializationInfo);
+        InitializeEnemyAi(createdEnemy, enemyInitializationInternalInfo);
         InitializeEnemyWeapon(createdEnemy, enemyInitializationInternalInfo);
+        InitializeEnemyAnimations(createdEnemy, enemyInitializationInternalInfo);
         InitializeEnemyInventoryItems(createdEnemy);
 
         return createdEnemy;
     }
 
-    protected virtual void InitializeEnemy(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    protected virtual void InitializeEnemy(int createdEnemyId, EnemyInitializationInfo enemyInitializationInfo)
     {
         ref TransformComponent transformComponent = ref _transforms.Get(createdEnemyId);
         transformComponent.Location = enemyInitializationInfo.Location;
@@ -92,16 +93,22 @@ public class BaseEnemyFactory : IEnemyFactory
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
         enemyHealth.Health = enemyHealth.MaxHealth;
         
-        ref AiComponent aiComponent = ref _ai.Get(createdEnemyId);
-        aiComponent.BehaviorTree = (EcsBt)Activator.CreateInstance(enemyInitializationInternalInfo.EnemyBehaviorTree, World, createdEnemyId);
-        aiComponent.BehaviorTree?.Start();
-
         ref EnemyComponent enemyComponent = ref _enemies.Get(createdEnemyId);
         enemyComponent.EnemyId = enemyInitializationInfo.EnemyId;
         enemyComponent.RoomId = enemyInitializationInfo.RoomId;
-        
-        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
-        enemyAnimations.AnimationStateMachine = (BaseStateMachine)Activator.CreateInstance(enemyInitializationInternalInfo.EnemyStateMachine, createdEnemyId, World);
+    }
+    
+    protected virtual void InitializeEnemyAi(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    {
+        ref AiComponent aiComponent = ref _ai.Get(createdEnemyId);
+        EcsBt? behaviorTree = Activator.CreateInstance(enemyInitializationInternalInfo.EnemyBehaviorTree, World, createdEnemyId) as EcsBt;
+        if (behaviorTree is null)
+        {
+            throw new ArgumentException("Can't create behavior tree instance");
+        }
+
+        aiComponent.BehaviorTree = behaviorTree;
+        aiComponent.BehaviorTree.Start();
     }
     
     protected virtual void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
@@ -113,6 +120,18 @@ public class BaseEnemyFactory : IEnemyFactory
 
         ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
         owningByComponent.Owner = createdEnemyId;
+    }
+    
+    protected virtual void InitializeEnemyAnimations(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    {
+        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
+        BaseStateMachine? animationStateMachine = Activator.CreateInstance(enemyInitializationInternalInfo.EnemyStateMachine, createdEnemyId, World) as BaseStateMachine;
+        if (animationStateMachine is null)
+        {
+            throw new ArgumentException("Can't create animation state machine instance");
+        }
+
+        enemyAnimations.AnimationStateMachine = animationStateMachine;
     }
     
     protected virtual void InitializeEnemyInventoryItems(int createdEnemy)
