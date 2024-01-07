@@ -1,4 +1,5 @@
 ﻿using Leopotam.EcsLite;
+using MysticEchoes.Core.Damage;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Shooting;
