@@ -1,4 +1,4 @@
-﻿namespace MysticEchoes.Core.Shooting;
+﻿namespace MysticEchoes.Core.Damage;
 
 public struct DamageComponent
 {
