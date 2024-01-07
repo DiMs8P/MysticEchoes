@@ -86,9 +86,6 @@ public class BaseEnemyFactory : IEnemyFactory
         };
         dynamicCollider.Behavior = CollisionBehavior.EnemyCharacter;
         
-        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
-        enemyAnimations.AnimationStateMachine = new NecromancerStateMachine(createdEnemyId, World);
-        
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
         enemyHealth.Health = enemyHealth.MaxHealth;
 

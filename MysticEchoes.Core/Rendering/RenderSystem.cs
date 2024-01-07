@@ -224,7 +224,15 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location + spriteComponent.LocalOffset);
+                if (spriteComponent.ReflectByY)
+                {
+                    _gl.Translate(transform.Location + spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X});
+                }
+                else
+                {
+                    _gl.Translate(transform.Location + spriteComponent.LocalOffset);
+                }
+                
                 _gl.Scale(transform.Scale);
 
                 _gl.Begin(OpenGL.GL_QUADS);
