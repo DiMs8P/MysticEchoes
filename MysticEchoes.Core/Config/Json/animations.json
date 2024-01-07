@@ -741,6 +741,7 @@
       "CurrentFrameDuration": 0.5
     }
   ],
+  
   "NecromancerIdle": [
     {
       "Sprite": "NecromancerIdle0",
@@ -1047,6 +1048,7 @@
       "CurrentFrameDuration": 0.016666
     }
   ],
+  
   "BringerIdle": [
     {
       "Sprite": "BringerIdle0",
@@ -1272,6 +1274,241 @@
     },
     {
       "Sprite": "BringerSpell15",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  
+  "NightBorneIdle": [
+    {
+      "Sprite": "NightBorneIdle0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle8",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneRun": [
+    {
+      "Sprite": "NightBorneRun0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun5",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneAttack": [
+    {
+      "Sprite": "NightBorneAttack0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack12",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneHit": [
+    {
+      "Sprite": "NightBorneHit0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit4",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneDeath": [
+    {
+      "Sprite": "NightBorneDeath0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath15",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath16",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath17",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath18",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath19",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath20",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath21",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath22",
       "CurrentFrameDuration": 0.016666
     }
   ]
