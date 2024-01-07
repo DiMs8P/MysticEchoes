@@ -29,7 +29,8 @@ public class NecromancerFactory : BaseEnemyFactory
 
         ref AiComponent aiComponent = ref _ai.Get(createdEntity);
         aiComponent.BehaviorTree = new NecromancerBt(World, createdEntity);
-        
+        aiComponent.BehaviorTree.Start();
+
         ref TransformComponent transformComponent = ref _transforms.Get(createdEntity);
         
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);

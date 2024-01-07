@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MazeGeneration.TreeModule;
+using MysticEchoes.Core.AI;
+using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Damage;
@@ -22,6 +25,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private EntityBuilder _builder;
     [EcsInject] private PrefabManager _prefabManager;
     [EcsInject] private SystemExecutionContext _context;
+    [EcsInject] private EnemyFactory _enemyFactory;
 
     private EcsWorld _world;
 
@@ -40,12 +44,11 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<EntranceTrigger> _entranceTriggers;
     private EcsPool<RoomComponent> _rooms;
     private EcsPool<DoorComponent> _doors;
-    
     private EcsPool<DamageComponent> _damages;
     private EcsPool<DamageZoneComponent> _damageZones;
-
     private EcsPool<HealthComponent> _health;
-    
+    private EcsPool<EnemySpawnComponent> _enemySpawns;
+
     private const float CollisionResolvingSensitivity = 1e-4f;
     private List<int> _entitiesToClear = new List<int>();
 
@@ -75,6 +78,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         _damages = _world.GetPool<DamageComponent>();
         _health = _world.GetPool<HealthComponent>();
         _damageZones = _world.GetPool<DamageZoneComponent>();
+        _enemySpawns = _world.GetPool<EnemySpawnComponent>();
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
             .End();
@@ -260,20 +264,8 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
                 var room = _rooms.Get(trigger.RoomId);
 
-                foreach (var doorId in room.Doors)
-                {
-                    ref var door = ref _doors.Get(doorId);
-
-                    door.IsOpen = false;
-                    _builder.AddTo(doorId, new DynamicCollider
-                    {
-                        Box = new Box(
-                            doorId,
-                            door.Shape
-                        ),
-                        Behavior = CollisionBehavior.Wall
-                    });
-                }
+                CloseDoors(room);
+                SpawnEnemies(room, trigger.RoomId);
             }
             return;
         }
@@ -293,6 +285,44 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
         
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
+    }
+
+    private void SpawnEnemies(RoomComponent room, int roomId)
+    {
+        foreach (var enemySpawnId in room.EnemySpawns)
+        {
+            var enemySpawn = _enemySpawns.Get(enemySpawnId);
+            
+            var enemyPosition = (enemySpawn.Area.RightTop + enemySpawn.Area.LeftBottom) / 2;
+
+            var enemyInitializationInfo = new EnemyInitializationInfo
+            {
+                EnemyId = 0,
+                RoomId = roomId,
+                Location = enemyPosition
+            };
+
+            _enemyFactory.CreateEnemy(enemyInitializationInfo);
+        }
+        _entitiesToClear.AddRange(room.EnemySpawns);
+    }
+
+    private void CloseDoors(RoomComponent room)
+    {
+        foreach (var doorId in room.Doors)
+        {
+            ref var door = ref _doors.Get(doorId);
+
+            door.IsOpen = false;
+            _builder.AddTo(doorId, new DynamicCollider
+            {
+                Box = new Box(
+                    doorId,
+                    door.Shape
+                ),
+                Behavior = CollisionBehavior.Wall
+            });
+        }
     }
 
     private void TakeItem(int entityId, int targetId)

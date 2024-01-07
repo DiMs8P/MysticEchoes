@@ -175,27 +175,23 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var spawnId = _builder.Create()
                 .End();
+
+            var area = new Rectangle(
+                new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
+                    spawn.Area.Top * mapComponent.TileSize.Y),
+                new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
+                    spawn.Area.Height * mapComponent.TileSize.Y)
+            );
+
             enemySpawnIds.Add(spawnId);
-            _builder.AddTo(spawnId, new DynamicCollider
-                {
-                    Box = new Box(
-                        spawnId,
-                        new Rectangle(
-                            new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
-                                spawn.Area.Top * mapComponent.TileSize.Y),
-                            new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
-                                spawn.Area.Height * mapComponent.TileSize.Y)
-                        )
-                    ),
-                    Behavior = CollisionBehavior.Ignore
-                })
-                .AddTo(spawnId, new RenderComponent
+            _builder.AddTo(spawnId, new RenderComponent
                 {
                     Type = RenderingType.EnemySpawn
                 })
                 .AddTo(spawnId, new EnemySpawnComponent
                 {
-                    Data = spawn
+                    Area = area,
+                    Type = spawn.Type
                 });
         }
 
