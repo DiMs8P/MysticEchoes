@@ -41,13 +41,13 @@
       "1": {
         "Name": "BringerOfDeath",
         "Description": "",
-        "Quality": "Rare",
+        "Quality": "Elite",
         "Prefab": "BringerOfDeath"
       },
       "2": {
         "Name": "NightBorne",
         "Description": "",
-        "Quality": "Boss",
+        "Quality": "MiniBoss",
         "Prefab": "NightBorne"
       }
     }

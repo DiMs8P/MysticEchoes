@@ -292,15 +292,21 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
     private void SpawnEnemies(ref RoomComponent room, int roomId)
     {
+        var enemies = _context.Settings.EnemySettings.Enemies;
+
         foreach (var enemySpawnId in room.EnemySpawns)
         {
             var enemySpawn = _enemySpawns.Get(enemySpawnId);
             
             var enemyPosition = (enemySpawn.Area.RightTop + enemySpawn.Area.LeftBottom) / 2;
 
+            var enemiesWithSameType = enemies.Where(kv => kv.Value.Quality == enemySpawn.Type)
+                .ToArray();
+            var enemyPrefab = Random.Shared.GetItems(enemiesWithSameType, 1)[0].Key;
+
             var enemyInitializationInfo = new EnemyInitializationInfo
             {
-                EnemyId = 0,
+                EnemyId = enemyPrefab,
                 RoomId = roomId,
                 Location = enemyPosition
             };
@@ -318,7 +324,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         ref var room = ref _rooms.Get(info.RoomId);
         room.EnemiesAlive -= 1;
 
-        if (room.EnemiesAlive != 0)
+        if (room.EnemiesAlive > 0)
         {
             return;
         }
