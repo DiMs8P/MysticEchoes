@@ -165,6 +165,14 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 Type = RenderingType.Door
             })
             .End();
+        _builder.AddTo(doorId, new DynamicCollider
+        {
+            Box = new Box(
+                doorId,
+                shape
+            ),
+            Behavior = CollisionBehavior.Ignore
+        });
         return doorId;
     }
 
