@@ -8,7 +8,6 @@ namespace MysticEchoes.Core.Configuration;
 
 public class WeaponsSettings
 {
-    public OneShot OneShot { get; set; }
-    public TwoShot Twoshot { get; set; }
+
 }
 

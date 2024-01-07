@@ -20,11 +20,13 @@ public class BringerFactory : BaseEnemyFactory
     
     public override int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo();
-        initializationInternalInfo.EnemyPrefab = PrefabType.BringerOfDeath;
-        initializationInternalInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
-        initializationInternalInfo.EnemyBehaviorTree = typeof(NecromancerBt);
-        initializationInternalInfo.EnemyStateMachine = typeof(BringerOfDeathStateMachine);
+        EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo()
+        {
+            EnemyPrefab = PrefabType.BringerOfDeath,
+            EnemyWeaponPrefab = PrefabType.DefaultWeapon,
+            EnemyBehaviorTree = typeof(NecromancerBt),
+            EnemyStateMachine = typeof(BringerOfDeathStateMachine)
+        };
         
         int createdEntity = base.CreateInternal(enemyInitializationInfo, initializationInternalInfo);
         

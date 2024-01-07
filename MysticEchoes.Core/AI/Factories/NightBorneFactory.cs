@@ -20,11 +20,13 @@ public class NightBorneFactory : BaseEnemyFactory
     
     public override int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo();
-        initializationInternalInfo.EnemyPrefab = PrefabType.NightBorne;
-        initializationInternalInfo.EnemyWeaponPrefab = PrefabType.DefaultWeapon;
-        initializationInternalInfo.EnemyBehaviorTree = typeof(NecromancerBt);
-        initializationInternalInfo.EnemyStateMachine = typeof(IdleRunShootingHitDeathStateMachine);
+        EnemyInitializationInternalInfo initializationInternalInfo = new EnemyInitializationInternalInfo()
+        {
+            EnemyPrefab = PrefabType.NightBorne,
+            EnemyWeaponPrefab = PrefabType.DefaultWeapon,
+            EnemyBehaviorTree = typeof(NecromancerBt),
+            EnemyStateMachine = typeof(IdleRunShootingHitDeathStateMachine)
+        };
         
         int createdEntity = base.CreateInternal(enemyInitializationInfo, initializationInternalInfo);
         

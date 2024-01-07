@@ -55,12 +55,7 @@ public class BaseEnemyFactory : IEnemyFactory
 
     public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
     {
-        EnemyInitializationInternalInfo enemyInitializationInternalInfo = new EnemyInitializationInternalInfo();
-        enemyInitializationInternalInfo.EnemyWeaponPrefab = PrefabType.None;
-        enemyInitializationInternalInfo.EnemyPrefab = PrefabType.None;
-        int createdEnemy = CreateInternal(enemyInitializationInfo, enemyInitializationInternalInfo);
-        
-        return createdEnemy;
+        throw new NotImplementedException("Method must be implemented");
     }
 
     protected virtual int CreateInternal(EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
