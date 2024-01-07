@@ -42,7 +42,7 @@ public class NecromancerFactory : BaseEnemyFactory
         ));
         
         ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEntity);
-        enemyAnimations.AnimationStateMachine = new NecromancerStateMachine(createdEntity, World);
+        enemyAnimations.AnimationStateMachine = new IdleRunShootingHitDeathStateMachine(createdEntity, World);
         
         return createdEntity;
     }

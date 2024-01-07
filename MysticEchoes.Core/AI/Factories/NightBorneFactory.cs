@@ -41,7 +41,7 @@ public class NightBorneFactory : BaseEnemyFactory
         ));
         
         ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEntity);
-        enemyAnimations.AnimationStateMachine = new NightBorneStateMachine(createdEntity, World);
+        enemyAnimations.AnimationStateMachine = new IdleRunShootingHitDeathStateMachine(createdEntity, World);
         
         return createdEntity;
     }
