@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
@@ -34,8 +36,11 @@ public class BringerFactory : BaseEnemyFactory
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(
             Vector2.Zero, 
-            new Vector2(0.05f, 0.1f) * transformComponent.Scale
+            new Vector2(0.1f, 0.28f) * transformComponent.Scale
         ));
+        
+        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEntity);
+        enemyAnimations.AnimationStateMachine = new BringerOfDeathStateMachine(createdEntity, World);
         
         return createdEntity;
     }

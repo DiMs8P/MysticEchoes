@@ -304,7 +304,9 @@
           "Animations": {
             "Idle": "NecromancerIdle",
             "Run": "NecromancerRun",
-            "Shooting": "NecromancerAttack1"
+            "Shooting": "NecromancerAttack1",
+            "Hit": "NecromancerHit",
+            "Death": "NecromancerDeath"
           }
         }
       },
@@ -365,7 +367,7 @@
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Rotation": "0 1",
-          "Scale": "0.5 0.5"
+          "Scale": "0.2 0.2"
         }
       },
       {
@@ -390,7 +392,7 @@
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
           "Sprite": "BringerIdle0",
-          "LocalOffset": "0 0.05"
+          "LocalOffset": "-0.02 0.01"
         }
       },
       {
@@ -413,6 +415,10 @@
       },
       {
         "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
         "Parameters": { }
       }
     ]
@@ -439,7 +445,7 @@
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Rotation": "0 1",
-          "Scale": "0.5 0.5"
+          "Scale": "0.3 0.3"
         }
       },
       {
@@ -464,7 +470,7 @@
         "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
         "Parameters": {
           "Sprite": "NecromancerIdle0",
-          "LocalOffset": "0 0.05"
+          "LocalOffset": "0 0"
         }
       },
       {
@@ -487,6 +493,10 @@
       },
       {
         "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
         "Parameters": { }
       }
     ]

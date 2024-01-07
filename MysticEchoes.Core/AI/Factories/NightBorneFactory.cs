@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using Leopotam.EcsLite;
+using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Animations.StateMachines;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
@@ -36,6 +38,9 @@ public class NightBorneFactory : BaseEnemyFactory
             Vector2.Zero, 
             new Vector2(0.05f, 0.1f) * transformComponent.Scale
         ));
+        
+        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEntity);
+        enemyAnimations.AnimationStateMachine = new NightBorneStateMachine(createdEntity, World);
         
         return createdEntity;
     }

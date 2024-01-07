@@ -1390,10 +1390,6 @@
     {
       "Sprite": "NightBorneAttack11",
       "CurrentFrameDuration": 0.016666
-    },
-    {
-      "Sprite": "NightBorneAttack12",
-      "CurrentFrameDuration": 0.016666
     }
   ],
   "NightBorneHit": [

@@ -21,7 +21,7 @@ public class EnemySpawnerSystem : IEcsInitSystem
     private void CreateEnemy()
     {
         EnemyInitializationInfo enemyInitializationInfo = new EnemyInitializationInfo();
-        enemyInitializationInfo.EnemyId = 0;
+        enemyInitializationInfo.EnemyId = 2;
         enemyInitializationInfo.RoomId = 0;
         enemyInitializationInfo.Location = new Vector2(1.1714f, 1.2400f);
         
