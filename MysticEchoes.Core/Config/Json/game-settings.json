@@ -37,6 +37,18 @@
         "Description": "",
         "Quality": "Common",
         "Prefab": "Necromancer"
+      },
+      "1": {
+        "Name": "BringerOfDeath",
+        "Description": "",
+        "Quality": "Rare",
+        "Prefab": "BringerOfDeath"
+      },
+      "2": {
+        "Name": "NightBorne",
+        "Description": "",
+        "Quality": "Boss",
+        "Prefab": "NightBorne"
       }
     }
   }
