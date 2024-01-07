@@ -6,6 +6,8 @@ using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
+using MysticEchoes.Core.Damage;
+using MysticEchoes.Core.Events;
 using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
@@ -22,6 +24,7 @@ namespace MysticEchoes.Core;
 public class Game
 {
     public  readonly IInputManager InputManager;
+    public  readonly GameplayEventListener GameplayEventListener;
 
     private readonly EcsWorld _world;
 
@@ -67,6 +70,7 @@ public class Game
         _entityBuilder = new EntityBuilder(_world);
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         _enemyFactory = new EnemyFactory(_world, _entityBuilder, _itemsFactory, _prefabManager);
+        GameplayEventListener = new GameplayEventListener();
         
         _updateTimer = new Stopwatch();
         
@@ -74,7 +78,7 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Add(new EnemySpawnerSystem())
+            //.Add(new EnemySpawnerSystem())
             .Inject(_entityBuilder, _prefabManager, _itemsFactory, _enemyFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
@@ -115,9 +119,10 @@ public class Game
         
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
+            .Add(new DamageZoneSystem())
             .Add(new LifeTimeCleanupSystem())
             .Add(new HealthSystem())
-            .Inject(_systemExecutionContext)
+            .Inject(_systemExecutionContext, GameplayEventListener)
             .Init();
     }
 

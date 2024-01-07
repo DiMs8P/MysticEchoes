@@ -143,7 +143,7 @@
         "Parameters": {}
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
           "Damage": 10
         }
@@ -199,7 +199,7 @@
         "Parameters": {}
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
           "Damage": 10
         }
@@ -227,6 +227,10 @@
         "Parameters": {
           "LifeTime": 1
         }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Damage.DamageZoneComponent",
+        "Parameters": {}
       }
     ]
   },
@@ -331,6 +335,10 @@
       },
       {
         "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
         "Parameters": { }
       }
     ]

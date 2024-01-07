@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Damage;
 using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
@@ -41,12 +42,12 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<DoorComponent> _doors;
     
     private EcsPool<DamageComponent> _damages;
+    private EcsPool<DamageZoneComponent> _damageZones;
+
     private EcsPool<HealthComponent> _health;
     
     private const float CollisionResolvingSensitivity = 1e-4f;
     private List<int> _entitiesToClear = new List<int>();
-
-    private HashSet<int> _deletedEntities = new HashSet<int>();
 
     public void Init(IEcsSystems systems)
     {
@@ -73,6 +74,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
         _damages = _world.GetPool<DamageComponent>();
         _health = _world.GetPool<HealthComponent>();
+        _damageZones = _world.GetPool<DamageZoneComponent>();
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
             .End();
@@ -111,7 +113,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     {
         _entitiesToClear.Clear();
         _dynamicCollidersTree.Clear();
-        _deletedEntities.Clear();
 
         foreach (var entity in _dynamicCollidersFilter)
         {
@@ -189,64 +190,47 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
             return;
         }
-        if (entity.Behavior is CollisionBehavior.AllyBullet or CollisionBehavior.EnemyBullet)
+        if (entity.Behavior is CollisionBehavior.AllyBullet)
         {
             if (target.Behavior is CollisionBehavior.Wall)
             {
-                if (!_deletedEntities.Contains(entity.Id))
-                {
-                    if (_explosions.Has(entity.Id))
-                    {
-                        ref ExplosionComponent explosionComponent = ref _explosions.Get(entity.Id);
-                    
-                        int explosionId = _prefabManager.CreateEntityFromPrefab(_builder, explosionComponent.ExplosionPrefab);
+                MakeExplosion(entity.Id);
+                return;
+            }
 
-                        ref TransformComponent explosionTransform =  ref _transforms.Get(explosionId);
-                        ref TransformComponent bulletTransform =  ref _transforms.Get(entity.Id);
+            if (target.Behavior is CollisionBehavior.EnemyCharacter)
+            {
+                DealDamage(entity.Id, target.Id);
+                MakeExplosion(entity.Id);
+                return;
+            }
+            
+            return;
+        }
 
-                        explosionTransform.Location = bulletTransform.Location;
-                        
-                        ref var explosionCollider = ref _dynamicColliders.Get(explosionId);
-                        Vector2 boxSize = new Vector2(0.265f, 0.35f) * explosionTransform.Scale;
-                        explosionCollider.Box = new Box(explosionId, new Rectangle(
-                            explosionTransform.Location - boxSize / 2, 
-                            boxSize
-                        ));
-                        explosionCollider.Behavior = CollisionBehavior.Ignore;
-                    }
-                
-                    _entitiesToClear.Add(entity.Id);
-                }
+        if (entity.Behavior is CollisionBehavior.EnemyBullet)
+        {
+            if (target.Behavior is CollisionBehavior.Wall)
+            {
+                MakeExplosion(entity.Id);
+                return;
             }
 
             if (target.Behavior is CollisionBehavior.AllyCharacter)
             {
-                ref DamageComponent damageComponent = ref _damages.Get(entity.Id);
-                ref HealthComponent healthComponent = ref _health.Get(target.Id);
-
-                healthComponent.Health -= damageComponent.Damage;
+                DealDamage(entity.Id, target.Id);
+                MakeExplosion(entity.Id);
+                return;
             }
+            
             return;
         }
 
         if (entity.Behavior is CollisionBehavior.AllyCharacter)
         {
-            if (target.Behavior is CollisionBehavior.EnemyBullet)
-            {
-                // Нанести урон
-                return;
-            }
-
             if (target.Behavior is CollisionBehavior.Item)
             {
-                if (!_deletedEntities.Contains(target.Id))
-                {
-                    ref ItemComponent itemComponent = ref _items.Get(target.Id);
-                    itemComponent.Item.OnItemTaken(entity.Id, _world);
-                    
-                    DeleteEntity(target.Id);
-                }
-                
+                TakeItem(entity.Id, target.Id);
                 return;
             }
             
@@ -254,12 +238,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
         if (entity.Behavior is CollisionBehavior.EnemyCharacter)
         {
-            if (target.Behavior is CollisionBehavior.AllyBullet)
-            {
-                // Нанести урон
-                return;
-            }
-
             return;
         }
         
@@ -303,7 +281,71 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             return;
         }
+        if (entity.Behavior is CollisionBehavior.DamageZone)
+        {
+            if (target.Behavior is CollisionBehavior.AllyCharacter or CollisionBehavior.EnemyCharacter)
+            {
+                ref DamageZoneComponent damageZoneComponent = ref _damageZones.Get(entity.Id);
+                damageZoneComponent.EntityToDamage.Add(target.Id);
+            }
+            
+            return;
+        }
+        
         throw new NotImplementedException($"collision {entity.Behavior} and {target.Behavior} not implemented");
+    }
+
+    private void TakeItem(int entityId, int targetId)
+    {
+        if (!_entitiesToClear.Contains(targetId))
+        {
+            ref ItemComponent itemComponent = ref _items.Get(targetId);
+            itemComponent.Item.OnItemTaken(entityId, _world);
+                    
+            _entitiesToClear.Add(entityId);
+        }
+    }
+
+    private void MakeExplosion(int entityId)
+    {
+        if (!_entitiesToClear.Contains(entityId))
+        {
+            if (_explosions.Has(entityId))
+            {
+                ref ExplosionComponent explosionComponent = ref _explosions.Get(entityId);
+                    
+                int explosionId = _prefabManager.CreateEntityFromPrefab(_builder, explosionComponent.ExplosionPrefab);
+
+                ref TransformComponent explosionTransform =  ref _transforms.Get(explosionId);
+                ref TransformComponent bulletTransform =  ref _transforms.Get(entityId);
+
+                explosionTransform.Location = bulletTransform.Location;
+                        
+                ref var explosionCollider = ref _dynamicColliders.Get(explosionId);
+                Vector2 boxSize = new Vector2(0.265f, 0.35f) * explosionTransform.Scale;
+                explosionCollider.Box = new Box(explosionId, new Rectangle(
+                    explosionTransform.Location - boxSize / 2, 
+                    boxSize
+                ));
+                explosionCollider.Behavior = CollisionBehavior.DamageZone;
+                
+                ref DamageZoneComponent damageZoneComponent = ref _damageZones.Get(explosionId);
+                damageZoneComponent.EntityToDamage.Clear();
+                damageZoneComponent.DamagedEntities.Clear();
+            }
+                
+            _entitiesToClear.Add(entityId);
+        }
+    }
+    
+    private void DealDamage(int entityId, int targetId)
+    {
+        ref HealthComponent healthComponent = ref _health.Get(targetId);
+        if (!healthComponent.Immortal)
+        {
+            ref DamageComponent damageComponent = ref _damages.Get(entityId);
+            healthComponent.Health -= damageComponent.Damage;
+        }
     }
 
     private void HandleCharacterAndWallCollision(CollisionHandlingEntityInfo entity, CollisionHandlingEntityInfo target)
@@ -374,16 +416,6 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             return -1f * Vector2.UnitY;
         }
         return Vector2.Zero;
-    }
-    
-    private void DeleteEntity(int entityId)
-    {
-        var collider = _dynamicColliders.Get(entityId);
-        var box = collider.Box;
-        _dynamicCollidersTree.Remove(box);
-        
-        _world.DelEntity(entityId);
-        _deletedEntities.Add(entityId);
     }
 }
 

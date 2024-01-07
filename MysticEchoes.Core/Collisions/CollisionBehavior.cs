@@ -10,5 +10,6 @@ public enum CollisionBehavior
     Wall,
     Item,
     Ignore,
-    RoomEntranceTrigger
+    RoomEntranceTrigger,
+    DamageZone
 }
