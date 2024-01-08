@@ -28,7 +28,7 @@ public class GenerationConfig
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
-            ThreeDepth = 2,
+            ThreeDepth = 3,
             RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false),
             EnemySpawnsGenerator = new EnemySpawnsGeneratorParameter(
                 random: new GenerationRandom(7354543),

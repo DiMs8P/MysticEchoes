@@ -29,6 +29,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     [EcsInject] private SystemExecutionContext _context;
     [EcsInject] private EnemyFactory _enemyFactory;
     [EcsInject] private GameplayEventListener _eventListener;
+    [EcsInject] private ItemsFactory _itemsFactory;
 
     private EcsWorld _world;
 
@@ -341,6 +342,10 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             collider.Behavior = CollisionBehavior.Ignore;
         }
 
+        var enemyTransform = _transforms.Get(info.EntityId);
+
+        CreateHealthPotion(enemyTransform.Location);
+
         _eventListener.OnEnemyDeadEvent -= HandleEnemyDeath;
 
         var triggersLeft = 0;
@@ -354,6 +359,14 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         {
             _eventListener.InvokeLastEnemyDead();
         }
+    }
+
+    private void CreateHealthPotion(Vector2 position)
+    {
+        ItemInitializationInfo itemInitializationInfo = new ItemInitializationInfo();
+        itemInitializationInfo.ItemId = 3;
+        itemInitializationInfo.Location = position;
+        _itemsFactory.CreateItemEntity(itemInitializationInfo, 600);
     }
 
     private void CloseDoors(RoomComponent room)

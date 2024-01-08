@@ -17,6 +17,6 @@ public class HealthPotion : BaseItem
         EcsPool<HealthComponent> healthPool = world.GetPool<HealthComponent>();
         ref HealthComponent healthComponent = ref healthPool.Get(instigator);
 
-        healthComponent.Health += float.Min(healthComponent.Health + _value, healthComponent.MaxHealth);
+        healthComponent.Health = float.Min(healthComponent.Health + _value, healthComponent.MaxHealth);
     }
 }

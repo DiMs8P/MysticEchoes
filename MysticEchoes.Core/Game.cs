@@ -117,7 +117,7 @@ public class Game
         _collisionSystems = new EcsSystems(_world);
         _collisionSystems
             .Add(new CollisionsSystem())
-            .Inject(_entityBuilder, _systemExecutionContext, _prefabManager, _enemyFactory, GameplayEventListener)
+            .Inject(_entityBuilder, _systemExecutionContext, _prefabManager, _enemyFactory, GameplayEventListener, _itemsFactory)
             .Init();
 
         _cleanupSystems = new EcsSystems(_world);

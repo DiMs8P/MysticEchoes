@@ -51,6 +51,7 @@ public class HealthSystem : IEcsInitSystem, IEcsRunSystem
             
             OnEnemyDeadInfo enemyDeadInfo = new OnEnemyDeadInfo();
             enemyDeadInfo.EnemyId = enemyComponent.EnemyId;
+            enemyDeadInfo.EntityId = healthId;
             enemyDeadInfo.RoomId = enemyComponent.RoomId;
             _eventListener.InvokeOnEnemyDead(enemyDeadInfo);
         }

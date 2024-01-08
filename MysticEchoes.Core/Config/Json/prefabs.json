@@ -27,7 +27,7 @@
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 4000,
+          "MaxHealth": 1000,
           "Immortal": false
         }
       },
