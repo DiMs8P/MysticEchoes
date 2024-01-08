@@ -161,31 +161,31 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.StaticColliderDebugView)
             {
-                var collider = _staticColliders.Get(entityId);
+                //var collider = _staticColliders.Get(entityId);
 
-                var rect = collider.Box.Shape;
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                //var rect = collider.Box.Shape;
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
+                //_gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(rect.Left, rect.Bottom, debugLayer);
-                _gl.Vertex(rect.Left, rect.Top, debugLayer);
-                _gl.Vertex(rect.Right, rect.Top, debugLayer);
-                _gl.Vertex(rect.Right, rect.Bottom, debugLayer);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom, debugLayer);
+                //_gl.Vertex(rect.Left, rect.Top, debugLayer);
+                //_gl.Vertex(rect.Right, rect.Top, debugLayer);
+                //_gl.Vertex(rect.Right, rect.Bottom, debugLayer);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.DynamicColliderDebugView)
             {
-                var collider = _dynamicColliders.Get(entityId);
-                var rect = collider.Box.Shape;
+                //var collider = _dynamicColliders.Get(entityId);
+                //var rect = collider.Box.Shape;
 
-                DrawCollider(rect, 1.0f, 0.7f, 0.1f);
+                //DrawCollider(rect, 1.0f, 0.7f, 0.1f);
             }
             else if (render.Type is RenderingType.EntranceTrigger)
             {
-                var collider = _dynamicColliders.Get(entityId);
-                var rect = collider.Box.Shape;
+                //var collider = _dynamicColliders.Get(entityId);
+                //var rect = collider.Box.Shape;
 
-                DrawCollider(rect, 0.1f, 0.3f, 1.0f);
+                //DrawCollider(rect, 0.1f, 0.3f, 1.0f);
             }
             else if (render.Type is RenderingType.ColliderSpaceTreeView)
             {
@@ -267,7 +267,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.PushMatrix();
 
                 var collider = _dynamicColliders.Get(entityId);
-                DrawCollider(collider.Box.Shape, 1.0f, 0.3f, 0.0f);
+                //DrawCollider(collider.Box.Shape, 1.0f, 0.3f, 0.0f);
 
                 _gl.Begin(OpenGL.GL_QUADS);
 
@@ -341,45 +341,45 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.EnemySpawn)
             {
-                void ChooseSpawnColor(EnemySpawnComponent enemySpawnComponent, float alpha = 1f)
-                {
-                    if (enemySpawnComponent.Type is EnemyType.Common)
-                    {
-                        _gl.Color(0.0f, 1.0f, 0.0f, alpha);
-                    }
-                    else if (enemySpawnComponent.Type is EnemyType.Elite)
-                    {
-                        _gl.Color(1.0f, 1.0f, 0.0f, alpha);
-                    }
-                    else if (enemySpawnComponent.Type is EnemyType.MiniBoss)
-                    {
-                        _gl.Color(1.0f, 0.0f, 0.0f, alpha);
-                    }
-                }
+                //void ChooseSpawnColor(EnemySpawnComponent enemySpawnComponent, float alpha = 1f)
+                //{
+                //    if (enemySpawnComponent.Type is EnemyType.Common)
+                //    {
+                //        _gl.Color(0.0f, 1.0f, 0.0f, alpha);
+                //    }
+                //    else if (enemySpawnComponent.Type is EnemyType.Elite)
+                //    {
+                //        _gl.Color(1.0f, 1.0f, 0.0f, alpha);
+                //    }
+                //    else if (enemySpawnComponent.Type is EnemyType.MiniBoss)
+                //    {
+                //        _gl.Color(1.0f, 0.0f, 0.0f, alpha);
+                //    }
+                //}
 
-                var spawn = _enemySpawns.Get(entityId);
+                //var spawn = _enemySpawns.Get(entityId);
 
-                var rect = spawn.Area;
+                //var rect = spawn.Area;
 
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                //_gl.Begin(OpenGL.GL_LINE_LOOP);
 
-                ChooseSpawnColor(spawn);
+                //ChooseSpawnColor(spawn);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
 
-                _gl.Begin(OpenGL.GL_QUADS);
+                //_gl.Begin(OpenGL.GL_QUADS);
 
-                ChooseSpawnColor(spawn, 0.2f);
+                //ChooseSpawnColor(spawn, 0.2f);
 
-                _gl.Vertex(rect.Left, rect.Bottom);
-                _gl.Vertex(rect.Left, rect.Top);
-                _gl.Vertex(rect.Right, rect.Top);
-                _gl.Vertex(rect.Right, rect.Bottom);
-                _gl.End();
+                //_gl.Vertex(rect.Left, rect.Bottom);
+                //_gl.Vertex(rect.Left, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Top);
+                //_gl.Vertex(rect.Right, rect.Bottom);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.Door)
             {

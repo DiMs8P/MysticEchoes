@@ -28,14 +28,14 @@ public class GenerationConfig
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
-            ThreeDepth = 2,
+            ThreeDepth = 3,
             RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false),
             EnemySpawnsGenerator = new EnemySpawnsGeneratorParameter(
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 40,
-                    [EnemyType.Elite] = 50,
+                    [EnemyType.Common] = 14,
+                    [EnemyType.Elite] = 20,
                     [EnemyType.MiniBoss] = 60,
                 },
                 frequencies: new()
@@ -48,7 +48,7 @@ public class GenerationConfig
                 {
                     [EnemyType.Common] = new (1, 1),
                     [EnemyType.Elite] = new(2, 2),
-                    [EnemyType.MiniBoss] = new(3, 3),
+                    [EnemyType.MiniBoss] = new(2, 2),
                 }),
         };
     // Пересекающиеся дороги

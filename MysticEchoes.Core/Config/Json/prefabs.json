@@ -27,7 +27,7 @@
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 4000,
+          "MaxHealth": 1000,
           "Immortal": false
         }
       },
@@ -206,7 +206,7 @@
       {
         "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
         "Parameters": {
-          "DefaultSize": "0.265 0.35"
+          "DefaultSize": "0.177 0.23"
         }
       },
       {
@@ -233,12 +233,12 @@
           "Type": "General"
         }
       },
-      {
-        "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
-        "Parameters": {
-          "LifeTime": 1
-        }
-      },
+      //{
+      //  "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
+      //  "Parameters": {
+      //    "LifeTime": 1
+      //  }
+      //},
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageZoneComponent",
         "Parameters": {}

@@ -395,7 +395,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 ),
                 Behavior = CollisionBehavior.Wall
             })
-            .Add(new RenderComponent(RenderingType.StaticColliderDebugView))
+            //.Add(new RenderComponent(RenderingType.StaticColliderDebugView))
             .End();
         ref var collider = ref _staticColliders.Get(wallEntityId);
         collider.Box.Id = wallEntityId;

@@ -480,7 +480,10 @@
     },
     {
       "Sprite": "SimpleExplosion59",
-      "CurrentFrameDuration": 0.016666
+      "CurrentFrameDuration": 0.016666,
+      "AnimNotifies": [
+        "MysticEchoes.Core.Animations.AnimNotifies.OnRemoveNotify"
+      ]
     }
   ],
   "PlayerIdle": [
