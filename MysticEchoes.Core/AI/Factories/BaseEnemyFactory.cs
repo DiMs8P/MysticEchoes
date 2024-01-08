@@ -29,6 +29,7 @@ public class BaseEnemyFactory : IEnemyFactory
     protected EcsPool<AiComponent> _ai;
     protected EcsPool<HealthComponent> _health;
     protected EcsPool<EnemyComponent> _enemies;
+    protected EcsPool<SpriteComponent> _sprites;
     protected EcsPool<DynamicCollider> _colliders;
     protected EcsPool<TransformComponent> _transforms;
     protected EcsPool<AnimationComponent> _animations;
@@ -37,9 +38,6 @@ public class BaseEnemyFactory : IEnemyFactory
     protected EcsPool<RangeWeaponComponent> _weapons;
     protected EcsPool<OwningByComponent> _ownings;
     protected EcsPool<StartingItems> _items;
-
-    protected EcsPool<DoorComponent> _doors;
-    protected EcsPool<RoomComponent> _rooms;
     
     public BaseEnemyFactory(EcsWorld world, EntityBuilder builder, ItemsFactory itemsFactory, PrefabManager prefabManager)
     {
@@ -51,6 +49,7 @@ public class BaseEnemyFactory : IEnemyFactory
         _ai = world.GetPool<AiComponent>();
         _health = world.GetPool<HealthComponent>();
         _enemies = world.GetPool<EnemyComponent>();
+        _sprites = world.GetPool<SpriteComponent>();
         _colliders = world.GetPool<DynamicCollider>();
         _transforms = world.GetPool<TransformComponent>();
         _animations = world.GetPool<AnimationComponent>();
@@ -59,9 +58,6 @@ public class BaseEnemyFactory : IEnemyFactory
         _weapons = world.GetPool<RangeWeaponComponent>();
         _ownings = world.GetPool<OwningByComponent>();
         _items = world.GetPool<StartingItems>();
-
-        _doors = world.GetPool<DoorComponent>();
-        _rooms = world.GetPool<RoomComponent>();
     }
 
     public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
@@ -160,22 +156,37 @@ public class BaseEnemyFactory : IEnemyFactory
     protected virtual void OnDeadEventHandler(int entityId)
     {
         ref CharacterAnimationComponent characterAnimationComponent = ref _characterAnimations.Get(entityId);
-
         if (characterAnimationComponent.Animations.TryGetValue(CharacterState.Death, out string animationId))
         {
-            int createdAnimation = PrefabManager.CreateEntityFromPrefab(Builder, PrefabType.Animation);
-            
-            ref AnimationComponent animationComponent = ref _animations.Get(createdAnimation);
-            ref AnimationComponent deadEnemyAnimationComponent = ref _animations.Get(entityId);
-
-            animationComponent.AnimationId = animationId;
-            animationComponent.CurrentFrameIndex = 0;
-            animationComponent.ReflectByY = deadEnemyAnimationComponent.ReflectByY;
-
-            ref TransformComponent animationTransformComponent = ref _transforms.Get(createdAnimation);
-            ref TransformComponent deadEnemyTransformComponent = ref _transforms.Get(entityId);
-            animationTransformComponent.Location = deadEnemyTransformComponent.Location;
-            animationTransformComponent.Scale = deadEnemyTransformComponent.Scale;
+            CreateDeathAnimationEntity(entityId, animationId);
         }
+        else if(characterAnimationComponent.MultipleAnimations.TryGetValue(CharacterState.Death, out List<string> animationIds))
+        {
+            int index = Random.Shared.Next(animationIds.Count);
+            CreateDeathAnimationEntity(entityId, animationIds[index]);
+        }
+    }
+
+    protected virtual int CreateDeathAnimationEntity(int entityId, string deathAnimationId)
+    {
+        int createdAnimation = PrefabManager.CreateEntityFromPrefab(Builder, PrefabType.Animation);
+            
+        ref AnimationComponent animationComponent = ref _animations.Get(createdAnimation);
+        ref AnimationComponent deadEnemyAnimationComponent = ref _animations.Get(entityId);
+
+        animationComponent.AnimationId = deathAnimationId;
+        animationComponent.CurrentFrameIndex = 0;
+        animationComponent.ReflectByY = deadEnemyAnimationComponent.ReflectByY;
+
+        ref SpriteComponent animationSpriteComponent = ref _sprites.Get(createdAnimation);
+        ref SpriteComponent deadEnemySpriteComponent = ref _sprites.Get(entityId);
+        animationSpriteComponent.LocalOffset = deadEnemySpriteComponent.LocalOffset;
+
+        ref TransformComponent animationTransformComponent = ref _transforms.Get(createdAnimation);
+        ref TransformComponent deadEnemyTransformComponent = ref _transforms.Get(entityId);
+        animationTransformComponent.Location = deadEnemyTransformComponent.Location;
+        animationTransformComponent.Scale = deadEnemyTransformComponent.Scale;
+
+        return createdAnimation;
     }
 }
