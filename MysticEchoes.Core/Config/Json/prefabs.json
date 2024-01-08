@@ -44,7 +44,11 @@
           }
         }
       },
-
+      {
+        "TypeName": "MysticEchoes.Core.Camera.CameraComponent",
+        "Parameters": {
+        }
+      },
       {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {

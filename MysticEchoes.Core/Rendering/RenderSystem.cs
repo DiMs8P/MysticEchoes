@@ -38,7 +38,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
-    private EcsPool<CameraComponent> _cameras;
     private double t;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
@@ -66,7 +65,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _dynamicColliders = world.GetPool<DynamicCollider>();
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
-        _cameras = world.GetPool<CameraComponent>();
+
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -296,17 +295,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Vertex(rect.Size.X, rect.Size.Y);
                 _gl.Vertex(rect.Size.X, 0);
                 _gl.End();
-                if (entityId == 491)
-                {
-                    ref CameraComponent camera = ref _cameras.Get(entityId);
-                    //camera. = new Vector3(transform.Location, 0.0f);
-                    
-                   /*gl.beginc
-                    _gl.LookAt(
-                     transform.Location.X-1, transform.Location.Y-1, 3.0f,
-                     transform.Location.X - 1, transform.Location.Y - 1, 0.0f,
-                     0.0f, 1.0f, 0.0f);*/
-                }
+
                 _gl.PopMatrix();
 
             }
