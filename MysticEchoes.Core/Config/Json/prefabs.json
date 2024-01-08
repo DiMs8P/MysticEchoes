@@ -8,7 +8,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.3
+          "Speed": 0.2
         }
       },
       {
@@ -45,6 +45,11 @@
         }
       },
       {
+        "TypeName": "MysticEchoes.Core.Camera.CameraComponent",
+        "Parameters": {
+        }
+      },
+      {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {
         }
@@ -63,11 +68,11 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Control.UnitControlComponent",
-        "Parameters": { }
+        "Parameters": {}
       },
       {
         "TypeName": "MysticEchoes.Core.Shooting.RangeWeaponComponent",
-        "Parameters": { }
+        "Parameters": {}
       },
       {
         "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",

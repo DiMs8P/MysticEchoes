@@ -16,6 +16,7 @@ using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 using MysticEchoes.Core.MapModule;
+using MysticEchoes.Core.Camera;
 
 namespace MysticEchoes.Core.Scene;
 
@@ -33,6 +34,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<DynamicCollider> _colliders;
     private EcsPool<HealthComponent> _health;
+    private EcsPool<CameraComponent> _camera;
     
     private EcsPool<RangeWeaponComponent> _weapons;
     private EcsPool<OwningByComponent> _ownings;
@@ -51,6 +53,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         _transforms = _world.GetPool<TransformComponent>();
         _colliders = _world.GetPool<DynamicCollider>();
         _health = _world.GetPool<HealthComponent>();
+        _camera = _world.GetPool<CameraComponent>();
 
         _weapons = _world.GetPool<RangeWeaponComponent>();
         _ownings = _world.GetPool<OwningByComponent>();
@@ -73,6 +76,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         int playerWeapon = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.DefaultWeapon);
 
         SetupPositions(player);
+        SetupCamera(player);
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
@@ -96,7 +100,13 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         );
 
     }
+    private void SetupCamera(int player)
+    {
+        ref var transform = ref _transforms.Get(player);
+        ref var camera = ref _camera.Get(player);
 
+        camera.Position = new Vector2(transform.Location.X - 1, transform.Location.Y - 1);
+    }
     private void SetupCollider(int player)
     {
         ref var playerCollider = ref _colliders.Get(player);

@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.AI;
 using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
@@ -37,7 +38,7 @@ public class Game
     private readonly EcsSystems _cleanupSystems;
     private readonly EcsSystems _collisionSystems;
     private EcsSystems _renderSystems;
-    
+
     private readonly AnimationManager _animationManager;
     private readonly AssetManager _assetManager;
     private readonly PrefabManager _prefabManager;
@@ -47,16 +48,16 @@ public class Game
     private readonly EntityBuilder _entityBuilder;
     private readonly ItemsFactory _itemsFactory;
     private readonly EnemyFactory _enemyFactory;
-    
+
     private readonly Stopwatch _updateTimer;
 
     //TODO inject settings in systems
     public Game(
         AnimationManager animationManager,
-        AssetManager assetManager, 
-        PrefabManager prefabManager, 
-        IInputManager inputManager, 
-        IMazeGenerator mazeGenerator, 
+        AssetManager assetManager,
+        PrefabManager prefabManager,
+        IInputManager inputManager,
+        IMazeGenerator mazeGenerator,
         SystemExecutionContext systemExecutionContext
         )
     {
@@ -66,15 +67,16 @@ public class Game
         _assetManager = assetManager;
         _prefabManager = prefabManager;
         _systemExecutionContext = systemExecutionContext;
-            
+
         _world = new EcsWorld();
         _entityBuilder = new EntityBuilder(_world);
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         _enemyFactory = new EnemyFactory(_world, _entityBuilder, _itemsFactory, _prefabManager);
+
         GameplayEventListener = new GameplayEventListener();
-        
+
         _updateTimer = new Stopwatch();
-        
+
         _setupSystems = new EcsSystems(_world);
         _setupSystems
             .Add(new InitEnvironmentSystem())
@@ -110,7 +112,7 @@ public class Game
             .Add(new CollisionsSystem())
             .Inject(_entityBuilder, _systemExecutionContext, _prefabManager, _enemyFactory, GameplayEventListener)
             .Init();
-        
+
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
             .Add(new DamageZoneSystem())
@@ -130,21 +132,22 @@ public class Game
     public void InitializeRender(OpenGL gl)
     {
         _assetManager.InitializeGl(gl);
-        
+
         _renderSystems = new EcsSystems(_world);
         _renderSystems
+            .Add(new CameraSystem())
             .Add(new RenderSystem())
             .Inject(gl, _assetManager)
             .Init();
     }
-    
+
     public void Update()
     {
         // _updateTimer.Stop();
         _systemExecutionContext.DeltaTime = _updateTimer.ElapsedMilliseconds / 1e3f;
         _systemExecutionContext.FrameNumber += 1;
         _updateTimer.Restart();
-        
+
         _controlsSystems.Run();
         _shootingSystems.Run();
         _gameplaySystems.Run();

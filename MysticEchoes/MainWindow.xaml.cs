@@ -1,4 +1,5 @@
-﻿using SharpGL.WPF;
+﻿using SharpGL;
+using SharpGL.WPF;
 using System.Numerics;
 using System.Windows;
 
@@ -9,6 +10,7 @@ namespace MysticEchoes;
 /// </summary>
 public partial class MainWindow : Window
 {
+    OpenGL gl;
     public MainWindow()
     {
         InitializeComponent();
@@ -17,18 +19,24 @@ public partial class MainWindow : Window
 
     private void GlControl_OnOpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
     {
-
+        
     }
 
     private void GlControl_OnResized(object sender, OpenGLRoutedEventArgs args)
     {
+        OpenGL gl = args.OpenGL;
+        gl.MatrixMode(OpenGL.GL_PROJECTION);
+
+        gl.LoadIdentity();
+        gl.Ortho(0.75, 1.25, 0.75, 1.25, -1, 4);
+
+        gl.MatrixMode(OpenGL.GL_MODELVIEW);
+        
 
     }
 
     private void GlControl_OnOpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
-
-
     }
 
     // TODO most likely breaks when adding a camera

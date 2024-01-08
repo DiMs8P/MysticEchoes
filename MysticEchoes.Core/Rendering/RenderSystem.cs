@@ -12,9 +12,11 @@ using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
 using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Cameras;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 
 namespace MysticEchoes.Core.Rendering;
@@ -30,6 +32,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
     private EcsPool<SpaceTreeComponent> _spaceTrees;
 
+    private EcsFilter _playerFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
@@ -50,6 +53,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _sprites = world.GetPool<SpriteComponent>();
         _rendersFilter = world.Filter<RenderComponent>().End();
 
+        _playerFilter = world.Filter<PlayerMarker>().Inc<TransformComponent>().End();
         _transforms = world.GetPool<TransformComponent>();
         _tileMaps = world.GetPool<TileMapComponent>();
         _staticColliders = world.GetPool<StaticCollider>();
@@ -59,6 +63,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _doors = world.GetPool<DoorComponent>();
 
         _mapId = world.Filter<TileMapComponent>().End().GetRawEntities()[0];
+
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -72,8 +77,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             throw new InvalidOperationException("Open Gl wasn't initialized");
 
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-        _gl.LoadIdentity();
-        _gl.Ortho(0, 2, 0, 2, -1, 2);
+
         //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
         //_gl.Translate(-(1-0.29f), -1.4, 0f);
         //t += 0.001;
@@ -234,6 +238,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 const float halfSize = 0.2f;
+
                 var layer = 0f;
                 HandleReflection(halfSize, spriteComponent.ReflectByY, layer);
 
@@ -252,6 +257,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 var collider = _dynamicColliders.Get(entityId);
                 DrawCollider(collider.Box.Shape, 1.0f, 0.3f, 0.0f);
+                
             }
             else if (render.Type is RenderingType.General)
             {
@@ -456,9 +462,11 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         const float p = 9e-2f;
 
         _gl.TexCoord(0.0 + p, 0.0f + p);
+
         _gl.Vertex(rect.Left, rect.Top, layer);
         _gl.TexCoord(0.0 + p, 1.0f - p);
         _gl.Vertex(rect.Left, rect.Bottom, layer);
+
         _gl.TexCoord(1.0 - p, 1.0f - p);
         _gl.Vertex(rect.Right, rect.Bottom, layer);
         _gl.TexCoord(1.0 - p, 0.0f + p);
@@ -468,6 +476,4 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
         _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
     }
-    
-    
 }
