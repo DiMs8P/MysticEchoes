@@ -360,7 +360,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
             ref ItemComponent itemComponent = ref _items.Get(targetId);
             itemComponent.Item.OnItemTaken(entityId, _world);
                     
-            _entitiesToClear.Add(entityId);
+            _entitiesToClear.Add(targetId);
         }
     }
 
