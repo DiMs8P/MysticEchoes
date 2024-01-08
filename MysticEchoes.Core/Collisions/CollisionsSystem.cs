@@ -380,7 +380,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
                 explosionTransform.Location = bulletTransform.Location;
                         
                 ref var explosionCollider = ref _dynamicColliders.Get(explosionId);
-                Vector2 boxSize = new Vector2(0.265f, 0.35f) * explosionTransform.Scale;
+                Vector2 boxSize = explosionCollider.DefaultSize * explosionTransform.Scale;
                 explosionCollider.Box = new Box(explosionId, new Rectangle(
                     explosionTransform.Location - boxSize / 2, 
                     boxSize

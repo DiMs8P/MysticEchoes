@@ -115,7 +115,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
 
         playerCollider.Box = new Box(player, new Rectangle(
             Vector2.Zero, 
-            new Vector2(0.265f, 0.35f) * transform.Scale
+            playerCollider.DefaultSize * transform.Scale
         ));
         playerCollider.Behavior = CollisionBehavior.AllyCharacter;
     }

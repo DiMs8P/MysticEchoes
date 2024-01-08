@@ -35,7 +35,7 @@ public class NecromancerFactory : BaseEnemyFactory
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(
             Vector2.Zero, 
-            new Vector2(0.05f, 0.1f) * transformComponent.Scale
+            dynamicCollider.DefaultSize * transformComponent.Scale
         ));
         
         return createdEntity;

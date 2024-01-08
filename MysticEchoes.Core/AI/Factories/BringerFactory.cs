@@ -34,7 +34,7 @@ public class BringerFactory : BaseEnemyFactory
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEntity);
         dynamicCollider.Box = new Box(createdEntity, new Rectangle(
             Vector2.Zero, 
-            new Vector2(0.1f, 0.28f) * transformComponent.Scale
+            dynamicCollider.DefaultSize * transformComponent.Scale
         ));
         
         return createdEntity;

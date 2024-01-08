@@ -60,6 +60,7 @@ namespace MysticEchoes.Core.Camera
             {
                 if (pos.Speed[0] <= movement.Speed / 50)
                     pos.Speed = new Vector4(pos.Speed[0] - movement.Speed / 500, pos.Speed[1], pos.Speed[2], pos.Speed[3]);
+                i = 0;
             }
             else
             {

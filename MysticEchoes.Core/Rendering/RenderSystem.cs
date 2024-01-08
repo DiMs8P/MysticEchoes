@@ -8,6 +8,7 @@ using MazeGeneration.TreeModule;
 using MazeGeneration.TreeModule.Rooms;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
@@ -17,6 +18,7 @@ using SevenBoldPencil.EasyDi;
 using SharpGL;
 using SharpGL.SceneGraph;
 using SharpGL.SceneGraph.Cameras;
+using SharpGL.SceneGraph.Lighting;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 
 namespace MysticEchoes.Core.Rendering;
@@ -39,6 +41,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<DynamicCollider> _dynamicColliders;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
     private EcsPool<DoorComponent> _doors;
+    private EcsPool<HealthComponent> _health;
     private int _mapId;
 
     private double t;
@@ -61,6 +64,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
         _doors = world.GetPool<DoorComponent>();
+        _health = world.GetPool<HealthComponent>();
 
         _mapId = world.Filter<TileMapComponent>().End().GetRawEntities()[0];
 
@@ -228,9 +232,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location + 
-                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X} : spriteComponent.LocalOffset));
-                
+                _gl.Translate(transform.Location +
+                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with { X = -spriteComponent.LocalOffset.X } : spriteComponent.LocalOffset));
+
                 _gl.Scale(transform.Scale);
 
                 _gl.Begin(OpenGL.GL_QUADS);
@@ -257,7 +261,23 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 var collider = _dynamicColliders.Get(entityId);
                 DrawCollider(collider.Box.Shape, 1.0f, 0.3f, 0.0f);
-                
+
+                _gl.Begin(OpenGL.GL_QUADS);
+
+                _gl.Color(1.0f, 0.0f, 0.0f);
+
+                ref HealthComponent health = ref _health.Get(entityId);
+
+                float widthBar = collider.Box.Shape.Right - collider.Box.Shape.Left;
+                float heightBar = (collider.Box.Shape.Top - collider.Box.Shape.Bottom) / 5;
+                _gl.Vertex(collider.Box.Shape.Left, collider.Box.Shape.Top + heightBar / 2);
+                _gl.Vertex(collider.Box.Shape.Left, collider.Box.Shape.Top + heightBar);
+                _gl.Vertex(collider.Box.Shape.Left + widthBar * (health.Health / health.MaxHealth), collider.Box.Shape.Top + heightBar);
+                _gl.Vertex(collider.Box.Shape.Left + widthBar * (health.Health / health.MaxHealth), collider.Box.Shape.Top + heightBar / 2);
+
+                _gl.End();
+                _gl.PushMatrix();
+
             }
             else if (render.Type is RenderingType.General)
             {
@@ -270,9 +290,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location + 
-                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X} : spriteComponent.LocalOffset));
-                
+                _gl.Translate(transform.Location +
+                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with { X = -spriteComponent.LocalOffset.X } : spriteComponent.LocalOffset));
+
                 _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX());
                 _gl.Scale(transform.Scale);
 
@@ -282,7 +302,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 const float halfSize = 0.2f;
                 HandleReflection(halfSize, spriteComponent.ReflectByY);
-                
+
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -329,7 +349,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                         _gl.Color(1.0f, 0.0f, 0.0f, alpha);
                     }
                 }
-                
+
                 var spawn = _enemySpawns.Get(entityId);
 
                 var rect = spawn.Area;
@@ -382,7 +402,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 var tile = door.Tile;
                 if (door.Orientation is not DoorOrientation.Horizontal)
                 {
-                    tile = door.Tile with {Y = door.Tile.Y + 1};
+                    tile = door.Tile with { Y = door.Tile.Y + 1 };
                     if (door.Orientation is DoorOrientation.VerticalLeft &&
                         !door.IsOpen)
                     {
@@ -393,7 +413,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     {
                         PrintTile(door.Tile, map, "DoorRightContinuation");
                     }
-
                 }
                 PrintTile(tile, map, texture);
             }
@@ -408,7 +427,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     {
         if (reflect)
         {
-            _gl.TexCoord(1.0, 0.0f); 
+            _gl.TexCoord(1.0, 0.0f);
             _gl.Vertex(-halfSize, +halfSize, layer);
             _gl.TexCoord(1.0, 1.0f);
             _gl.Vertex(-halfSize, -halfSize, layer);

@@ -83,13 +83,11 @@ public class BaseEnemyFactory : IEnemyFactory
         transformComponent.Location = enemyInitializationInfo.Location;
         
         ref DynamicCollider dynamicCollider = ref _colliders.Get(createdEnemyId);
-        dynamicCollider = new DynamicCollider()
-        {
-            Box = new Box(createdEnemyId, new Rectangle(
+        dynamicCollider.Box = new Box(createdEnemyId, new Rectangle(
                 Vector2.Zero,
-                new Vector2(0.265f, 0.35f) * transformComponent.Scale
-            ))
-        };
+                dynamicCollider.DefaultSize * transformComponent.Scale
+            ));
+           
         dynamicCollider.Behavior = CollisionBehavior.EnemyCharacter;
         
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
