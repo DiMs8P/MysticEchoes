@@ -233,12 +233,12 @@
           "Type": "General"
         }
       },
-      {
-        "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
-        "Parameters": {
-          "LifeTime": 1
-        }
-      },
+      //{
+      //  "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
+      //  "Parameters": {
+      //    "LifeTime": 1
+      //  }
+      //},
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageZoneComponent",
         "Parameters": {}

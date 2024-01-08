@@ -34,8 +34,8 @@ public class GenerationConfig
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 20,
-                    [EnemyType.Elite] = 30,
+                    [EnemyType.Common] = 14,
+                    [EnemyType.Elite] = 20,
                     [EnemyType.MiniBoss] = 60,
                 },
                 frequencies: new()
