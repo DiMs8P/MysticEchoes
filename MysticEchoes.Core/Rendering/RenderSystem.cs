@@ -224,14 +224,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                if (spriteComponent.ReflectByY)
-                {
-                    _gl.Translate(transform.Location + spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X});
-                }
-                else
-                {
-                    _gl.Translate(transform.Location + spriteComponent.LocalOffset);
-                }
+                _gl.Translate(transform.Location + 
+                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X} : spriteComponent.LocalOffset));
                 
                 _gl.Scale(transform.Scale);
 
@@ -241,29 +235,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 const float halfSize = 0.2f;
                 var layer = 0f;
-                
-                if (spriteComponent.ReflectByY)
-                {
-                    _gl.TexCoord(1.0, 0.0f); 
-                    _gl.Vertex(-halfSize, +halfSize, layer);
-                    _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(-halfSize, -halfSize, layer);
-                    _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(+halfSize, -halfSize, layer);
-                    _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(+halfSize, +halfSize, layer);
-                }
-                else
-                {
-                    _gl.TexCoord(0.0, 0.0f);
-                    _gl.Vertex(-halfSize, +halfSize, layer);
-                    _gl.TexCoord(0.0, 1.0f);
-                    _gl.Vertex(-halfSize, -halfSize, layer);
-                    _gl.TexCoord(1.0, 1.0f);
-                    _gl.Vertex(+halfSize, -halfSize, layer);
-                    _gl.TexCoord(1.0, 0.0f);
-                    _gl.Vertex(+halfSize, +halfSize, layer);
-                }
+                HandleReflection(halfSize, spriteComponent.ReflectByY, layer);
 
                 _gl.End();
 
@@ -292,7 +264,9 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Translate(transform.Location + spriteComponent.LocalOffset);
+                _gl.Translate(transform.Location + 
+                              (spriteComponent.ReflectByY ? spriteComponent.LocalOffset with{ X = -spriteComponent.LocalOffset.X} : spriteComponent.LocalOffset));
+                
                 _gl.Rotate(transform.Rotation.GetAngleBetweenGlobalX());
                 _gl.Scale(transform.Scale);
 
@@ -301,14 +275,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 const float halfSize = 0.2f;
-                _gl.TexCoord(0.0, 0.0f);
-                _gl.Vertex(-halfSize, +halfSize);
-                _gl.TexCoord(0.0, 1.0f);
-                _gl.Vertex(-halfSize, -halfSize);
-                _gl.TexCoord(1.0, 1.0f);
-                _gl.Vertex(+halfSize, -halfSize);
-                _gl.TexCoord(1.0, 0.0f);
-                _gl.Vertex(+halfSize, +halfSize);
+                HandleReflection(halfSize, spriteComponent.ReflectByY);
+                
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -427,6 +395,32 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             {
                 throw new NotImplementedException();
             }
+        }
+    }
+
+    private void HandleReflection(float halfSize, bool reflect, float layer = 0.0f)
+    {
+        if (reflect)
+        {
+            _gl.TexCoord(1.0, 0.0f); 
+            _gl.Vertex(-halfSize, +halfSize, layer);
+            _gl.TexCoord(1.0, 1.0f);
+            _gl.Vertex(-halfSize, -halfSize, layer);
+            _gl.TexCoord(0.0, 1.0f);
+            _gl.Vertex(+halfSize, -halfSize, layer);
+            _gl.TexCoord(0.0, 0.0f);
+            _gl.Vertex(+halfSize, +halfSize, layer);
+        }
+        else
+        {
+            _gl.TexCoord(0.0, 0.0f);
+            _gl.Vertex(-halfSize, +halfSize);
+            _gl.TexCoord(0.0, 1.0f);
+            _gl.Vertex(-halfSize, -halfSize);
+            _gl.TexCoord(1.0, 1.0f);
+            _gl.Vertex(+halfSize, -halfSize);
+            _gl.TexCoord(1.0, 0.0f);
+            _gl.Vertex(+halfSize, +halfSize);
         }
     }
 

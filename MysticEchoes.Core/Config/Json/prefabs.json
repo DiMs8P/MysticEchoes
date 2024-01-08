@@ -145,7 +145,7 @@
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
-          "Damage": 10
+          "Damage": 100
         }
       },
       {

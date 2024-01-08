@@ -7,6 +7,7 @@ using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
 using MysticEchoes.Core.Damage;
+using MysticEchoes.Core.Debug;
 using MysticEchoes.Core.Events;
 using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
@@ -78,7 +79,8 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Add(new EnemySpawnerSystem())
+            .Inject(_entityBuilder, _prefabManager, _enemyFactory, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);
