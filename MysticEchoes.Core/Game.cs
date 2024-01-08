@@ -108,13 +108,6 @@ public class Game
             .Add(new CollisionsSystem())
             .Inject(_entityBuilder, _systemExecutionContext, _prefabManager, _enemyFactory, GameplayEventListener)
             .Init();
-
-        _animationSystems = new EcsSystems(_world);
-        _animationSystems
-            .Add(new AnimationStateMachineSystem())
-            .Add(new AnimationSystem())
-            .Inject(_animationManager, _systemExecutionContext)
-            .Init();
         
         _cleanupSystems = new EcsSystems(_world);
         _cleanupSystems
@@ -122,6 +115,13 @@ public class Game
             .Add(new LifeTimeCleanupSystem())
             .Add(new HealthSystem())
             .Inject(_systemExecutionContext, GameplayEventListener)
+            .Init();
+        
+        _animationSystems = new EcsSystems(_world);
+        _animationSystems
+            .Add(new AnimationStateMachineSystem())
+            .Add(new AnimationSystem())
+            .Inject(_animationManager, _systemExecutionContext)
             .Init();
     }
 
@@ -147,8 +147,8 @@ public class Game
         _shootingSystems.Run();
         _gameplaySystems.Run();
         _collisionSystems.Run();
-        _animationSystems.Run();
         _cleanupSystems.Run();
+        _animationSystems.Run();
 
         // _updateTimer.Start();
     }

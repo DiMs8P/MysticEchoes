@@ -36,6 +36,7 @@ public class HealthSystem : IEcsInitSystem, IEcsRunSystem
 
             if (entityHealth is { Health: <= 0.0f, Immortal: false })
             {
+                entityHealth.InvokeOnPreDead(healthId);
                 ProcessPlayerOrEnemyDeath(healthId);
                 _world.DelEntity(healthId);
             }

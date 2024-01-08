@@ -5,12 +5,15 @@ using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
+using MysticEchoes.Core.Events;
 using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Inventory;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
+using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
 
@@ -28,11 +31,15 @@ public class BaseEnemyFactory : IEnemyFactory
     protected EcsPool<EnemyComponent> _enemies;
     protected EcsPool<DynamicCollider> _colliders;
     protected EcsPool<TransformComponent> _transforms;
-    protected EcsPool<CharacterAnimationComponent> _animations;
+    protected EcsPool<AnimationComponent> _animations;
+    protected EcsPool<CharacterAnimationComponent> _characterAnimations;
     
     protected EcsPool<RangeWeaponComponent> _weapons;
     protected EcsPool<OwningByComponent> _ownings;
     protected EcsPool<StartingItems> _items;
+
+    protected EcsPool<DoorComponent> _doors;
+    protected EcsPool<RoomComponent> _rooms;
     
     public BaseEnemyFactory(EcsWorld world, EntityBuilder builder, ItemsFactory itemsFactory, PrefabManager prefabManager)
     {
@@ -46,11 +53,15 @@ public class BaseEnemyFactory : IEnemyFactory
         _enemies = world.GetPool<EnemyComponent>();
         _colliders = world.GetPool<DynamicCollider>();
         _transforms = world.GetPool<TransformComponent>();
-        _animations = world.GetPool<CharacterAnimationComponent>();
+        _animations = world.GetPool<AnimationComponent>();
+        _characterAnimations = world.GetPool<CharacterAnimationComponent>();
 
         _weapons = world.GetPool<RangeWeaponComponent>();
         _ownings = world.GetPool<OwningByComponent>();
         _items = world.GetPool<StartingItems>();
+
+        _doors = world.GetPool<DoorComponent>();
+        _rooms = world.GetPool<RoomComponent>();
     }
 
     public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
@@ -87,6 +98,7 @@ public class BaseEnemyFactory : IEnemyFactory
         
         ref HealthComponent enemyHealth = ref _health.Get(createdEnemyId);
         enemyHealth.Health = enemyHealth.MaxHealth;
+        enemyHealth.OnPreDeadEvent += OnDeadEventHandler;
         
         ref EnemyComponent enemyComponent = ref _enemies.Get(createdEnemyId);
         enemyComponent.EnemyId = enemyInitializationInfo.EnemyId;
@@ -119,7 +131,7 @@ public class BaseEnemyFactory : IEnemyFactory
     
     protected virtual void InitializeEnemyAnimations(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {
-        ref CharacterAnimationComponent enemyAnimations = ref _animations.Get(createdEnemyId);
+        ref CharacterAnimationComponent enemyAnimations = ref _characterAnimations.Get(createdEnemyId);
         BaseStateMachine? animationStateMachine = Activator.CreateInstance(enemyInitializationInternalInfo.EnemyStateMachine, createdEnemyId, World) as BaseStateMachine;
         if (animationStateMachine is null)
         {
@@ -142,6 +154,28 @@ public class BaseEnemyFactory : IEnemyFactory
             }
             
             _items.Del(createdEnemy);
+        }
+    }
+
+    protected virtual void OnDeadEventHandler(int entityId)
+    {
+        ref CharacterAnimationComponent characterAnimationComponent = ref _characterAnimations.Get(entityId);
+
+        if (characterAnimationComponent.Animations.TryGetValue(CharacterState.Death, out string animationId))
+        {
+            int createdAnimation = PrefabManager.CreateEntityFromPrefab(Builder, PrefabType.Animation);
+            
+            ref AnimationComponent animationComponent = ref _animations.Get(createdAnimation);
+            ref AnimationComponent deadEnemyAnimationComponent = ref _animations.Get(entityId);
+
+            animationComponent.AnimationId = animationId;
+            animationComponent.CurrentFrameIndex = 0;
+            animationComponent.ReflectByY = deadEnemyAnimationComponent.ReflectByY;
+
+            ref TransformComponent animationTransformComponent = ref _transforms.Get(createdAnimation);
+            ref TransformComponent deadEnemyTransformComponent = ref _transforms.Get(entityId);
+            animationTransformComponent.Location = deadEnemyTransformComponent.Location;
+            animationTransformComponent.Scale = deadEnemyTransformComponent.Scale;
         }
     }
 }

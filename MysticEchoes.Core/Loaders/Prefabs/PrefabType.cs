@@ -11,5 +11,6 @@ public enum PrefabType
     SimpleExplosion,
     Necromancer,
     BringerOfDeath,
-    NightBorne
+    NightBorne,
+    Animation
 }

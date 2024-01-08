@@ -319,20 +319,22 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
                 _gl.PushMatrix();
 
-                var collider = _dynamicColliders.Get(entityId);
-                var rect = collider.Box.Shape;
-                _gl.Translate(rect.LeftBottom);
+                if (_dynamicColliders.Has(entityId))
+                {
+                    var collider = _dynamicColliders.Get(entityId);
+                    var rect = collider.Box.Shape;
+                    _gl.Translate(rect.LeftBottom);
 
-                _gl.Begin(OpenGL.GL_LINE_LOOP);
+                    _gl.Begin(OpenGL.GL_LINE_LOOP);
 
-                _gl.Color(1.0f, 0.3f, 0.0f);
+                    _gl.Color(1.0f, 0.3f, 0.0f);
 
-                _gl.Vertex(0, 0);
-                _gl.Vertex(0, rect.Size.Y);
-                _gl.Vertex(rect.Size.X, rect.Size.Y);
-                _gl.Vertex(rect.Size.X, 0);
-                _gl.End();
-
+                    _gl.Vertex(0, 0);
+                    _gl.Vertex(0, rect.Size.Y);
+                    _gl.Vertex(rect.Size.X, rect.Size.Y);
+                    _gl.Vertex(rect.Size.X, 0);
+                    _gl.End();
+                }
                 _gl.PopMatrix();
 
             }
