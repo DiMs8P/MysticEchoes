@@ -250,7 +250,6 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
-          "Location": "0.47 0.2",
           "Scale": "0.1 0.1"
         }
       },
@@ -270,7 +269,9 @@
       },
       {
         "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
-        "Parameters": {}
+        "Parameters": {
+          "DefaultSize": "0.2 0.2"
+        }
       },
       {
         "TypeName": "MysticEchoes.Core.Items.ItemComponent",

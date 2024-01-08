@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Transactions;
 using Leopotam.EcsLite;
 using MazeGeneration;
 using MazeGeneration.TreeModule;
@@ -12,6 +13,7 @@ using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
+using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Rendering;
 using SevenBoldPencil.EasyDi;
 using Point = System.Drawing.Point;
@@ -29,11 +31,15 @@ public class InitEnvironmentSystem : IEcsInitSystem
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
 
+    private EcsPool<TransformComponent> _transforms;
+
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
+
+        _transforms = world.GetPool<TransformComponent>();
 
         CreateMap();
         CreateMoney();
@@ -399,13 +405,8 @@ public class InitEnvironmentSystem : IEcsInitSystem
 
     private void CreateMoney()
     {
-        int entityId = _itemsFactory.CreateItemEntity(0, 100);
-
-        ref DynamicCollider collider = ref _dynamicColliders.Get(entityId);
-        collider.Box = new Box(entityId, new Rectangle(
-            Vector2.Zero,
-            Vector2.One * 0.4f * 0.1f / 2
-        ));
-        collider.Behavior = CollisionBehavior.Item;
+        ItemInitializationInfo itemInitializationInfo = new ItemInitializationInfo();
+        itemInitializationInfo.Location = new Vector2(0.47f, 0.2f);
+        int entityId = _itemsFactory.CreateItemEntity(3, itemInitializationInfo, 100);
     }
 }

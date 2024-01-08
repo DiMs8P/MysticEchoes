@@ -383,6 +383,15 @@
   "NightBorneDeath21": "NightBorne\\Death\\tile113.png",
   "NightBorneDeath22": "NightBorne\\Death\\tile114.png",
 
+  "HealthPotion0": "Potions\\Health\\tile000.png",
+  "HealthPotion1": "Potions\\Health\\tile001.png",
+  "HealthPotion2": "Potions\\Health\\tile002.png",
+  "HealthPotion3": "Potions\\Health\\tile003.png",
+  "HealthPotion4": "Potions\\Health\\tile004.png",
+  "HealthPotion5": "Potions\\Health\\tile005.png",
+  "HealthPotion6": "Potions\\Health\\tile006.png",
+  "HealthPotion7": "Potions\\Health\\tile007.png",
+
   "WallTop": "HorizontalWall.png",
   "WallSideRight": "WallSideRight.png",
   "WallSideLeft": "WallSideLeft.png",

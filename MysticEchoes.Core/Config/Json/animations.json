@@ -1519,5 +1519,40 @@
         "MysticEchoes.Core.Animations.AnimNotifies.OnRemoveNotify"
       ]
     }
+  ],
+
+  "HealthPotion": [
+    {
+      "Sprite": "HealthPotion0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "HealthPotion7",
+      "CurrentFrameDuration": 0.016666
+    }
   ]
 }
