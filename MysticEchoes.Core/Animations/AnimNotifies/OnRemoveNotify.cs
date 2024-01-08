@@ -9,19 +9,11 @@ public class OnRemoveNotify : AnimNotify
     {
         EcsPool<LifeTimeComponent> lifetimes = world.GetPool<LifeTimeComponent>();
 
-        if (lifetimes.Has(animationOwnerEntityId))
-        {
-            ref LifeTimeComponent lifeTimeComponent = ref lifetimes.Get(animationOwnerEntityId);
-            lifeTimeComponent.LifeTime = 0.0f;
-            lifeTimeComponent.IsActive = true;
-        }
-        else
-        {
-            lifetimes.Add(animationOwnerEntityId) = new LifeTimeComponent()
-            {
-                LifeTime = 0.0f,
-                IsActive = true
-            };
-        }
+        ref LifeTimeComponent lifeTimeComponent = ref lifetimes.Has(animationOwnerEntityId)
+            ? ref lifetimes.Get(animationOwnerEntityId)
+            : ref lifetimes.Add(animationOwnerEntityId);
+
+        lifeTimeComponent.LifeTime = 0.0f;
+        lifeTimeComponent.IsActive = true;
     }
 }
