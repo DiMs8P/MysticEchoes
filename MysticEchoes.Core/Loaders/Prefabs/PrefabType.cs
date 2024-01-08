@@ -9,5 +9,8 @@ public enum PrefabType
     BaseItem,
     DefaultWeapon,
     SimpleExplosion,
-    Necromancer
+    Necromancer,
+    BringerOfDeath,
+    NightBorne,
+    Animation
 }

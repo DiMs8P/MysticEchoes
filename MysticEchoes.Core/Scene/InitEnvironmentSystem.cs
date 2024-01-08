@@ -2,6 +2,7 @@
 using Leopotam.EcsLite;
 using MazeGeneration;
 using MazeGeneration.TreeModule;
+using MazeGeneration.TreeModule.Rooms;
 using MysticEchoes.Core.Animations;
 using MysticEchoes.Core.Base.Geometry;
 using MysticEchoes.Core.Collisions;
@@ -50,7 +51,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
         CreateWalls(map, mapComponent);
 
 
-        var doorEntities = CreateDoors(map);
+        var doorEntities = CreateDoors(map, mapComponent);
 
         foreach (var roomNode in map.BinarySpaceTree.DeepCrawl()
                      .Where(x => x.Room is not null))
@@ -62,7 +63,7 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 new Vector2(room.X * mapComponent.TileSize.X, room.Y * mapComponent.TileSize.Y),
                 new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
             );
-            var doorIds = doors.Select(x => doorEntities[x]).ToList();
+            var doorIds = doors.Select(x => doorEntities[x.Position]).ToList();
             var enemySpawnIds = CreateEnemySpawn(roomNode, mapComponent);
 
 
@@ -75,12 +76,11 @@ public class InitEnvironmentSystem : IEcsInitSystem
                 })
                 .End();
 
-            var entranceTrigger = _builder.Create()
-                .Add(new RenderComponent(RenderingType.DynamicColliderDebugView))
-                .End();
-
             if (roomNode.Room.Type is not RoomType.PlayerSpawn)
             {
+                var entranceTrigger = _builder.Create()
+                    .Add(new RenderComponent(RenderingType.EntranceTrigger))
+                    .End();
                 _builder.AddTo(entranceTrigger, new DynamicCollider
                 {
                     Box = new Box(
@@ -102,52 +102,104 @@ public class InitEnvironmentSystem : IEcsInitSystem
         }
     }
 
-    private Dictionary<Point, int> CreateDoors(Map map)
+    private Dictionary<Point, int> CreateDoors(Map map, TileMapComponent mapComponent)
     {
         var doorEntities = new Dictionary<System.Drawing.Point, int>();
-        foreach (var door in map.DoorTiles)
+        foreach (var door in map.HorizontalDoors)
         {
-            var doorId = _builder.Create()
-                .Add(new DoorComponent
+            var shape = new Rectangle(
+                new Vector2(
+                    door.X * mapComponent.TileSize.X,
+                    door.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
+                ),
+                mapComponent.TileSize with
                 {
-                    IsOpen = true,
-                    Tile = door
-                })
-                .End();
+                    Y = mapComponent.TileSize.Y * Map.ColliderThickness
+                }
+            );
+            var doorId = CreateSingleDoor(DoorOrientation.Horizontal, door, shape);
             doorEntities.Add(door, doorId);
         }
-
+        foreach (var door in map.VerticalDoorLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    door.X * mapComponent.TileSize.X + mapComponent.TileSize.X * (1 - Map.ColliderThickness),
+                    door.Y * mapComponent.TileSize.Y
+                ),
+                mapComponent.TileSize with
+                {
+                    X = mapComponent.TileSize.X * Map.ColliderThickness
+                }
+            );
+            var doorId = CreateSingleDoor(DoorOrientation.VerticalLeft, door, shape);
+            doorEntities.Add(door, doorId);
+        }
+        foreach (var door in map.VerticalDoorRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(door.X * mapComponent.TileSize.X, door.Y * mapComponent.TileSize.Y),
+                mapComponent.TileSize with
+                {
+                    X = mapComponent.TileSize.X * Map.ColliderThickness
+                }
+            );
+            var doorId = CreateSingleDoor(DoorOrientation.VerticalRight, door, shape);
+            doorEntities.Add(door, doorId);
+        }
         return doorEntities;
+    }
+
+    private int CreateSingleDoor(DoorOrientation orientation, Point position, Rectangle shape)
+    {
+        var doorId = _builder.Create()
+            .Add(new DoorComponent
+            {
+                IsOpen = true,
+                Orientation = orientation,
+                Tile = position,
+                Shape = shape
+            })
+            .Add(new RenderComponent
+            {
+                Type = RenderingType.Door
+            })
+            .End();
+        _builder.AddTo(doorId, new DynamicCollider
+        {
+            Box = new Box(
+                doorId,
+                shape
+            ),
+            Behavior = CollisionBehavior.Ignore
+        });
+        return doorId;
     }
 
     private List<int> CreateEnemySpawn(RoomNode roomNode, TileMapComponent mapComponent)
     {
         var enemySpawnIds = new List<int>();
-        foreach (var spawn in roomNode.Room.EnemySpawns)
+        foreach (var spawn in roomNode.Room!.EnemySpawns)
         {
             var spawnId = _builder.Create()
                 .End();
+
+            var area = new Rectangle(
+                new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
+                    spawn.Area.Top * mapComponent.TileSize.Y),
+                new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
+                    spawn.Area.Height * mapComponent.TileSize.Y)
+            );
+
             enemySpawnIds.Add(spawnId);
-            _builder.AddTo(spawnId, new DynamicCollider
-                {
-                    Box = new Box(
-                        spawnId,
-                        new Rectangle(
-                            new Vector2(spawn.Area.Left * mapComponent.TileSize.X,
-                                spawn.Area.Top * mapComponent.TileSize.Y),
-                            new Vector2(spawn.Area.Width * mapComponent.TileSize.X,
-                                spawn.Area.Height * mapComponent.TileSize.Y)
-                        )
-                    ),
-                    Behavior = CollisionBehavior.Ignore
-                })
-                .AddTo(spawnId, new RenderComponent
+            _builder.AddTo(spawnId, new RenderComponent
                 {
                     Type = RenderingType.EnemySpawn
                 })
                 .AddTo(spawnId, new EnemySpawnComponent
                 {
-                    Data = spawn
+                    Area = area,
+                    Type = spawn.Type
                 });
         }
 
@@ -159,8 +211,11 @@ public class InitEnvironmentSystem : IEcsInitSystem
         foreach (var wall in map.WallTopTiles)
         {
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
+                ),
+                mapComponent.TileSize with { Y = mapComponent.TileSize.Y * Map.ColliderThickness }
             );
             CreateSingleWall(shape);
         }
@@ -168,23 +223,38 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize with
+                {
+                    X = mapComponent.TileSize.X * Map.ColliderThickness
+                }
             );
             CreateSingleWall(shape);
         }
         foreach (var wall in map.WallSideLeftTiles)
         {
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * (1 - Map.ColliderThickness),
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                mapComponent.TileSize with
+                {
+                    X = mapComponent.TileSize.X * Map.ColliderThickness
+                }
             );
             CreateSingleWall(shape);
         }
         foreach (var wall in map.WallBottomTiles)
         {
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
+                ),
+                mapComponent.TileSize with
+                {
+                    Y = mapComponent.TileSize.Y * Map.ColliderThickness
+                }
             );
             CreateSingleWall(shape);
         }
@@ -192,26 +262,120 @@ public class InitEnvironmentSystem : IEcsInitSystem
         {
             var shape = new Rectangle(
                 new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                mapComponent.TileSize
             );
             CreateSingleWall(shape);
         }
+
         foreach (var wall in map.WallInnerCornerDownLeft)
         {
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
+                ),
+                mapComponent.TileSize with
+                {
+                    Y = mapComponent.TileSize.Y * Map.ColliderThickness
+                }
             );
             CreateSingleWall(shape);
+            shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * (1f - Map.ColliderThickness),
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * Map.Shift
+                )
+            );
+            CreateSingleWall(shape);
+
         }
         foreach (var wall in map.WallInnerCornerDownRight)
         {
             var shape = new Rectangle(
-                new Vector2(wall.X * mapComponent.TileSize.X, wall.Y * mapComponent.TileSize.Y),
-                new Vector2(mapComponent.TileSize.X, mapComponent.TileSize.Y)
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * Map.Shift
+                )
+            );
+            CreateSingleWall(shape);
+            shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * Map.Shift
+                ),
+                mapComponent.TileSize with
+                {
+                    Y = mapComponent.TileSize.Y * Map.ColliderThickness
+                }
             );
             CreateSingleWall(shape);
         }
+
+        foreach (var wall in map.WallDiagonalCornerDownLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * 2 * Map.Shift,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * (Map.Shift  + Map.ColliderThickness)
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * (1 - (Map.Shift + Map.ColliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerDownRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y + mapComponent.TileSize.Y * (Map.Shift + Map.ColliderThickness)
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * (1 - (Map.Shift + Map.ColliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerUpLeft)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X + mapComponent.TileSize.X * 2 * Map.Shift,
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * (1 - (Map.Shift + Map.ColliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+        foreach (var wall in map.WallDiagonalCornerUpRight)
+        {
+            var shape = new Rectangle(
+                new Vector2(
+                    wall.X * mapComponent.TileSize.X,
+                    wall.Y * mapComponent.TileSize.Y
+                ),
+                new Vector2(
+                    mapComponent.TileSize.X * Map.ColliderThickness,
+                    mapComponent.TileSize.Y * (1 - (Map.Shift + Map.ColliderThickness))
+                )
+            );
+            CreateSingleWall(shape);
+        }
+
     }
 
     private int CreateSingleWall(Rectangle shape)

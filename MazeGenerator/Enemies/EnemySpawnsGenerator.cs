@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using MazeGeneration.TreeModule;
+using MazeGeneration.TreeModule.Rooms;
 
 namespace MazeGeneration.Enemies;
 

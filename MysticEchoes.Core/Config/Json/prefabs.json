@@ -19,7 +19,7 @@
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
           "Rotation": "0 1",
-          "Scale": "0.10 0.10"
+          "Scale": "0.09 0.09"
         }
       },
       {
@@ -148,9 +148,9 @@
         "Parameters": {}
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
-          "Damage": 10
+          "Damage": 100
         }
       },
       {
@@ -204,7 +204,7 @@
         "Parameters": {}
       },
       {
-        "TypeName": "MysticEchoes.Core.Shooting.DamageComponent",
+        "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
           "Damage": 10
         }
@@ -232,6 +232,10 @@
         "Parameters": {
           "LifeTime": 1
         }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Damage.DamageZoneComponent",
+        "Parameters": {}
       }
     ]
   },
@@ -296,7 +300,7 @@
       {
         "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
         "Parameters": {
-          "AnimationId": "NecromancerRun"
+          "AnimationId": "NecromancerIdle"
         }
       },
       {
@@ -304,8 +308,10 @@
         "Parameters": {
           "Animations": {
             "Idle": "NecromancerIdle",
-            "MovingRight": "NecromancerRun",
-            "Shooting": "NecromancerAttack1"
+            "Run": "NecromancerRun",
+            "Shooting": "NecromancerAttack1",
+            "Hit": "NecromancerHit",
+            "Death": "NecromancerDeath"
           }
         }
       },
@@ -337,6 +343,191 @@
       {
         "TypeName": "MysticEchoes.Core.AI.AiComponent",
         "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
+        "Parameters": { }
+      }
+    ]
+  },
+  "BringerOfDeath": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {
+          "Speed": 0.05
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Rotation": "0 1",
+          "Scale": "0.2 0.2"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+          "AnimationId": "BringerIdle"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
+        "Parameters": {
+          "Animations": {
+            "Idle": "BringerIdle",
+            "Run": "BringerRun",
+            "Shooting": "BringerCast",
+            "Hit": "BringerHit",
+            "Death": "BringerDeath"
+          }
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "BringerIdle0",
+          "LocalOffset": "-0.02 0.01"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Character"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Control.UnitControlComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.RangeWeaponComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
+        "Parameters": { }
+      }
+    ]
+  },
+  "NightBorne": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
+        "Parameters": {
+          "Speed": 0.05
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Health.HealthComponent",
+        "Parameters": {
+          "MaxHealth": 100
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Collisions.DynamicCollider",
+        "Parameters": {}
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+          "Rotation": "0 1",
+          "Scale": "0.3 0.3"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+          "AnimationId": "NightBorneIdle"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.CharacterAnimationComponent",
+        "Parameters": {
+          "Animations": {
+            "Idle": "NightBorneIdle",
+            "Run": "NightBorneRun",
+            "Shooting": "NightBorneAttack",
+            "Hit": "NightBorneHit",
+            "Death": "NightBorneDeath"
+          }
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+          "Sprite": "NecromancerIdle0",
+          "LocalOffset": "0 0.015"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "Character"
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Control.UnitControlComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Shooting.RangeWeaponComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.AiComponent",
+        "Parameters": { }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.AI.EnemyComponent",
+        "Parameters": { }
+      }
+    ]
+  },
+  "Animation": {
+    "Components": [
+      {
+        "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
+        "Parameters": {
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.SpriteComponent",
+        "Parameters": {
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Animations.AnimationComponent",
+        "Parameters": {
+        }
+      },
+      {
+        "TypeName": "MysticEchoes.Core.Rendering.RenderComponent",
+        "Parameters": {
+          "Type": "General"
+        }
       }
     ]
   }

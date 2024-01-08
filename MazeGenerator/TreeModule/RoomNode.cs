@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using MazeGeneration.TreeModule.Rooms;
 
 namespace MazeGeneration.TreeModule;
 

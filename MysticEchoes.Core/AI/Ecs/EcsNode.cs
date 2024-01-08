@@ -7,10 +7,13 @@ public class EcsNode : Node
 {
     protected EcsWorld World;
     protected int SelfEntityId;
-
-    public EcsNode(EcsWorld world, int selfEntityId)
+    protected Blackboard Blackboard;
+    
+    public EcsNode(Blackboard blackboard)
     {
-        World = world;
-        SelfEntityId = selfEntityId;
+        Blackboard = blackboard;
+        
+        World = (EcsWorld)blackboard.GetValueAsObject("World");
+        SelfEntityId = blackboard.GetValueAsInt("SelfEntityId");
     }
 }

@@ -2,6 +2,7 @@
 using System.Drawing;
 using MazeGeneration.Walls;
 using MazeGeneration.Enemies;
+using MazeGeneration.TreeModule.Rooms;
 
 namespace MazeGeneration;
 
@@ -102,6 +103,16 @@ public class MapGenerator
             return innerPoint with { Y = edgeY };
         }
 
+        DoorOrientation GetDoorOrientation(Point roomQuitDirection)
+        {
+            return roomQuitDirection.X switch
+            {
+                > 0 => DoorOrientation.VerticalRight,
+                < 0 => DoorOrientation.VerticalLeft,
+                _ => DoorOrientation.Horizontal
+            };
+        }
+
         var roomNodes = tree.DeepCrawl()
             .Where(x => x.Room is not null)
             .ToList();
@@ -124,10 +135,15 @@ public class MapGenerator
             var direction = GetDirection(start, end);
             var startDoor = GetEdgePoint(GetDirection(start, end), hall.StartRoom, start);
             var startDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(startDoor));
-            startDoorNode.Room!.Doors.Add(new Point(
-                startDoor.X + direction.X,
-                startDoor.Y + direction.Y
-            ));
+            
+            startDoorNode.Room!.Doors.Add(new Door
+            {
+                Position = new Point(
+                    startDoor.X + direction.X,
+                    startDoor.Y + direction.Y
+                ),
+                Orientation = GetDoorOrientation(direction)
+            });
 
             i = hall.ControlPoints.Count - 1;
             do
@@ -144,10 +160,14 @@ public class MapGenerator
             var endDoor = GetEdgePoint(direction, hall.EndRoom, end);
             var endDoorNode = roomNodes.First(x => x.Room!.Shape.ContainsNotStrict(endDoor));
 
-            endDoorNode.Room!.Doors.Add(new Point(
-                endDoor.X + direction.X,
-                endDoor.Y + direction.Y
-            ));
+            endDoorNode.Room!.Doors.Add(new Door
+            {
+                Position = new Point(
+                    endDoor.X + direction.X,
+                    endDoor.Y + direction.Y
+                ),
+                Orientation = GetDoorOrientation(direction)
+            });
         }
     }
 
@@ -484,7 +504,16 @@ public class MapGenerator
         {
             foreach (var door in node.Room!.Doors)
             {
-                map.DoorTiles.Add(door);
+                map.DoorTiles.Add(door.Position);
+
+                var tiles = door.Orientation switch
+                {
+                    DoorOrientation.Horizontal => map.HorizontalDoors,
+                    DoorOrientation.VerticalLeft => map.VerticalDoorLeft,
+                    DoorOrientation.VerticalRight => map.VerticalDoorRight,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                tiles.Add(door.Position);
             }
         }
     }

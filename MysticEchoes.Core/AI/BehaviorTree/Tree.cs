@@ -2,8 +2,12 @@
 
 public abstract class Tree
 {
+    protected Blackboard Blackboard;
     private Node _root = null;
-
+    protected Tree()
+    {
+        Blackboard = new Blackboard();
+    }
     public void Start()
     {
         _root = SetupTree();

@@ -1,7 +1,4 @@
 {
-  "PlayerSettings": {
-    "Speed": 1.0
-  },
   "ItemsSettings": {
     "Items": {
       "0": {
@@ -35,8 +32,17 @@
       "0": {
         "Name": "Necromancer",
         "Description": "",
-        "Quality": "Common",
-        "Prefab": "Necromancer"
+        "Quality": "Common"
+      },
+      "1": {
+        "Name": "BringerOfDeath",
+        "Description": "",
+        "Quality": "Elite"
+      },
+      "2": {
+        "Name": "NightBorne",
+        "Description": "",
+        "Quality": "MiniBoss"
       }
     }
   }

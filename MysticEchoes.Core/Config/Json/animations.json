@@ -741,7 +741,7 @@
       "CurrentFrameDuration": 0.5
     }
   ],
-
+  
   "NecromancerIdle": [
     {
       "Sprite": "NecromancerIdle0",
@@ -1045,7 +1045,479 @@
     },
     {
       "Sprite": "NecromancerDeath8",
+      "CurrentFrameDuration": 0.016666,
+      "AnimNotifies": [
+        "MysticEchoes.Core.Animations.AnimNotifies.OnRemoveNotify"
+      ]
+    }
+  ],
+  
+  "BringerIdle": [
+    {
+      "Sprite": "BringerIdle0",
       "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerIdle7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerRun": [
+    {
+      "Sprite": "BringerRun0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerRun7",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerCast": [
+    {
+      "Sprite": "BringerCast0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerCast8",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerHit": [
+    {
+      "Sprite": "BringerHit0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerHit1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerHit2",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "BringerDeath": [
+    {
+      "Sprite": "BringerDeath0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerDeath9",
+      "CurrentFrameDuration": 0.016666,
+      "AnimNotifies": [
+        "MysticEchoes.Core.Animations.AnimNotifies.OnRemoveNotify"
+      ]
+    }
+  ],
+  "BringerSpell": [
+    {
+      "Sprite": "BringerSpell0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "BringerSpell15",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  
+  "NightBorneIdle": [
+    {
+      "Sprite": "NightBorneIdle0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneIdle8",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneRun": [
+    {
+      "Sprite": "NightBorneRun0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneRun5",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneAttack": [
+    {
+      "Sprite": "NightBorneAttack0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack9",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneAttack11",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneHit": [
+    {
+      "Sprite": "NightBorneHit0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneHit4",
+      "CurrentFrameDuration": 0.016666
+    }
+  ],
+  "NightBorneDeath": [
+    {
+      "Sprite": "NightBorneDeath0",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath1",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath2",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath3",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath4",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath5",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath6",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath7",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath8",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath9",
+      "CurrentFrameDuration": 0.016666,
+      "AnimNotifies": [
+        "MysticEchoes.Core.Animations.AnimNotifies.OnEnableDamageZoneNotify"
+      ]
+    },
+    {
+      "Sprite": "NightBorneDeath10",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath11",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath12",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath13",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath14",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath15",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath16",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath17",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath18",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath19",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath20",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath21",
+      "CurrentFrameDuration": 0.016666
+    },
+    {
+      "Sprite": "NightBorneDeath22",
+      "CurrentFrameDuration": 0.016666,
+      "AnimNotifies": [
+        "MysticEchoes.Core.Animations.AnimNotifies.OnRemoveNotify"
+      ]
     }
   ]
 }

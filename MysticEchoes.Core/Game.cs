@@ -7,6 +7,9 @@ using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
+using MysticEchoes.Core.Damage;
+using MysticEchoes.Core.Debug;
+using MysticEchoes.Core.Events;
 using MysticEchoes.Core.Health;
 using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
@@ -22,7 +25,8 @@ namespace MysticEchoes.Core;
 
 public class Game
 {
-    public readonly IInputManager InputManager;
+    public  readonly IInputManager InputManager;
+    public  readonly GameplayEventListener GameplayEventListener;
 
     private readonly EcsWorld _world;
 
@@ -69,6 +73,8 @@ public class Game
         _itemsFactory = new ItemsFactory(_world, _entityBuilder, _prefabManager, _systemExecutionContext.Settings.ItemsSettings);
         _enemyFactory = new EnemyFactory(_world, _entityBuilder, _itemsFactory, _prefabManager);
 
+        GameplayEventListener = new GameplayEventListener();
+
         _updateTimer = new Stopwatch();
 
         _setupSystems = new EcsSystems(_world);
@@ -76,7 +82,7 @@ public class Game
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
             .Add(new EnemySpawnerSystem())
-            .Inject(_entityBuilder, _prefabManager, _itemsFactory, _enemyFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
+            .Inject(_entityBuilder, _prefabManager, _enemyFactory, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 
         _controlsSystems = new EcsSystems(_world);
@@ -104,21 +110,22 @@ public class Game
         _collisionSystems = new EcsSystems(_world);
         _collisionSystems
             .Add(new CollisionsSystem())
-            .Inject(_entityBuilder, _systemExecutionContext, _prefabManager)
+            .Inject(_entityBuilder, _systemExecutionContext, _prefabManager, _enemyFactory, GameplayEventListener)
             .Init();
 
+        _cleanupSystems = new EcsSystems(_world);
+        _cleanupSystems
+            .Add(new DamageZoneSystem())
+            .Add(new LifeTimeCleanupSystem())
+            .Add(new HealthSystem())
+            .Inject(_systemExecutionContext, GameplayEventListener)
+            .Init();
+        
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationStateMachineSystem())
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
-            .Init();
-
-        _cleanupSystems = new EcsSystems(_world);
-        _cleanupSystems
-            .Add(new LifeTimeCleanupSystem())
-            .Add(new HealthSystem())
-            .Inject(_systemExecutionContext)
             .Init();
     }
 
@@ -145,8 +152,8 @@ public class Game
         _shootingSystems.Run();
         _gameplaySystems.Run();
         _collisionSystems.Run();
-        _animationSystems.Run();
         _cleanupSystems.Run();
+        _animationSystems.Run();
 
         // _updateTimer.Start();
     }
