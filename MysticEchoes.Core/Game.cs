@@ -3,6 +3,7 @@ using Leopotam.EcsLite;
 using MysticEchoes.Core.AI;
 using MysticEchoes.Core.AI.Factories;
 using MysticEchoes.Core.Animations;
+using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Config.Input;
 using MysticEchoes.Core.Control;
@@ -128,6 +129,7 @@ public class Game
         _renderSystems = new EcsSystems(_world);
         _renderSystems
             .Add(new RenderSystem())
+            .Add(new CameraSystem())
             .Inject(gl, _assetManager)
             .Init();
     }

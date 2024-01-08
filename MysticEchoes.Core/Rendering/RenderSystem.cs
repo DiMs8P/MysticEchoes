@@ -5,15 +5,18 @@ using Leopotam.EcsLite;
 using MazeGeneration;
 using MazeGeneration.Enemies;
 using MazeGeneration.TreeModule;
+using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.MapModule.Rooms;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
 using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Cameras;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
 
 namespace MysticEchoes.Core.Rendering;
@@ -29,11 +32,13 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
     private EcsPool<SpaceTreeComponent> _spaceTrees;
 
+    private EcsFilter _playerFilter;
     private EcsPool<TransformComponent> _transforms;
     private EcsPool<TileMapComponent> _tileMaps;
     private EcsPool<StaticCollider> _staticColliders;
     private EcsPool<DynamicCollider> _dynamicColliders;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
+    private EcsPool<CameraComponent> _cameras;
     private double t;
 
     private static readonly Dictionary<CellType, double[]> TileColors = new()
@@ -54,12 +59,14 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _sprites = world.GetPool<SpriteComponent>();
         _rendersFilter = world.Filter<RenderComponent>().End();
 
+        _playerFilter = world.Filter<PlayerMarker>().Inc<TransformComponent>().End();
         _transforms = world.GetPool<TransformComponent>();
         _tileMaps = world.GetPool<TileMapComponent>();
         _staticColliders = world.GetPool<StaticCollider>();
         _dynamicColliders = world.GetPool<DynamicCollider>();
         _spaceTrees = world.GetPool<SpaceTreeComponent>();
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
+        _cameras = world.GetPool<CameraComponent>();
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -73,8 +80,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             throw new InvalidOperationException("Open Gl wasn't initialized");
 
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-        _gl.LoadIdentity();
-        _gl.Ortho(0, 2, 0, 2, -1, 1);
+
         //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
         //_gl.Translate(-(1-0.29f), -1.4, 0f);
         //t += 0.001;
@@ -240,10 +246,10 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 const float halfSize = 0.2f;
-                
+
                 if (spriteComponent.ReflectByY)
                 {
-                    _gl.TexCoord(1.0, 0.0f); 
+                    _gl.TexCoord(1.0, 0.0f);
                     _gl.Vertex(-halfSize, +halfSize);
                     _gl.TexCoord(1.0, 1.0f);
                     _gl.Vertex(-halfSize, -halfSize);
@@ -263,7 +269,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                     _gl.TexCoord(1.0, 0.0f);
                     _gl.Vertex(+halfSize, +halfSize);
                 }
-                
+
                 _gl.End();
 
                 _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
@@ -290,8 +296,19 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.Vertex(rect.Size.X, rect.Size.Y);
                 _gl.Vertex(rect.Size.X, 0);
                 _gl.End();
-
+                if (entityId == 491)
+                {
+                    ref CameraComponent camera = ref _cameras.Get(entityId);
+                    //camera. = new Vector3(transform.Location, 0.0f);
+                    
+                   /*gl.beginc
+                    _gl.LookAt(
+                     transform.Location.X-1, transform.Location.Y-1, 3.0f,
+                     transform.Location.X - 1, transform.Location.Y - 1, 0.0f,
+                     0.0f, 1.0f, 0.0f);*/
+                }
                 _gl.PopMatrix();
+
             }
             else if (render.Type is RenderingType.General)
             {
@@ -417,7 +434,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
         _gl.TexCoord(0.0 + p, 0.0f + p);
         _gl.Vertex(rect.Left, rect.Top);
-        _gl.TexCoord(0.0+ p, 1.0f - p);
+        _gl.TexCoord(0.0 + p, 1.0f - p);
         _gl.Vertex(rect.Left, rect.Bottom);
         _gl.TexCoord(1.0 - p, 1.0f - p);
         _gl.Vertex(rect.Right, rect.Bottom);
@@ -428,6 +445,4 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
         _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
     }
-    
-    
 }
