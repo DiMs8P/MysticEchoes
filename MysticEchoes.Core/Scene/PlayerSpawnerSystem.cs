@@ -76,6 +76,7 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         int playerWeapon = _prefabManager.CreateEntityFromPrefab(builder, PrefabType.DefaultWeapon);
 
         SetupPositions(player);
+        SetupCamera(player);
         SetupPlayerAnimations(player);
         SetupPlayerSprite(player);
         SetupCollider(player);
@@ -99,7 +100,13 @@ public class PlayerSpawnerSystem : IEcsInitSystem
         );
 
     }
+    private void SetupCamera(int player)
+    {
+        ref var transform = ref _transforms.Get(player);
+        ref var camera = ref _camera.Get(player);
 
+        camera.Position = new Vector2(transform.Location.X - 1, transform.Location.Y - 1);
+    }
     private void SetupCollider(int player)
     {
         ref var playerCollider = ref _colliders.Get(player);

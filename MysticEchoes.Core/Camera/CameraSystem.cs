@@ -44,23 +44,15 @@ namespace MysticEchoes.Core.Camera
                 ref TransformComponent transform = ref _transforms.Get(playerId);
                 ref MovementComponent movement = ref _movements.Get(playerId);
                 ref CameraComponent camera = ref _cameras.Get(playerId);
-                if (camera.Position == Vector2.Zero)
-                {
-                    camera.Position = new Vector2(transform.Location.X - 1, transform.Location.Y - 1);
-                    _gl.MatrixMode(OpenGL.GL_MODELVIEW);
-                    _gl.LoadIdentity();
-                    _gl.LookAt(transform.Location.X - 1, transform.Location.Y - 1, 3.0f, transform.Location.X - 1, transform.Location.Y - 1, 0.0f, 0.0f, 1.0f, 0.0f);
-                }
 
                 _gl.LoadIdentity();
-                Vector2 pos = What(transform.Location, ref camera, boxSize, ref movement);
+                Vector2 pos = GetDirection(transform.Location, ref camera, boxSize, ref movement);
                 camera.Position = new Vector2(camera.Position.X + pos.X, camera.Position.Y + pos.Y);
                 _gl.LookAt(camera.Position.X, camera.Position.Y, 3.0f, camera.Position.X, camera.Position.Y, 0.0f, 0.0f, 1.0f, 0.0f);
-
             }
         }
 
-        public static Vector2 What(Vector2 trans, ref CameraComponent pos, float size, ref MovementComponent movement)
+        public static Vector2 GetDirection(Vector2 trans, ref CameraComponent pos, float size, ref MovementComponent movement)
         {
             int i = 0;
             int j = 2;
