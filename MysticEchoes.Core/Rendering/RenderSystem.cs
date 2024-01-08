@@ -461,14 +461,14 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             _gl.Color(1.0f, 1.0f, 1.0f, t);
 
             _gl.TexCoord(0.0, 0.0f);
-            _gl.Vertex(cameraRectangle.Left + 0.1, cameraRectangle.Top - 0.1, deathLayer);
+            _gl.Vertex(cameraRectangle.Left + 0.05, cameraRectangle.Top - 0.05, deathLayer);
             _gl.TexCoord(0.0, 1.0f);
-            _gl.Vertex(cameraRectangle.Left + 0.1, cameraRectangle.Bottom + 0.1, deathLayer);
+            _gl.Vertex(cameraRectangle.Left + 0.05, cameraRectangle.Bottom + 0.05, deathLayer);
 
             _gl.TexCoord(1.0, 1.0f);
-            _gl.Vertex(cameraRectangle.Right - 0.1, cameraRectangle.Bottom + 0.1, deathLayer);
+            _gl.Vertex(cameraRectangle.Right - 0.05, cameraRectangle.Bottom + 0.05, deathLayer);
             _gl.TexCoord(1.0, 0.0f);
-            _gl.Vertex(cameraRectangle.Right - 0.1, cameraRectangle.Top - 0.1, deathLayer);
+            _gl.Vertex(cameraRectangle.Right - 0.05, cameraRectangle.Top - 0.05, deathLayer);
             _gl.End();
 
             _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
