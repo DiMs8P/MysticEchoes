@@ -10,21 +10,14 @@ namespace MysticEchoes.Core.AI;
 
 public class NecromancerBt : EcsBt
 {
-    private readonly int _playerId;
     public NecromancerBt(EcsWorld world, int ownerEntityId) : base(world, ownerEntityId)
     {
-        EcsFilter playerFilter = world.Filter<PlayerMarker>().End();
-
-        foreach (var playerId in playerFilter)
-        {
-            _playerId = playerId;
-        }
-        Blackboard.SetValueAsInt("Player", _playerId);
     }
     protected override Node SetupTree()
     {
         Node root = new Sequence(new List<Node>
         {
+            new SetPlayerTarget(Blackboard, "Player"),
             new TaskMoveTo(Blackboard, "Player", 0.1f),
             new SetHasAim(Blackboard, "Player",0.11f),
             new Attack(Blackboard),
