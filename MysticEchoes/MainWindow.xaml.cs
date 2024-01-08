@@ -28,7 +28,7 @@ public partial class MainWindow : Window
         gl.MatrixMode(OpenGL.GL_PROJECTION);
 
         gl.LoadIdentity();
-        gl.Ortho(0.75, 1.25, 0.75, 1.25, -1, 4);
+        gl.Ortho(0.75, 1.25, 0.75, 1.25, -1, 6);
 
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         

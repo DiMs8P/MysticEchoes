@@ -48,7 +48,7 @@ public class HealthSystem : IEcsInitSystem, IEcsRunSystem
         if (_enemies.Has(healthId))
         {
             ref EnemyComponent enemyComponent = ref _enemies.Get(healthId);
-                    
+            
             OnEnemyDeadInfo enemyDeadInfo = new OnEnemyDeadInfo();
             enemyDeadInfo.EnemyId = enemyComponent.EnemyId;
             enemyDeadInfo.RoomId = enemyComponent.RoomId;
@@ -57,6 +57,7 @@ public class HealthSystem : IEcsInitSystem, IEcsRunSystem
         else if (_player.Has(healthId))
         {
             OnPlayerDeadInfo playerDeadInfo = new OnPlayerDeadInfo();
+
             _eventListener.InvokeOnPlayerDead(playerDeadInfo);
         }
     }

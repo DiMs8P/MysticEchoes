@@ -4,7 +4,7 @@ public class GameplayEventListener
 {
     public delegate void OnPlayerDead(OnPlayerDeadInfo info);
     public event OnPlayerDead OnPlayerDeadEvent;
-    
+
     public delegate void OnEnemyDead(OnEnemyDeadInfo info);
     public event OnEnemyDead OnEnemyDeadEvent;
     

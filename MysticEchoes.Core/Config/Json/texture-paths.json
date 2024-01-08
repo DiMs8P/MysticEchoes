@@ -404,5 +404,7 @@
   "DoorLeft": "DoorLeft.png",
   "DoorLeftContinuation": "DoorLeftContinuation.png",
   "DoorRight": "DoorRight.png",
-  "DoorRightContinuation": "DoorRightContinuation.png"
+  "DoorRightContinuation": "DoorRightContinuation.png",
+
+  "GameOver": "GameOver.png"
 }
