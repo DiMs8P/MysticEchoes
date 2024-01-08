@@ -27,7 +27,7 @@
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 400,
+          "MaxHealth": 4000,
           "Immortal": false
         }
       },
@@ -136,13 +136,13 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.TransformComponent",
         "Parameters": {
-          "Scale": "0.15 0.15"
+          "Scale": "0.10 0.10"
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.1
+          "Speed": 0.05
         }
       },
       {
@@ -283,7 +283,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.05
+          "Speed": 0.025
         }
       },
       {
@@ -363,7 +363,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.05
+          "Speed": 0.025
         }
       },
       {
@@ -443,7 +443,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.05
+          "Speed": 0.025
         }
       },
       {

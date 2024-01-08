@@ -441,19 +441,24 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             const float deathLayer = 2f;
             _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
             _gl.Color(64f / 255, 64f / 255, 64f / 255, t);
-            _gl.Vertex(cameraRectangle.Left, cameraRectangle.Bottom, deathLayer);
-            _gl.Vertex(cameraRectangle.Right, cameraRectangle.Bottom, deathLayer);
-            _gl.Vertex(cameraRectangle.Right, cameraRectangle.Top, deathLayer);
-            _gl.Vertex(cameraRectangle.Left, cameraRectangle.Top, deathLayer);
+            _gl.Vertex(cameraRectangle.Left - 2, cameraRectangle.Bottom - 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Right + 2, cameraRectangle.Bottom - 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Right + 2, cameraRectangle.Top + 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Left - 2, cameraRectangle.Top + 2, deathLayer);
             _gl.End();
 
             _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
-            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture("GameOver"));
+            var texture = _gameState.IsVictory switch
+            {
+                false => "GameOver",
+                true => "Victory"
+            };
+
+            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(texture));
 
             _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
 
             _gl.Color(1.0f, 1.0f, 1.0f, t);
-
 
             _gl.TexCoord(0.0, 0.0f);
             _gl.Vertex(cameraRectangle.Left + 0.1, cameraRectangle.Top - 0.1, deathLayer);
@@ -470,7 +475,6 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
 
             t = double.Min(t + 1e-2d, 1d);
-            
         }
     }
 

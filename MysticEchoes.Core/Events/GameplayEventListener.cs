@@ -7,7 +7,10 @@ public class GameplayEventListener
 
     public delegate void OnEnemyDead(OnEnemyDeadInfo info);
     public event OnEnemyDead OnEnemyDeadEvent;
-    
+
+    public delegate void OnLastEnemyDead();
+    public event OnLastEnemyDead OnLastEnemyDeadEvent;
+
     public void InvokeOnPlayerDead(OnPlayerDeadInfo info)
     {
         OnPlayerDead handler = OnPlayerDeadEvent;
@@ -18,5 +21,10 @@ public class GameplayEventListener
     {
         OnEnemyDead handler = OnEnemyDeadEvent;
         handler?.Invoke(info);
+    }
+
+    public void InvokeLastEnemyDead()
+    {
+        OnLastEnemyDeadEvent?.Invoke();
     }
 }

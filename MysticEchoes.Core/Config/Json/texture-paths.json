@@ -305,7 +305,7 @@
   "BringerDeath7": "BringerOfDeath\\Death\\Bringer-of-Death_Death_8.png",
   "BringerDeath8": "BringerOfDeath\\Death\\Bringer-of-Death_Death_9.png",
   "BringerDeath9": "BringerOfDeath\\Death\\Bringer-of-Death_Death_10.png",
-  
+
   "BringerSpell0": "BringerOfDeath\\Spell\\Bringer-of-Death_Spell_1.png",
   "BringerSpell1": "BringerOfDeath\\Spell\\Bringer-of-Death_Spell_2.png",
   "BringerSpell2": "BringerOfDeath\\Spell\\Bringer-of-Death_Spell_3.png",
@@ -406,5 +406,6 @@
   "DoorRight": "DoorRight.png",
   "DoorRightContinuation": "DoorRightContinuation.png",
 
-  "GameOver": "GameOver.png"
+  "GameOver": "GameOver.png",
+  "Victory": "Victory.png"
 }

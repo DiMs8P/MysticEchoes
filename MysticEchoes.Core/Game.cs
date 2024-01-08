@@ -135,18 +135,28 @@ public class Game
             .Inject(_animationManager, _systemExecutionContext)
             .Init();
 
-        GameplayEventListener.OnPlayerDeadEvent += _ =>
-        {
-            var cameraId = _world.Filter<CameraComponent>().End().GetRawEntities()[0];
-            var camera = _world.GetPool<CameraComponent>().Get(cameraId);
+        GameplayEventListener.OnPlayerDeadEvent += LostHandler;
+        GameplayEventListener.OnLastEnemyDeadEvent += VictoryHandler;
+    }
 
-            var playerId = _world.Filter<PlayerMarker>().End().GetRawEntities()[0];
-            var player = _world.GetPool<TransformComponent>().Get(playerId);
+    private void LostHandler(OnPlayerDeadInfo _)
+    {
+        var cameraId = _world.Filter<CameraComponent>().End().GetRawEntities()[0];
+        var camera = _world.GetPool<CameraComponent>().Get(cameraId);
 
-            GameState.IsGameOver = true;
-            GameState.LastCameraPosition = camera.Position;
-            GameState.PlayerDeathPosition = player.Location;
-        };
+        var playerId = _world.Filter<PlayerMarker>().End().GetRawEntities()[0];
+        var player = _world.GetPool<TransformComponent>().Get(playerId);
+
+        GameState.IsGameOver = true;
+        GameState.IsVictory = false;
+        GameState.LastCameraPosition = camera.Position;
+        GameState.PlayerDeathPosition = player.Location;
+    }
+
+    private void VictoryHandler()
+    {
+        LostHandler(default);
+        GameState.IsVictory = true;
     }
 
     public void InitializeRender(OpenGL gl)
