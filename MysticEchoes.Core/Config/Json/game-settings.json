@@ -18,6 +18,13 @@
         "Description": "",
         "Quality": "Epic",
         "SpriteId": "Coin0"
+      },
+      "3": {
+        "Name": "HealthPotion",
+        "Description": "",
+        "Quality": "Common",
+        "AnimationId": "HealthPotion",
+        "SpriteId": "HealthPotion0"
       }
     },
     "QualityPoints": {
