@@ -34,8 +34,8 @@ public class GenerationConfig
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 40,
-                    [EnemyType.Elite] = 50,
+                    [EnemyType.Common] = 20,
+                    [EnemyType.Elite] = 30,
                     [EnemyType.MiniBoss] = 60,
                 },
                 frequencies: new()
@@ -48,7 +48,7 @@ public class GenerationConfig
                 {
                     [EnemyType.Common] = new (1, 1),
                     [EnemyType.Elite] = new(2, 2),
-                    [EnemyType.MiniBoss] = new(3, 3),
+                    [EnemyType.MiniBoss] = new(2, 2),
                 }),
         };
     // Пересекающиеся дороги
