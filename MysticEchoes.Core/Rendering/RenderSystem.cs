@@ -1,11 +1,13 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using Leopotam.EcsLite;
 using MazeGeneration;
 using MazeGeneration.Enemies;
 using MazeGeneration.TreeModule;
 using MazeGeneration.TreeModule.Rooms;
+using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
 using MysticEchoes.Core.Health;
@@ -17,6 +19,7 @@ using MysticEchoes.Core.Player;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
 using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Assets;
 using SharpGL.SceneGraph.Cameras;
 using SharpGL.SceneGraph.Lighting;
 using Rectangle = MysticEchoes.Core.Base.Geometry.Rectangle;
@@ -27,6 +30,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 {
     [EcsInject] private AssetManager _assetManager;
     [EcsInject] private OpenGL _gl;
+    [EcsInject] private GameState _gameState;
 
     private EcsFilter _rendersFilter;
     private EcsPool<RenderComponent> _renders;
@@ -47,6 +51,8 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     private double t;
     private float highLayer = 0.5f;
     private float debugLayer = 1.0f;
+    private int _cameraId;
+    private EcsPool<CameraComponent> _cameras;
 
     public void Init(IEcsSystems systems)
     {
@@ -65,9 +71,10 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
         _enemySpawns = world.GetPool<EnemySpawnComponent>();
         _doors = world.GetPool<DoorComponent>();
         _health = world.GetPool<HealthComponent>();
+        _cameras = world.GetPool<CameraComponent>();
 
         _mapId = world.Filter<TileMapComponent>().End().GetRawEntities()[0];
-
+        _cameraId = world.Filter<CameraComponent>().End().GetRawEntities()[0];
 
         _gl.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -79,7 +86,7 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
     {
         if (_gl is null)
             throw new InvalidOperationException("Open Gl wasn't initialized");
-
+        
         _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
         //_gl.Ortho(0, 0.8, 0, 0.5, -1, 1);
@@ -420,6 +427,54 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             {
                 throw new NotImplementedException();
             }
+        }
+
+        if (_gameState.IsGameOver)
+        {
+            var cameraPosition = _gameState.LastCameraPosition + Vector2.One;
+            var cameraRectangle = new Rectangle
+            {
+                LeftBottom = cameraPosition - Vector2.One * 0.25f,
+                Size = Vector2.One * 0.5f
+            };
+
+            const float deathLayer = 2f;
+            _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+            _gl.Color(64f / 255, 64f / 255, 64f / 255, t);
+            _gl.Vertex(cameraRectangle.Left - 2, cameraRectangle.Bottom - 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Right + 2, cameraRectangle.Bottom - 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Right + 2, cameraRectangle.Top + 2, deathLayer);
+            _gl.Vertex(cameraRectangle.Left - 2, cameraRectangle.Top + 2, deathLayer);
+            _gl.End();
+
+            _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+            var texture = _gameState.IsVictory switch
+            {
+                false => "GameOver",
+                true => "Victory"
+            };
+
+            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, _assetManager.GetTexture(texture));
+
+            _gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+
+            _gl.Color(1.0f, 1.0f, 1.0f, t);
+
+            _gl.TexCoord(0.0, 0.0f);
+            _gl.Vertex(cameraRectangle.Left + 0.1, cameraRectangle.Top - 0.1, deathLayer);
+            _gl.TexCoord(0.0, 1.0f);
+            _gl.Vertex(cameraRectangle.Left + 0.1, cameraRectangle.Bottom + 0.1, deathLayer);
+
+            _gl.TexCoord(1.0, 1.0f);
+            _gl.Vertex(cameraRectangle.Right - 0.1, cameraRectangle.Bottom + 0.1, deathLayer);
+            _gl.TexCoord(1.0, 0.0f);
+            _gl.Vertex(cameraRectangle.Right - 0.1, cameraRectangle.Top - 0.1, deathLayer);
+            _gl.End();
+
+            _gl.ActiveTexture(OpenGL.GL_TEXTURE0);
+            _gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+
+            t = double.Min(t + 1e-2d, 1d);
         }
     }
 

@@ -51,6 +51,7 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
     private EcsPool<DamageZoneComponent> _damageZones;
     private EcsPool<HealthComponent> _health;
     private EcsPool<EnemySpawnComponent> _enemySpawns;
+    private EcsFilter _triggers;
 
     private const float CollisionResolvingSensitivity = 1e-4f;
     private readonly List<int> _entitiesToClear = new ();
@@ -85,7 +86,9 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
 
         _dynamicCollidersFilter = _world.Filter<DynamicCollider>()
             .End();
-        
+        _triggers = _world.Filter<EntranceTrigger>()
+            .End();
+
         ref var map = ref _world.GetPool<TileMapComponent>().Get(_mapId);
 
         _staticCollidersTree = new QuadTree(
@@ -339,6 +342,18 @@ public class CollisionsSystem : IEcsInitSystem, IEcsRunSystem
         }
 
         _eventListener.OnEnemyDeadEvent -= HandleEnemyDeath;
+
+        var triggersLeft = 0;
+        foreach (var _ in _triggers)
+        {
+            triggersLeft++;
+            break;
+        }
+
+        if (triggersLeft == 0)
+        {
+            _eventListener.InvokeLastEnemyDead();
+        }
     }
 
     private void CloseDoors(RoomComponent room)

@@ -28,21 +28,21 @@ public class GenerationConfig
             MaxHeightToWidthProportion = 1.4,
             MaxWidthToHeightProportion = 1.4,
             MaxDivideShift = 0,
-            ThreeDepth = 3,
+            ThreeDepth = 2,
             RoomRandomWalkParameter = new RandomWalkParameter(25, 17, false),
             EnemySpawnsGenerator = new EnemySpawnsGeneratorParameter(
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 10,
-                    [EnemyType.Elite] = 25,
-                    [EnemyType.MiniBoss] = 40,
+                    [EnemyType.Common] = 40,
+                    [EnemyType.Elite] = 50,
+                    [EnemyType.MiniBoss] = 60,
                 },
                 frequencies: new()
                 {
                     [EnemyType.Common] = 11,
                     [EnemyType.Elite] = 3,
-                    [EnemyType.MiniBoss] = 1,
+                    [EnemyType.MiniBoss] = 2,
                 },
                 new Dictionary<EnemyType, Point>
                 {

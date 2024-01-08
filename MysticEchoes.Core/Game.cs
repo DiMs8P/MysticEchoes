@@ -15,18 +15,21 @@ using MysticEchoes.Core.Items;
 using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.MapModule;
 using MysticEchoes.Core.Movement;
+using MysticEchoes.Core.Player;
 using MysticEchoes.Core.Rendering;
 using MysticEchoes.Core.Scene;
 using MysticEchoes.Core.Shooting;
 using SevenBoldPencil.EasyDi;
 using SharpGL;
+using SharpGL.SceneGraph.Cameras;
 
 namespace MysticEchoes.Core;
 
 public class Game
 {
-    public  readonly IInputManager InputManager;
-    public  readonly GameplayEventListener GameplayEventListener;
+    public GameState GameState { get; set; }
+    public readonly IInputManager InputManager;
+    public readonly GameplayEventListener GameplayEventListener;
 
     private readonly EcsWorld _world;
 
@@ -61,6 +64,10 @@ public class Game
         SystemExecutionContext systemExecutionContext
         )
     {
+        GameState = new GameState
+        {
+            IsGameOver = false
+        };
         _mazeGenerator = mazeGenerator;
         InputManager = inputManager;
         _animationManager = animationManager;
@@ -120,13 +127,36 @@ public class Game
             .Add(new HealthSystem())
             .Inject(_systemExecutionContext, GameplayEventListener)
             .Init();
-        
+
         _animationSystems = new EcsSystems(_world);
         _animationSystems
             .Add(new AnimationStateMachineSystem())
             .Add(new AnimationSystem())
             .Inject(_animationManager, _systemExecutionContext)
             .Init();
+
+        GameplayEventListener.OnPlayerDeadEvent += LostHandler;
+        GameplayEventListener.OnLastEnemyDeadEvent += VictoryHandler;
+    }
+
+    private void LostHandler(OnPlayerDeadInfo _)
+    {
+        var cameraId = _world.Filter<CameraComponent>().End().GetRawEntities()[0];
+        var camera = _world.GetPool<CameraComponent>().Get(cameraId);
+
+        var playerId = _world.Filter<PlayerMarker>().End().GetRawEntities()[0];
+        var player = _world.GetPool<TransformComponent>().Get(playerId);
+
+        GameState.IsGameOver = true;
+        GameState.IsVictory = false;
+        GameState.LastCameraPosition = camera.Position;
+        GameState.PlayerDeathPosition = player.Location;
+    }
+
+    private void VictoryHandler()
+    {
+        LostHandler(default);
+        GameState.IsVictory = true;
     }
 
     public void InitializeRender(OpenGL gl)
@@ -137,7 +167,7 @@ public class Game
         _renderSystems
             .Add(new CameraSystem())
             .Add(new RenderSystem())
-            .Inject(gl, _assetManager)
+            .Inject(gl, _assetManager, GameState)
             .Init();
     }
 
@@ -146,6 +176,10 @@ public class Game
         // _updateTimer.Stop();
         _systemExecutionContext.DeltaTime = _updateTimer.ElapsedMilliseconds / 1e3f;
         _systemExecutionContext.FrameNumber += 1;
+        if (GameState.IsGameOver)
+        {
+            return;
+        }
         _updateTimer.Restart();
 
         _controlsSystems.Run();
