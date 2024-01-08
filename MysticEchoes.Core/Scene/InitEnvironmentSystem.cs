@@ -406,7 +406,8 @@ public class InitEnvironmentSystem : IEcsInitSystem
     private void CreateMoney()
     {
         ItemInitializationInfo itemInitializationInfo = new ItemInitializationInfo();
+        itemInitializationInfo.ItemId = 3;
         itemInitializationInfo.Location = new Vector2(0.47f, 0.2f);
-        int entityId = _itemsFactory.CreateItemEntity(3, itemInitializationInfo, 100);
+        int entityId = _itemsFactory.CreateItemEntity(itemInitializationInfo, 100);
     }
 }

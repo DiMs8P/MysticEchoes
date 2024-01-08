@@ -62,11 +62,11 @@ public class ItemsFactory
         throw new ArgumentException($"Invalid item Id: {itemId.ToString()}");
     }
     
-    public int CreateItemEntity(int itemId, ItemInitializationInfo initializationInfo, params object[] parameters)
+    public int CreateItemEntity(ItemInitializationInfo initializationInfo, params object[] parameters)
     {
         int itemEntity = _prefabManager.CreateEntityFromPrefab(_builder, PrefabType.BaseItem);
         
-        if (_itemsSettings.Items.TryGetValue(itemId, out ItemInfo itemInfo))
+        if (_itemsSettings.Items.TryGetValue(initializationInfo.ItemId, out ItemInfo itemInfo))
         {
             if (itemInfo.AnimationId is not null)
             {
@@ -83,7 +83,7 @@ public class ItemsFactory
         }
         
         ref ItemComponent itemComponent = ref _items.Get(itemEntity);
-        itemComponent.Item =  CreateItem(itemId, parameters);
+        itemComponent.Item =  CreateItem(initializationInfo.ItemId, parameters);
         
         ref TransformComponent itemTransform = ref _transforms.Get(itemEntity);
         itemTransform.Location = initializationInfo.Location;
