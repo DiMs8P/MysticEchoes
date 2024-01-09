@@ -88,7 +88,6 @@ public class Game
         _setupSystems
             .Add(new InitEnvironmentSystem())
             .Add(new PlayerSpawnerSystem())
-            .Add(new EnemySpawnerSystem())
             .Inject(_entityBuilder, _prefabManager, _enemyFactory, _itemsFactory, _animationManager, _mazeGenerator, systemExecutionContext.Settings)
             .Init();
 

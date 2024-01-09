@@ -34,15 +34,15 @@ public class GenerationConfig
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 14,
-                    [EnemyType.Elite] = 20,
-                    [EnemyType.MiniBoss] = 60,
+                    [EnemyType.Common] = 11,
+                    [EnemyType.Elite] = 19,
+                    [EnemyType.MiniBoss] = 37,
                 },
                 frequencies: new()
                 {
-                    [EnemyType.Common] = 11,
-                    [EnemyType.Elite] = 3,
-                    [EnemyType.MiniBoss] = 2,
+                    [EnemyType.Common] = 13,
+                    [EnemyType.Elite] = 7,
+                    [EnemyType.MiniBoss] = 4,
                 },
                 new Dictionary<EnemyType, Point>
                 {
@@ -51,53 +51,4 @@ public class GenerationConfig
                     [EnemyType.MiniBoss] = new(2, 2),
                 }),
         };
-    // Пересекающиеся дороги
-    //MinNodeSize = new (20, 20),
-    //MinRoomSize = new (7, 7),
-    //MinRoomPadding = new (2,2),
-    //MazeSize = new (100, 100),
-    //Random = new GenerationRandom(77551),
-    //MaxHeightToWidthProportion = 1.6,
-    //MaxWidthToHeightProportion = 1.6,
-    //MaxDivideShift = 0.15,
-    //ThreeDepth = 4
-
-    // Пересекающиеся дороги, дороги сходятся к одному углу комнаты (как
-    // потом надо будет делать дверь в углу??? мб просто убрать возможность
-    // дорогам заканчиваться в углу комнаты)
-    //MinNodeSize = new (20, 20),
-    //MinRoomSize = new (7, 7),
-    //MinRoomPadding = new (2,2),
-    //MazeSize = new (100, 100),
-    //Random = new GenerationRandom(1),
-    //MaxHeightToWidthProportion = 1.6,
-    //MaxWidthToHeightProportion = 1.6,
-    //MaxDivideShift = 0.15,
-    //ThreeDepth = 4
-
-    // Дорога проходит через другую комнату!!!
-    //MinNodeSize = new (20, 20),
-    //MinRoomSize = new (7, 7),
-    //MinRoomPadding = new (2,2),
-    //MazeSize = new (100, 100),
-    //Random = new GenerationRandom(5),
-    //MaxHeightToWidthProportion = 1.6,
-    //MaxWidthToHeightProportion = 1.6,
-    //MaxDivideShift = 0.15,
-    //ThreeDepth = 4
-
-    // Комната вылазит ноду (вероятно проблема с тем, что
-    // у встроенного класса rectangle в методе Contains
-    // не включается верхняя граница при сравнении, заменить его на метод
-    // ContainsNotStrict из Extension класса)
-    // Дорога проходит сквозь другую комнату
-    // MinNodeSize = new (10, 10),
-    // MinRoomSize = new (4, 4),
-    // MinRoomPadding = new (1,1),
-    // MazeSize = new (50, 50),
-    // Random = new GenerationRandom(7354543),
-    // MaxHeightToWidthProportion = 1.4,
-    // MaxWidthToHeightProportion = 2.1,
-    // MaxDivideShift = 0,
-    // ThreeDepth = 4
 }
