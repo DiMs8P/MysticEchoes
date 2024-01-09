@@ -58,13 +58,14 @@ namespace MysticEchoes.Core.Camera
             int j = 2;
             if (pos.Position.X > trans.X - 1 + size)
             {
-                if (pos.Speed[0] <= movement.Speed / 50)
+                if (pos.Speed[0] >= -movement.Speed / 50)
                     pos.Speed = new Vector4(pos.Speed[0] - movement.Speed / 500, pos.Speed[1], pos.Speed[2], pos.Speed[3]);
                 i = 0;
             }
             else
             {
                 pos.Speed = new Vector4(0, pos.Speed[1], pos.Speed[2], pos.Speed[3]);
+                i = 0;
             }
             if (pos.Position.X < trans.X - 1 - size)
             {
@@ -75,17 +76,19 @@ namespace MysticEchoes.Core.Camera
             else
             {
                 pos.Speed = new Vector4(pos.Speed[0], 0, pos.Speed[2], pos.Speed[3]);
+                
             }
             if (pos.Position.Y > trans.Y - 1 + size)
             {
-                if (pos.Speed[2] <= movement.Speed / 50)
+                if (pos.Speed[2] >= -movement.Speed / 50)
                     pos.Speed = new Vector4(pos.Speed[0], pos.Speed[1], pos.Speed[2] - movement.Speed / 500, pos.Speed[3]);
                 j = 2;
             }
             else
             {
                 pos.Speed = new Vector4(pos.Speed[0], pos.Speed[1], 0, pos.Speed[3]);
-                
+                j = 2;
+
             }
             if (pos.Position.Y < trans.Y - 1 - size)
             {
@@ -96,6 +99,7 @@ namespace MysticEchoes.Core.Camera
             else
             {
                 pos.Speed = new Vector4(pos.Speed[0], pos.Speed[1], pos.Speed[2], 0);
+               
             }
 
             return new Vector2(pos.Speed[i], pos.Speed[j]);
