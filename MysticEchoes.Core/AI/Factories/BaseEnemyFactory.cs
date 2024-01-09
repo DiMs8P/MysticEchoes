@@ -19,7 +19,7 @@ using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.AI.Factories;
 
-public class BaseEnemyFactory : IEnemyFactory
+public abstract class BaseEnemyFactory : IEnemyFactory
 {
     protected EcsWorld World;
     protected EntityBuilder Builder;
@@ -62,10 +62,7 @@ public class BaseEnemyFactory : IEnemyFactory
         Muzzles = world.GetPool<MuzzleComponent>();
     }
 
-    public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
-    {
-        throw new NotImplementedException("Method must be implemented");
-    }
+    public abstract int Create(EnemyInitializationInfo enemyInitializationInfo);
 
     protected virtual int CreateInternal(EnemyInitializationInfo enemyInitializationInfo, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
     {

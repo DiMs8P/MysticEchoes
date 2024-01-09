@@ -79,7 +79,7 @@
       {
         "TypeName": "MysticEchoes.Core.Inventory.InventoryComponent",
         "Parameters": {
-          "Money": 50
+          "Money": 250
         }
       },
       {
