@@ -27,8 +27,8 @@
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 30,
-          "Immortal": true
+          "MaxHealth": 300,
+          "Immortal": false
         }
       },
       {
@@ -85,9 +85,9 @@
       {
         "TypeName": "MysticEchoes.Core.Inventory.StartingItems",
         "Parameters": {
-          "Items": [
-            "2"
-          ]
+          //"Items": [
+          //  "2"
+          //]
         }
       }
     ]
@@ -106,7 +106,7 @@
         "TypeName": "MysticEchoes.Core.Shooting.MuzzleComponent",
         "Parameters": {
 
-          "TimeBetweenShots": 1,
+          "TimeBetweenShots": 0.4,
           "ShootingType": "SingleShot",
           "MagicPrefab": "Bullet"
         }
@@ -142,7 +142,7 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.05
+          "Speed": 0.07
         }
       },
       {
@@ -154,7 +154,7 @@
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
-          "Damage": 1000
+          "Damage": 15
         }
       },
       {
@@ -212,7 +212,7 @@
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageComponent",
         "Parameters": {
-          "Damage": 10
+          "Damage": 4
         }
       },
       {
@@ -233,12 +233,12 @@
           "Type": "General"
         }
       },
-      //{
-      //  "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
-      //  "Parameters": {
-      //    "LifeTime": 1
-      //  }
-      //},
+      {
+        "TypeName": "MysticEchoes.Core.Scene.LifeTimeComponent",
+        "Parameters": {
+          "LifeTime": 1.5
+        }
+      },
       {
         "TypeName": "MysticEchoes.Core.Damage.DamageZoneComponent",
         "Parameters": {}
@@ -284,13 +284,13 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.025
+          "Speed": 0.017
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 100
+          "MaxHealth": 160
         }
       },
       {
@@ -364,13 +364,13 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.025
+          "Speed": 0.035
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 100
+          "MaxHealth": 200
         }
       },
       {
@@ -444,13 +444,13 @@
       {
         "TypeName": "MysticEchoes.Core.Movement.MovementComponent",
         "Parameters": {
-          "Speed": 0.025
+          "Speed": 0.075
         }
       },
       {
         "TypeName": "MysticEchoes.Core.Health.HealthComponent",
         "Parameters": {
-          "MaxHealth": 100
+          "MaxHealth": 340
         }
       },
       {

@@ -9,6 +9,7 @@ using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Scene;
+using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.AI.Factories;
 
@@ -38,5 +39,19 @@ public class BringerFactory : BaseEnemyFactory
         ));
         
         return createdEntity;
+    }
+
+    protected override void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    {
+        int playerWeapon = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyWeaponPrefab);
+
+        ref RangeWeaponComponent rangeWeaponComponent = ref Weapons.Get(createdEnemyId);
+        rangeWeaponComponent.MuzzleIds.Add(playerWeapon);
+
+        ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
+        owningByComponent.Owner = createdEnemyId;
+
+        ref var muzzle = ref Muzzles.Get(playerWeapon);
+        muzzle.TimeBetweenShots = 1.8f;
     }
 }

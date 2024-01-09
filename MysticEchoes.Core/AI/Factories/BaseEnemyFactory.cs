@@ -35,10 +35,11 @@ public class BaseEnemyFactory : IEnemyFactory
     protected EcsPool<AnimationComponent> _animations;
     protected EcsPool<CharacterAnimationComponent> _characterAnimations;
     
-    protected EcsPool<RangeWeaponComponent> _weapons;
+    protected EcsPool<RangeWeaponComponent> Weapons;
     protected EcsPool<OwningByComponent> _ownings;
     protected EcsPool<StartingItems> _items;
-    
+    protected EcsPool<MuzzleComponent> Muzzles;
+
     public BaseEnemyFactory(EcsWorld world, EntityBuilder builder, ItemsFactory itemsFactory, PrefabManager prefabManager)
     {
         World = world;
@@ -54,10 +55,11 @@ public class BaseEnemyFactory : IEnemyFactory
         _transforms = world.GetPool<TransformComponent>();
         _animations = world.GetPool<AnimationComponent>();
         _characterAnimations = world.GetPool<CharacterAnimationComponent>();
-
-        _weapons = world.GetPool<RangeWeaponComponent>();
+        
+        Weapons = world.GetPool<RangeWeaponComponent>();
         _ownings = world.GetPool<OwningByComponent>();
         _items = world.GetPool<StartingItems>();
+        Muzzles = world.GetPool<MuzzleComponent>();
     }
 
     public virtual int Create(EnemyInitializationInfo enemyInitializationInfo)
@@ -116,11 +118,14 @@ public class BaseEnemyFactory : IEnemyFactory
     {
         int playerWeapon = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyWeaponPrefab);
         
-        ref RangeWeaponComponent rangeWeaponComponent = ref _weapons.Get(createdEnemyId);
+        ref RangeWeaponComponent rangeWeaponComponent = ref Weapons.Get(createdEnemyId);
         rangeWeaponComponent.MuzzleIds.Add(playerWeapon);
 
         ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
         owningByComponent.Owner = createdEnemyId;
+
+        ref var muzzle = ref Muzzles.Get(playerWeapon);
+        muzzle.TimeBetweenShots = 3f;
     }
     
     protected virtual void InitializeEnemyAnimations(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)

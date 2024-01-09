@@ -7,6 +7,7 @@ using MazeGeneration;
 using MazeGeneration.Enemies;
 using MazeGeneration.TreeModule;
 using MazeGeneration.TreeModule.Rooms;
+using Microsoft.VisualBasic;
 using MysticEchoes.Core.Camera;
 using MysticEchoes.Core.Collisions;
 using MysticEchoes.Core.Collisions.Tree;
@@ -215,18 +216,18 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
             }
             else if (render.Type is RenderingType.DebugUnitView)
             {
-                ref TransformComponent transform = ref _transforms.Get(entityId);
+                //ref TransformComponent transform = ref _transforms.Get(entityId);
 
-                _gl.Begin(OpenGL.GL_QUADS);
-                _gl.Color(1f, 0f, 0f);
+                //_gl.Begin(OpenGL.GL_QUADS);
+                //_gl.Color(1f, 0f, 0f);
 
-                const float halfSize = 0.05f;
+                //const float halfSize = 0.05f;
 
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
-                _gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
-                _gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
-                _gl.End();
+                //_gl.Vertex(transform.Location.X - halfSize, transform.Location.Y + halfSize);
+                //_gl.Vertex(transform.Location.X - halfSize, transform.Location.Y - halfSize);
+                //_gl.Vertex(transform.Location.X + halfSize, transform.Location.Y - halfSize);
+                //_gl.Vertex(transform.Location.X + halfSize, transform.Location.Y + halfSize);
+                //_gl.End();
             }
             else if (render.Type is RenderingType.Character)
             {
@@ -318,25 +319,25 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
                 _gl.PopMatrix();
                 _gl.GetModelViewMatrix();
 
-                _gl.PushMatrix();
+                //_gl.PushMatrix();
 
-                if (_dynamicColliders.Has(entityId))
-                {
-                    var collider = _dynamicColliders.Get(entityId);
-                    var rect = collider.Box.Shape;
-                    _gl.Translate(rect.LeftBottom);
+                //if (_dynamicColliders.Has(entityId))
+                //{
+                //    var collider = _dynamicColliders.Get(entityId);
+                //    var rect = collider.Box.Shape;
+                //    _gl.Translate(rect.LeftBottom);
 
-                    _gl.Begin(OpenGL.GL_LINE_LOOP);
+                //    _gl.Begin(OpenGL.GL_LINE_LOOP);
 
-                    _gl.Color(1.0f, 0.3f, 0.0f);
+                //    _gl.Color(1.0f, 0.3f, 0.0f);
 
-                    _gl.Vertex(0, 0);
-                    _gl.Vertex(0, rect.Size.Y);
-                    _gl.Vertex(rect.Size.X, rect.Size.Y);
-                    _gl.Vertex(rect.Size.X, 0);
-                    _gl.End();
-                }
-                _gl.PopMatrix();
+                //    _gl.Vertex(0, 0);
+                //    _gl.Vertex(0, rect.Size.Y);
+                //    _gl.Vertex(rect.Size.X, rect.Size.Y);
+                //    _gl.Vertex(rect.Size.X, 0);
+                //    _gl.End();
+                //}
+                //_gl.PopMatrix();
 
             }
             else if (render.Type is RenderingType.EnemySpawn)
@@ -460,15 +461,16 @@ public class RenderSystem : IEcsInitSystem, IEcsRunSystem
 
             _gl.Color(1.0f, 1.0f, 1.0f, t);
 
+            var p = 0.1;
             _gl.TexCoord(0.0, 0.0f);
-            _gl.Vertex(cameraRectangle.Left + 0.05, cameraRectangle.Top - 0.05, deathLayer);
+            _gl.Vertex(cameraRectangle.Left + p, cameraRectangle.Top - p, deathLayer);
             _gl.TexCoord(0.0, 1.0f);
-            _gl.Vertex(cameraRectangle.Left + 0.05, cameraRectangle.Bottom + 0.05, deathLayer);
+            _gl.Vertex(cameraRectangle.Left + p, cameraRectangle.Bottom + p, deathLayer);
 
             _gl.TexCoord(1.0, 1.0f);
-            _gl.Vertex(cameraRectangle.Right - 0.05, cameraRectangle.Bottom + 0.05, deathLayer);
+            _gl.Vertex(cameraRectangle.Right - p, cameraRectangle.Bottom + p, deathLayer);
             _gl.TexCoord(1.0, 0.0f);
-            _gl.Vertex(cameraRectangle.Right - 0.05, cameraRectangle.Top - 0.05, deathLayer);
+            _gl.Vertex(cameraRectangle.Right - p, cameraRectangle.Top - p, deathLayer);
             _gl.End();
 
             _gl.ActiveTexture(OpenGL.GL_TEXTURE0);

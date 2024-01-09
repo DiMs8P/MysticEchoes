@@ -34,15 +34,15 @@ public class GenerationConfig
                 random: new GenerationRandom(7354543),
                 costs: new()
                 {
-                    [EnemyType.Common] = 14,
-                    [EnemyType.Elite] = 20,
-                    [EnemyType.MiniBoss] = 60,
+                    [EnemyType.Common] = 11,
+                    [EnemyType.Elite] = 19,
+                    [EnemyType.MiniBoss] = 37,
                 },
                 frequencies: new()
                 {
-                    [EnemyType.Common] = 11,
-                    [EnemyType.Elite] = 3,
-                    [EnemyType.MiniBoss] = 2,
+                    [EnemyType.Common] = 13,
+                    [EnemyType.Elite] = 7,
+                    [EnemyType.MiniBoss] = 4,
                 },
                 new Dictionary<EnemyType, Point>
                 {

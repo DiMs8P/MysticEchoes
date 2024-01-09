@@ -10,13 +10,19 @@ using MysticEchoes.Core.Loaders;
 using MysticEchoes.Core.Loaders.Prefabs;
 using MysticEchoes.Core.Movement;
 using MysticEchoes.Core.Scene;
+using MysticEchoes.Core.Shooting;
 
 namespace MysticEchoes.Core.AI.Factories;
 
 public class NightBorneFactory : BaseEnemyFactory
 {
     private EcsPool<DamageZoneComponent> _damageZones;
-    public NightBorneFactory(EcsWorld world, EntityBuilder builder, ItemsFactory itemsFactory, PrefabManager prefabManager) : base(world, builder, itemsFactory, prefabManager)
+    public NightBorneFactory(
+        EcsWorld world, 
+        EntityBuilder builder, 
+        ItemsFactory itemsFactory, 
+        PrefabManager prefabManager
+    ) : base(world, builder, itemsFactory, prefabManager)
     {
         _damageZones = world.GetPool<DamageZoneComponent>();
     }
@@ -39,7 +45,7 @@ public class NightBorneFactory : BaseEnemyFactory
             Vector2.Zero, 
             dynamicCollider.DefaultSize * transformComponent.Scale
         ));
-        
+
         return createdEntity;
     }
 
@@ -65,10 +71,24 @@ public class NightBorneFactory : BaseEnemyFactory
 
         DamageComponent damageComponent = new DamageComponent
         {
-            Damage = 10
+            Damage = 50
         };
         Builder.AddTo(animationEntityId, damageComponent);
 
         return animationEntityId;
+    }
+
+    protected override void InitializeEnemyWeapon(int createdEnemyId, EnemyInitializationInternalInfo enemyInitializationInternalInfo)
+    {
+        int playerWeapon = PrefabManager.CreateEntityFromPrefab(Builder, enemyInitializationInternalInfo.EnemyWeaponPrefab);
+
+        ref RangeWeaponComponent rangeWeaponComponent = ref Weapons.Get(createdEnemyId);
+        rangeWeaponComponent.MuzzleIds.Add(playerWeapon);
+
+        ref OwningByComponent owningByComponent = ref _ownings.Get(playerWeapon);
+        owningByComponent.Owner = createdEnemyId;
+
+        ref var muzzle = ref Muzzles.Get(playerWeapon);
+        muzzle.TimeBetweenShots = 0.8f;
     }
 }
